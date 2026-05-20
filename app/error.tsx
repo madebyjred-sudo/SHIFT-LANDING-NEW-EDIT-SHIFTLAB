@@ -1,0 +1,42 @@
+"use client";
+
+import { useEffect } from "react";
+import Link from "next/link";
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
+  return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 px-6 py-20 text-center text-[#111A31]">
+      <h1 className="text-2xl font-semibold text-[#1534DC] sm:text-3xl">
+        Algo salió mal
+      </h1>
+      <p className="max-w-md text-base leading-relaxed text-[#111A31]/80">
+        No pudimos cargar esta sección. Podés reintentar o volver al inicio.
+      </p>
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <button
+          type="button"
+          onClick={() => reset()}
+          className="rounded-full border border-[#1534DC] bg-[#1534DC] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-[#1229b8]"
+        >
+          Reintentar
+        </button>
+        <Link
+          href="/"
+          className="rounded-full border border-[#1534DC] px-6 py-2.5 text-sm font-medium text-[#1534DC] transition hover:bg-[#1534DC]/5"
+        >
+          Ir al inicio
+        </Link>
+      </div>
+    </div>
+  );
+}
