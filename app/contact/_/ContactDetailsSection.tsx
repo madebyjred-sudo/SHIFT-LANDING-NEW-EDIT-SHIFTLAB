@@ -34,11 +34,11 @@ type FormFieldKey =
   | "formInfoCinco";
 
 const FORM_FIELDS: { key: FormFieldKey; label: string }[] = [
-  { key: "formInfoUno", label: "Form info uno" },
-  { key: "formInfoDos", label: "Form info dos" },
-  { key: "formInfoTres", label: "Form info tres" },
-  { key: "formInfoCuatro", label: "Form info cuatro" },
-  { key: "formInfoCinco", label: "Form info cinco" },
+  { key: "formInfoUno", label: "Nombre completo" },
+  { key: "formInfoDos", label: "Correo electrónico" },
+  { key: "formInfoTres", label: "Contacto móvil" },
+  { key: "formInfoCuatro", label: "Servicio requerido" },
+  { key: "formInfoCinco", label: "Briefing adicional" },
 ];
 
 function ContactInput({
