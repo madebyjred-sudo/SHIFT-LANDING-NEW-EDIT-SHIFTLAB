@@ -66,10 +66,10 @@ export default function HomeIntroSection() {
   }, [introVisible, prefersReducedMotion]);
 
   return (
-    <section ref={introSectionRef} className="relative bg-white mb-14 md:my-14 ">
+    <section ref={introSectionRef} className="relative bg-white mb-14 md:mb-14 ">
       {/* Clip only the decorative wave so intro slide (translateY) is not cropped */}
 
-      <div className="relative z-10 mx-auto w-full max-w-[1380px] px-10 py-10 md:px-16 md:py-10 lg:px-20">
+      <div className="relative z-10 mx-auto w-full max-w-[1380px] px-10 pt-28 pb-10 md:px-16 md:pt-40 md:pb-10 lg:px-20">
         <div className="w-full">
           <div className="flex flex-col sm:flex-row sm:justify-between  sm:gap-4 md:gap-6">
 

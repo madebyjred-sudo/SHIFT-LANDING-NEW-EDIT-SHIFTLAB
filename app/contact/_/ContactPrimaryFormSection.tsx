@@ -236,7 +236,7 @@ export default function ContactPrimaryFormSection({
               className="pointer-events-none absolute left-[-9999px] h-0 w-0 opacity-0"
             />
             <label className={`relative block ${hasSubmitted ? fieldErrors.idea ? "mb-4 sm:mb-0" : "" : ""}`}>
-              <span className="sr-only [font-family:font/family/sub-title] [font-style:normal] [leading-trim:none] text-2xl font-normal leading-[40px] tracking-[0]">
+              <span className="sr-only [font-family:var(--font-figtree)] [font-style:normal] [leading-trim:none] text-2xl font-normal leading-[40px] tracking-[0]">
                 ¿Qué estás pensando?
               </span>
               <textarea

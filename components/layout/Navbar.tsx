@@ -1,112 +1,163 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const menuItems = [
-    { label: "Nosotros", href: "/about-us" },
-    { label: "Servicios", href: "/services" },
-    { label: "Shifting Culture®", href: "/shifting-culture" },
-    { label: "Shift LAB", href: "/shift-lab" },
-    // { label: "Newsroom", href: "/newsroom" },
-    { label: "Premios", href: "/awards" },
-    { label: "Propósito", href: "/purpose" },
+import { GlowMenu, type GlowMenuItem } from "@/components/ui/glow-menu";
+
+const menuItems: GlowMenuItem[] = [
+  { label: "Inicio", href: "/" },
+  { label: "Nosotros", href: "/about-us" },
+  { label: "Servicios", href: "/services" },
+  { label: "Premios", href: "/awards", hideOnMobile: true },
+  { label: "Contacto", href: "/contact" },
+  {
+    label: "Más",
+    href: "#",
+    iconTrigger: true,
+    dropdown: [
+      { label: "Shifting Culture®", href: "/shifting-culture" },
+      { label: "Shift LAB", href: "/shift-lab" },
+      { label: "Propósito", href: "/purpose" },
+    ],
+  },
 ];
 
-export default function Navbar() {
-    const [menuOpen, setMenuOpen] = useState(false);
-    const pathname = usePathname();
+/**
+ * Detects whether the nav is currently sitting over a light background or
+ * a dark one (video / hero gradient). Returns "light" | "dark".
+ *
+ * Sampling: probes elementsFromPoint just below the nav at 3 x-positions,
+ * walks the z-stack and classifies the first painted element it finds.
+ */
+function useOverlayTone(navRef: React.RefObject<HTMLDivElement | null>): "light" | "dark" {
+  const [tone, setTone] = useState<"light" | "dark">("dark");
 
-    useEffect(() => {
-        setMenuOpen(false);
-    }, [pathname]);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-    useEffect(() => {
-        if (typeof window === "undefined") return;
+    const isLightColor = (rgb: string): boolean | null => {
+      const m = rgb.match(/rgba?\(([^)]+)\)/);
+      if (!m) return null;
+      const parts = m[1].split(",").map((s) => parseFloat(s.trim()));
+      const [r, g, b, a = 1] = parts;
+      if (a < 0.05) return null;
+      const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return lum > 0.55;
+    };
 
-        const isMobile = window.matchMedia("(max-width: 767px)").matches;
-
-        if (menuOpen && isMobile) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "";
+    const classifyPoint = (x: number, y: number): boolean => {
+      const stack = document.elementsFromPoint(x, y) || [];
+      const nav = navRef.current;
+      for (const el of stack) {
+        if (nav && nav.contains(el)) continue;
+        if (el.tagName === "VIDEO" || el.tagName === "IMG") return false;
+        const cs = getComputedStyle(el);
+        const light = isLightColor(cs.backgroundColor);
+        if (light !== null) return light;
+        if (cs.backgroundImage && cs.backgroundImage !== "none") {
+          const rgbMatch = cs.backgroundImage.match(/rgba?\(([^)]+)\)/);
+          if (rgbMatch) {
+            const l = isLightColor(`rgb(${rgbMatch[1]})`);
+            if (l !== null) return l;
+          }
+          const hexMatch = cs.backgroundImage.match(/#([0-9a-fA-F]{6})/);
+          if (hexMatch) {
+            const v = parseInt(hexMatch[1], 16);
+            const r = (v >> 16) & 255;
+            const g = (v >> 8) & 255;
+            const b = v & 255;
+            return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.55;
+          }
+          return false; // image → assume dark hero
         }
+      }
+      const bodyBg = getComputedStyle(document.body).backgroundColor;
+      const fallback = isLightColor(bodyBg);
+      return fallback ?? true;
+    };
 
-        return () => {
-            document.body.style.overflow = "";
-        };
-    }, [menuOpen]);
+    const probe = () => {
+      const nav = navRef.current;
+      if (!nav) return;
+      const rect = nav.getBoundingClientRect();
+      const y = rect.bottom + 14;
+      const samples = [
+        rect.left + rect.width * 0.5,
+        rect.left + 24,
+        rect.right - 24,
+      ];
+      let lightVotes = 0;
+      for (const x of samples) if (classifyPoint(x, y)) lightVotes++;
+      setTone(lightVotes >= 2 ? "light" : "dark");
+    };
 
-    return (
-        <header className="sticky top-0 z-50 w-full bg-white">
-            <div className="mx-auto flex max-w-[1512px] items-center justify-between p-5">
-                <Link href="/" className="flex items-center ml-4 sm:ml-7">
-                    <Image
-                        src="/assets/svg/nav-logo.svg"
-                        alt="Shift Latam — inicio"
-                        width={98}
-                        height={37}
-                        priority
-                    />
-                </Link>
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        probe();
+        ticking = false;
+      });
+    };
 
-                <div className="flex items-center gap-8 sm:gap-16 text-md sm:text-xl sm:mr-7 font-semibold tracking-wide text-[#1534DC]">
-                    <Link
-                        href="/contact"
-                        className="uppercase align-middle text-center text-base sm:text-[20px] leading-[100%] tracking-[0] font-semibold transition-colors hover:text-[#F540FF] [font-family:var(--font-figtree)]"
-                    >
-                        Contacto
-                    </Link>
-                    <button
-                        type="button"
-                        onClick={() => setMenuOpen((prev) => !prev)}
-                        className={`uppercase cursor-pointer [font-family:var(--font-figtree)] lg:hidden ${menuOpen ? "text-[#F540FF]" : "text-[#1534DC]"
-                            }`}
-                        aria-expanded={menuOpen}
-                        aria-controls="top-nav-menu"
-                    >
-                        Menú
-                    </button>
-                </div>
-            </div>
-            <div
-                id="top-nav-menu"
-                className={`overflow-hidden bg-[#EDF0FE] transition-[max-height] duration-300 ${menuOpen
-                    ? "max-h-[calc(100vh-77px)] md:max-h-[360px] lg:max-h-32"
-                    : "max-h-0 lg:max-h-32"
-                    }`}
-            >
-                <nav aria-label="Navegacion principal" className="mx-auto max-w-[1512px]">
-                    <ul
-                        className={`text-[#1534DC] font-semibold ${menuOpen
-                            ? "flex min-h-[calc(100dvh-77px)] flex-col justify-start gap-6 px-10 pt-20 pb-10 text-xl font-semibold leading-none md:min-h-0 md:flex-row md:flex-wrap md:justify-center md:gap-x-15 md:gap-y-6 md:px-8 md:pt-6 md:pb-6 lg:text-2xl  "
-                            : "flex h-0 lg:h-auto lg:flex-row lg:flex-wrap lg:justify-center lg:gap-x-15 lg:gap-y-6 lg:px-8 lg:pt-3.5 lg:p-3.5 lg:text-2xl"
-                            }`}
-                    >
-                        {menuItems.map((item) => (
-                            <li key={item.label}>
-                                {(() => {
-                                    const isActive =
-                                        pathname === item.href || pathname.startsWith(`${item.href}/`);
-                                    return (
-                                <Link
-                                    href={item.href}
-                                    aria-current={isActive ? "page" : undefined}
-                                    className={`whitespace-nowrap text-[24px] leading-[100%] tracking-[0] font-medium transition-colors [font-family:var(--font-figtree)] ${
-                                        isActive ? "text-[#F540FF]" : "hover:text-[#F540FF]"
-                                    }`}
-                                >
-                                    {item.label}
-                                </Link>
-                                    );
-                                })()}
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
-            </div>
-        </header>
-    );
+    // initial passes (catch late-loaded video and hydration)
+    const t1 = window.setTimeout(probe, 60);
+    const t2 = window.setTimeout(probe, 400);
+    const t3 = window.setTimeout(probe, 1200);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [navRef]);
+
+  return tone;
+}
+
+export default function Navbar() {
+  const pathname = usePathname();
+  const navRef = useRef<HTMLDivElement | null>(null);
+  const tone = useOverlayTone(navRef);
+
+  // The original Navbar locked body scroll when mobile menu was open.
+  // With the floating glow nav we no longer need a fullscreen overlay,
+  // but keep the scroll-restore on route change just in case.
+  useEffect(() => {
+    document.body.style.overflow = "";
+  }, [pathname]);
+
+  return (
+    <div
+      ref={navRef}
+      className="pointer-events-none fixed left-0 right-0 top-4 z-50 flex justify-center px-4 sm:px-6"
+    >
+      <div className="pointer-events-auto inline-flex items-center gap-3 sm:gap-4">
+        <Link
+          href="/"
+          aria-label="Shift Latam — inicio"
+          className="flex flex-shrink-0 items-center px-1 sm:px-2"
+        >
+          <Image
+            src="/assets/svg/nav-logo.svg"
+            alt="Shift Latam"
+            width={98}
+            height={37}
+            priority
+            className={`h-7 w-auto sm:h-8 transition-[filter] duration-500 ease-out ${
+              tone === "dark" ? "[filter:brightness(0)_invert(1)]" : ""
+            }`}
+          />
+        </Link>
+        <GlowMenu items={menuItems} pathname={pathname} tone={tone} />
+      </div>
+    </div>
+  );
 }

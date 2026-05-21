@@ -1,127 +1,128 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import GradientText from "@/components/ui/GradientText";
+import SphereImageGrid, { type SphereImageItem } from "@/components/ui/img-sphere";
 
 const ABOUTUS = [
   {
-    imageSrc: "/assets/images/aboutus/persona-1.png",
+    imageSrc: "/assets/images/aboutus/persona-1.jpg",
     title: "Rodrigo Castro",
     description: "CEO Shift Latam",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-2.png",
+    imageSrc: "/assets/images/aboutus/persona-2.jpg",
     title: "Gabriela Piedra",
     description: "Senior VP Shift Latam",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-3.png",
+    imageSrc: "/assets/images/aboutus/persona-3.jpg",
     title: "Oscar Solano",
     description: "VP - CCO & CSO Shift \n Latam",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-4.png",
+    imageSrc: "/assets/images/aboutus/persona-4.jpg",
     title: "Gonzalo Piñeros",
     description: "General Manager Shift \n Colombia",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-5.png",
+    imageSrc: "/assets/images/aboutus/persona-5.jpg",
     title: "Angélica Moreno",
     description: "General Manager Shift \n Ecuador",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-6.png",
+    imageSrc: "/assets/images/aboutus/persona-6.jpg",
     title: "Camila Ferreiro",
     description: "General Manager Shift \n El Salvador",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-7.png",
+    imageSrc: "/assets/images/aboutus/persona-7.jpg",
     title: "Andrea Gandara",
     description: "General Director Shift \n Guatemala",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-8.png",
+    imageSrc: "/assets/images/aboutus/persona-8.jpg",
     title: "Rosario Montenero",
     description: "General Manager Shift \n Nicaragua",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-9.png",
+    imageSrc: "/assets/images/aboutus/persona-9.jpg",
     title: "Sarah Beirute",
     description: "VP PR & Experience \n Shift Costa Rica",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-10.png",
+    imageSrc: "/assets/images/aboutus/persona-10.jpg",
     title: "Camila Chaquea",
     description: "Chief Digital Officer \n Shift Colombia",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-11.png",
+    imageSrc: "/assets/images/aboutus/persona-11.jpg",
     title: "Fabiana Martínez",
     description: "Business Development \n Director Shift Latam",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-12.png",
+    imageSrc: "/assets/images/aboutus/persona-12.jpg",
     title: "Daniela Biffi",
     description: "General Manager Miami",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-13.png",
+    imageSrc: "/assets/images/aboutus/persona-13.jpg",
     title: "Ana Fonseca",
     description: "Operations Lead Shift \n Costa Rica",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-14.png",
+    imageSrc: "/assets/images/aboutus/persona-14.jpg",
     title: "Nathy Chinchilla",
     description: "Head of Creative Shift \n Costa Rica",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-15.png",
+    imageSrc: "/assets/images/aboutus/persona-15.jpg",
     title: "Ana Solera",
     description: "Creative Art Director \n Shift Latam",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-16.png",
+    imageSrc: "/assets/images/aboutus/persona-16.jpg",
     title: "Andrés Herrera",
     description: "Innovation & Digital \n Director Shift Guatemala",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-17.png",
+    imageSrc: "/assets/images/aboutus/persona-17.jpg",
     title: "Paula Rozo",
     description: "General Account \n Director Shift Colombia",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-18.png",
+    imageSrc: "/assets/images/aboutus/persona-18.jpg",
     title: "Loly Cando",
     description: "General Account \n Director Shift Ecuador",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-19.png",
+    imageSrc: "/assets/images/aboutus/persona-19.jpg",
     title: "Johanna Perlaza",
     description: "Account Director Shift \n Costa Rica",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-20.png",
+    imageSrc: "/assets/images/aboutus/persona-20.jpg",
     title: "Pamela Campos",
     description: "Account Director Shift \n Costa Rica",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-21.png",
+    imageSrc: "/assets/images/aboutus/persona-21.jpg",
     title: "Melanie Méndez",
     description: "Account Supervisor Shift \n Costa Rica",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-22.png",
+    imageSrc: "/assets/images/aboutus/persona-22.jpg",
     title: "Johanna Mora",
     description: "Account Supervisor \n Shift Costa Rica",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-23.png",
+    imageSrc: "/assets/images/aboutus/persona-23.jpg",
     title: "Carmen Mata",
     description: "Experience Lead Shift \n Costa Rica",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-24.png",
+    imageSrc: "/assets/images/aboutus/persona-24.jpg",
     title: "Laura Hurtado",
     description: "Digital Director Shift \n Colombia",
   },
@@ -205,7 +206,11 @@ export default function HomeIntroSection() {
               Nuestro equipo senior combina experiencia en consultoría estratégica, reputación corporativa, crisis, innovación y transformación digital.
             </p>
 
-            <div className="mt-[100px] grid gap-4 min-[450px]:gap-10 sm:gap-6 gap-y-[80px] grid-cols-2 sm:grid-cols-4 max-w-[400px] sm:max-w-full mx-auto sm:mx-0">
+            {/* Desktop (lg+): interactive 3D sphere with hover-reveal names */}
+            <LeadershipSphereDesktop />
+
+            {/* Mobile / tablet: keep original grid */}
+            <div className="mt-[100px] grid gap-4 min-[450px]:gap-10 sm:gap-6 gap-y-[80px] grid-cols-2 sm:grid-cols-4 max-w-[400px] sm:max-w-full mx-auto sm:mx-0 lg:hidden">
               {ABOUTUS.map((aboutus, index) => (
                 <div key={index} className="flex flex-col gap-4">
                   <div className="overflow-hidden ">
@@ -236,5 +241,77 @@ export default function HomeIntroSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// Desktop-only: 3D rotating sphere with hover-reveal names.
+// Hidden below lg breakpoint; the original grid takes over there.
+// Sphere size adapts to the available width so it scales on huge monitors.
+// -----------------------------------------------------------------------------
+function LeadershipSphereDesktop() {
+  const items: SphereImageItem[] = useMemo(
+    () =>
+      ABOUTUS.map((a, i) => ({
+        id: `leader-${i}`,
+        src: a.imageSrc,
+        alt: a.title,
+        name: a.title,
+        role: a.description.replace(/\\n/g, " ").replace(/\s+/g, " ").trim(),
+      })),
+    []
+  );
+
+  // Track viewport width so we can scale the sphere container responsively.
+  const [width, setWidth] = useState<number>(0);
+  useEffect(() => {
+    const update = () => {
+      const w = Math.min(window.innerWidth - 80, 980);
+      setWidth(Math.max(560, w));
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  if (!width) {
+    return <div className="hidden lg:block mt-[100px] h-[700px]" aria-hidden />;
+  }
+
+  return (
+    <div className="hidden lg:flex mt-[60px] xl:mt-[80px] w-full justify-center">
+      <div
+        className="relative"
+        style={{ width: `${width}px`, height: `${width}px` }}
+      >
+        {/* Croquis dotted de Latinoamérica detrás del sphere.
+            mix-blend-mode: multiply elimina el blanco del gradient del SVG
+            para que solo se vean los puntos azules como watermark. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-60 mix-blend-multiply"
+          style={{
+            backgroundImage: "url(/assets/images/regional/map.svg)",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            backgroundSize: "110%",
+          }}
+        />
+
+        <SphereImageGrid
+          images={items}
+          containerSize={width}
+          sphereRadius={width * 0.4}
+          baseImageScale={0.18}
+          autoRotate
+          autoRotateSpeed={0.06}
+          dragSensitivity={0.45}
+          momentumDecay={0.97}
+          maxRotationSpeed={4}
+          perspective={1200}
+          className="relative z-10"
+        />
+      </div>
+    </div>
   );
 }

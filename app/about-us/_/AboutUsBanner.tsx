@@ -4,13 +4,15 @@ import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useInView } from "framer-motion";
 
+// Reuse the enhanced 2K leadership portraits (single source of truth).
 const people: { src: string }[] = [
-  { src: "/assets/png/awards/person-1.png" },
-  { src: "/assets/png/awards/person-2.png" },
-  { src: "/assets/png/awards/person-3.png" },
-  { src: "/assets/png/awards/person-4.png" },
-  { src: "/assets/png/awards/person-5.png" },
-  { src: "/assets/png/awards/person-6.png" },
+  { src: "/assets/images/aboutus/persona-1.jpg" },  // Rodrigo Castro
+  { src: "/assets/images/aboutus/persona-2.jpg" },  // Gabriela Piedra
+  { src: "/assets/images/aboutus/persona-3.jpg" },  // Oscar Solano
+  { src: "/assets/images/aboutus/persona-15.jpg" }, // Ana Solera
+  { src: "/assets/images/aboutus/persona-4.jpg" },  // Gonzalo Piñeros
+  { src: "/assets/images/aboutus/persona-5.jpg" },  // Angélica Moreno
+  { src: "/assets/images/aboutus/persona-6.jpg" },  // Camila Ferreiro
 ];
 
 const INTRO_MS = 20000;

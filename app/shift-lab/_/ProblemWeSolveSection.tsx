@@ -1,87 +1,71 @@
 "use client";
 
-import HeaderSection from "@/components/common/HeaderSection";
-import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
-import { useInView } from "framer-motion";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { LabDotGrid } from "@/components/ui/lab-primitives";
 
-function subscribePrefersReducedMotion(onChange: () => void) {
-  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
-}
-
-function getPrefersReducedMotionSnapshot() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
+/**
+ * Shift LAB · Problem we solve — editorial closing statement.
+ * Glitz headline, mono body, single clean CTA. No prompts or run-this.
+ */
 export default function ProblemWeSolveSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLDivElement>(null);
-  const subheadingRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.35 });
-  const prefersReducedMotion = useSyncExternalStore(
-    subscribePrefersReducedMotion,
-    getPrefersReducedMotionSnapshot,
-    () => false
-  );
-
-  useEffect(() => {
-    if (!isInView) return;
-    setVisible(true);
-  }, [isInView]);
-
-  const enterMotion =
-    "shift-logo-enter shift-logo-enter--purpose " +
-    (visible ? "shift-logo-enter--on" : "shift-logo-enter--concealed");
-
-  const replayRef = useRef(false);
-
-  useLayoutEffect(() => {
-    if (!visible || prefersReducedMotion) return;
-    if (replayRef.current) return;
-    replayRef.current = true;
-
-    const headlineEl = headlineRef.current;
-    const subheadingEl = subheadingRef.current;
-
-    const replay = (el: HTMLDivElement | null) => {
-      if (!el) return;
-      el.classList.remove("shift-logo-enter--on");
-      void el.offsetWidth;
-      el.classList.add("shift-logo-enter--on");
-    };
-
-    replay(headlineEl);
-    replay(subheadingEl);
-  }, [visible, prefersReducedMotion]);
-
-  const headingText = (
-    <div ref={headlineRef} className={enterMotion}>
-      <h1 className="text-2xl max-w-[200px] min-[420px]:max-w-full font-glitz  leading-[1.05]  md:text-4xl lg:text-[50px]">
-        <span className="rotate-180 inline-block">?</span>
-        Qué problema resolvemos?
-      </h1>
-    </div>
-  );
-
-  const subheadingText = (
-    <div ref={subheadingRef} className={enterMotion}>
-      <p className="mt-4 max-w-[758px] text-base [font-family:var(--font-fira-sans)] leading-[1.15] text-[#0E1745] md:text-lg lg:text-[18px] lg:leading-[20px]">
-        Transformamos tecnología en valor estratégico real, eliminando fricción y elevando la
-        capacidad analítica de las organizaciones.{" "}
-      </p>
-    </div>
-  );
-
   return (
-    <div ref={sectionRef}>
-      <HeaderSection
-        paddingClassName="py-10 md:py-38!"
-        backgroundColourClassName="bg-[#EDF0FE]"
-        headingText={headingText}
-        subheadingText={subheadingText}
+    <section className="relative isolate overflow-hidden bg-[#0E1745] py-28 md:py-40">
+      <LabDotGrid opacity={0.28} />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-32 right-0 h-[460px] w-[460px] rounded-full"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(91,233,255,0.18), transparent 70%)",
+          filter: "blur(40px)",
+        }}
       />
-    </div>
+
+      <div className="relative z-10 mx-auto w-full max-w-[1380px] px-6 md:px-12 lg:px-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.7 }}
+          className="max-w-5xl"
+        >
+          <p className="[font-family:var(--font-figtree)] text-[14px] md:text-[16px] uppercase tracking-[0.18em] text-white/55">
+            El problema que resolvemos
+          </p>
+
+          <h2 className="mt-6 text-[44px] md:text-[72px] lg:text-[92px] leading-[0.98] [font-family:var(--font-glitz-local)] text-white">
+            Convertimos la
+            <br />
+            <span className="text-[#F540FF]">tecnología</span> en{" "}
+            <span className="text-[#5BE9FF]">valor</span>
+            <br />
+            estratégico real.
+          </h2>
+
+          <p className="mt-10 max-w-2xl [font-family:var(--font-fira-mono)] text-[14px] md:text-[15px] leading-[1.85] text-white/70">
+            Eliminamos fricción y elevamos la capacidad analítica de las
+            organizaciones. No vendemos herramientas:{" "}
+            <span className="text-white">
+              diseñamos sistemas de criterio
+            </span>{" "}
+            donde la tecnología amplifica —no reemplaza— al equipo humano que
+            ya hace el trabajo.
+          </p>
+
+          <div className="mt-12">
+            <Link
+              href="/contact"
+              className="group inline-flex items-center gap-3 rounded-full border border-[#F540FF]/40 bg-[#F540FF]/10 px-7 py-3.5 [font-family:var(--font-figtree)] text-[14px] font-semibold uppercase tracking-[0.08em] text-white transition-colors duration-300 hover:bg-[#F540FF]/20 hover:border-[#F540FF]/70"
+            >
+              <span>Hablemos con el lab</span>
+              <span className="text-[#F540FF] transition-transform duration-300 group-hover:translate-x-1">
+                →
+              </span>
+            </Link>
+          </div>
+        </motion.div>
+      </div>
+    </section>
   );
 }

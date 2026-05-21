@@ -1,26 +1,25 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Figtree, Fira_Sans, Geist, Geist_Mono } from "next/font/google";
+import { Figtree, Fira_Mono, Fira_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import LenisProvider from "@/components/layout/LenisProvider";
+import { LiquidGlassFilter } from "@/components/ui/liquid-glass";
 import { SITE_NAME, SITE_URL } from "@/app/seo";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const firaSans = Fira_Sans({
   variable: "--font-fira-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+});
+
+// Mozilla's monospaced sister font to Fira Sans — used in the Shift LAB
+// page redesign for its tech / terminal aesthetic.
+const firaMono = Fira_Mono({
+  variable: "--font-fira-mono",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 const figtree = Figtree({
@@ -85,7 +84,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} ${firaSans.variable} ${figtree.variable} ${glitz.variable} h-full antialiased`}
+      className={`${firaSans.variable} ${firaMono.variable} ${figtree.variable} ${glitz.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <LenisProvider>
@@ -95,11 +94,21 @@ export default function RootLayout({
           >
             Saltar al contenido principal
           </a>
+          {/* SVG displacement filter that powers the Liquid Glass effect
+              on the floating navbar. Mounted ONCE at the root so any
+              child can reference `url(#shift-liquid-warp)`. */}
+          <LiquidGlassFilter />
           <Navbar />
           <main id="main-content" className="min-h-0 flex-1 overflow-visible">
             {children}
           </main>
-          <Footer />
+          {/* The Footer card has rounded top corners; wrap it in a dark
+              parent so the curve reveals the same navy as the footer
+              instead of body white (which would show as a seam on dark
+              pages like /shift-lab). */}
+          <div className="bg-[#0A0E27]">
+            <Footer />
+          </div>
         </LenisProvider>
         <script
           type="application/ld+json"

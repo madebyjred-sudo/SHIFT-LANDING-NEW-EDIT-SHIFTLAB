@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AwardsHeroSection from "@/app/awards/_/AwardsHeroSection";
 import AwardsLogoStrip from "@/app/awards/_/AwardsLogoStrip";
 import AwardsPersonMarquee from "@/app/awards/_/AwardsPersonMarquee";
-import PageFullWidthVideoBanner from "@/components/common/PageFullWidthVideoBanner";
+import AwardsVideoManifesto from "@/app/awards/_/AwardsVideoManifesto";
 import ContactPrimaryFormSection from "../contact/_/ContactPrimaryFormSection";
 import { createPageMetadata, createWebPageSchema } from "@/app/seo";
 
@@ -35,12 +35,7 @@ export default function AwardsPage() {
         <AwardsHeroSection />
         <AwardsLogoStrip />
         <div className="h-10 md:h-14 lg:hidden"></div>
-        <PageFullWidthVideoBanner
-          src="/assets/videos/awards/awards-banner.mp4"
-          sectionClassName="bg-white pt-16 md:pt-12"
-          ariaLabel="Banner visual de la sección Premios de Shift Latam"
-          audioEnabled
-        />
+        <AwardsVideoManifesto />
         <AwardsPersonMarquee />
         <ContactPrimaryFormSection />
       </main>
