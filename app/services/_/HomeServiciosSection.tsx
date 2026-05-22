@@ -349,7 +349,13 @@ export default function HomeServiciosSection() {
                 key={service.id}
                 data-card-slot
                 data-card-index={index}
-                className={`flex w-full flex-col items-stretch justify-center ${CARD_TOP_OFFSET_CLASSES} ${
+                // justify-START (not center) — el slot es más alto que
+                // la zona sticky visible (height = panelScrollPx + 200
+                // para dar scroll-runway). Si centramos verticalmente,
+                // la card queda BAJADA y el CTA inferior se corta del
+                // viewport. Anclamos arriba; CARD_TOP_OFFSET_CLASSES da
+                // el respiro con el navbar.
+                className={`flex w-full flex-col items-stretch justify-start ${CARD_TOP_OFFSET_CLASSES} ${
                   prefersReducedMotion ? "relative" : "sticky"
                 }`}
                 style={{
