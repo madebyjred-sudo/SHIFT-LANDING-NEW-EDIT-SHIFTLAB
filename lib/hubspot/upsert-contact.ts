@@ -39,6 +39,10 @@ export type UpsertContactInput = {
   country: string;
   /** Origen del lead: "contact-form" | "shifty-chat". */
   source: "contact-form" | "shifty-chat";
+  /** Tier ICP (Green/Yellow/Red). Opcional — si la custom property
+   * `icp_tier` existe en el portal HubSpot, se setea; si no, HubSpot
+   * ignora silently el field (no rompe el upsert). */
+  icpTier?: "green" | "yellow" | "red";
 };
 
 export type UpsertContactResult = {
@@ -78,6 +82,10 @@ export async function upsertContactWithNote(
   if (input.company) properties.company = input.company;
   // Standard property "country" — HubSpot lo reconoce sin custom setup.
   properties.country = input.country;
+  // Custom property "icp_tier" — sólo se setea si vino en el input. Si
+  // la property NO existe en el portal, HubSpot la ignora silently
+  // (no rompe el upsert).
+  if (input.icpTier) properties.icp_tier = input.icpTier;
   // hs_analytics_source es read-only en HubSpot. Para marcar origen
   // usamos hs_lead_status + el cuerpo de la Note. Si más adelante
   // querés filtrar por source, creás una custom property y la setás

@@ -67,6 +67,47 @@ competencia:
     Shift LAB: primera unidad de IA propietaria en comms LATAM.
     Campaign of the Year en PRWeek Global 2024.
 
+# ----------------------------------------------------------------------
+# ICP — Ideal Customer Profile (v1.0, 2026-05)
+# ----------------------------------------------------------------------
+# Usar para CUALIFICAR leads en conversación. Si el visitante encaja en
+# 🟢 Green: priorizar handoff rápido + tono entusiasta. Si es 🟡 Yellow:
+# explorar fit honestamente. Si es 🔴 Red: NO descartar — atender bien
+# pero ofrecer alternativa amable ("para ese tipo de proyecto puntual a
+# veces conviene una agencia más local; igual armamos handoff si querés").
+
+ideal_customer:
+  perfil_green: |
+    Organización establecida en industria regulada (banca, seguros,
+    pharma), consumo masivo regional/nacional (CPG, QSR, retail no
+    nicho) o entidad gubernamental con mandato cultural. 200+
+    empleados o $50M+ revenue. Presencia en 1+ mercado LATAM
+    (idealmente 3+). Equipo interno de comms/marketing con
+    director/VP que decide. Budget anual comms USD $100K+.
+  trigger_clasico: |
+    Evento puntual (lanzamiento, IPO, expansión regional, crisis,
+    cambio regulatorio, momento cultural) que exige integración
+    PR + creatividad + data, no tácticas sueltas.
+  best_fit_referencias:
+    - Banco de Costa Rica (banca regional)
+    - Instituto Costarricense de Turismo (gobierno / marca país)
+    - Maruchan Centroamérica (CPG regional)
+    - BMI Seguros (seguros regional)
+    - GFI Pharma (life sciences)
+    - Taco Bell CR (QSR franchise)
+  red_no_le_vendemos: |
+    Retail nicho / boutique single-location (lección Bottega Privée).
+    Empresas que solo necesitan paid media buying. Cuentas sin
+    contraparte senior interna de comms. Budget anual <USD $100K.
+    Briefs puramente tácticos (banners, BTL) sin capa narrativa.
+    Industrias controversiales sin policy interna (crypto, vape,
+    gambling).
+  tone_with_red: |
+    Educado, NO confrontacional. Reconocer que su proyecto puede
+    necesitar otra cosa. Ofrecer derivar a un canal alternativo
+    (holahola@shiftpn.com con expectativa baja) — nunca prometer
+    handoff a hub si el fit es claramente Red.
+
 premios_recientes:
   - "PRWeek Global 2024 — 5 oros (incluye Campaign of the Year, Londres)"
   - "Cannes Lions 2024 — Bronce Glass + Plata PR (Welcome to the Group)"

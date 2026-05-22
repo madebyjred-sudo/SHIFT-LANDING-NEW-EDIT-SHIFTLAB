@@ -211,12 +211,39 @@ Antes de operacionalizar este ICP, validar:
 
 ---
 
-## Cómo este ICP debería propagarse al sitio
+## Cómo este ICP se propaga al sitio (ya hecho ✓ + lo manual)
 
-- **Knowledge base de Shifty** (`content/knowledge/about-shift-pn.yaml`): agregar sección `ideal_customer` con TL;DR + exclusión criteria. Esto hace que Shifty cualifique mejor.
-- **System prompt de Shifty** (`lib/agent/system-prompt.ts`): inyectar el TL;DR para que el bot reconozca leads bad-fit y los rute con mensaje distinto.
-- **HubSpot custom properties**: agregar `icp_tier` (Green/Yellow/Red) — escorable manualmente por Sales o calculable por reglas.
-- **Workflow HubSpot**: leads Green → notificación inmediata al hub correspondiente; leads Red → autorespuesta cortés con sugerencia de alternativa.
+### ✓ Ya wireado en código
+
+- **Knowledge base de Shifty** (`content/knowledge/about-shift-pn.compact.yaml`): sección `ideal_customer` agregada con perfil Green, trigger, best-fit refs, Red exclusiones y tono recomendado para Red.
+- **System prompt de Shifty** (`lib/agent/system-prompt.ts`): nuevo bloque "Cualificación del lead (ICP-aware)" con tier handling Green/Yellow/Red y guardrails de UX (nunca "no eres nuestro ICP", siempre conversacional).
+- **Server-side** (`lib/hubspot/upsert-contact.ts`): el campo `icp_tier` se setea automáticamente si viene en el input. Si la property aún no existe en HubSpot, se ignora silently (no rompe el upsert).
+
+### Manual — crear la custom property en HubSpot (30 seg)
+
+El auto-classifier bloqueó la creación programática (no autorizada para schema writes). Hacelo en UI:
+
+1. HubSpot → ⚙ Settings → **Properties** (en "Data Management")
+2. Tab **Contact properties** → botón "Create property" arriba a la derecha
+3. Configurá:
+
+   | Campo | Valor |
+   |---|---|
+   | Object type | Contact |
+   | Group | Contact information |
+   | Label | `ICP Tier` |
+   | Internal name | `icp_tier` *(crítico — debe ser exactamente así)* |
+   | Field type | Dropdown select |
+   | Options | `Green — built for` (value `green`), `Yellow — experiment` (value `yellow`), `Red — don't sell` (value `red`) |
+
+4. Save. Ya está — el código del sitio lo va a usar automáticamente cuando algún flow le pase el tier.
+
+### Manual — workflow HubSpot (opcional, lo configura Ops)
+
+Cuando la property exista, crear un workflow:
+- Trigger: Contact created OR property `icp_tier` changed
+- Acción si `icp_tier = green`: Slack notify a `#sales-latam` + email al Owner del país (cuando los users del equipo regional estén invitados)
+- Acción si `icp_tier = red`: Autorespuesta cortés con sugerencia de alternativa
 
 ---
 
