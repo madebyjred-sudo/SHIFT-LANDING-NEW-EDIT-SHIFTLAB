@@ -437,33 +437,36 @@ function DropdownItem({
       <ul
         role="menu"
         aria-hidden={!open}
-        // CSS-based open/close — more reliable than framer for this
-        // specific case (sticky+hover state interactions were
-        // confusing motion's `animate` prop diff).
+        // Cuando el trigger es el "+" pegado a la esquina derecha del
+        // nav, centrar el dropdown bajo él lo deja extendiéndose hacia
+        // la izquierda con vacío a la derecha. Alineamos el RIGHT-EDGE
+        // del dropdown al RIGHT-EDGE del LI (que es el borde derecho
+        // del "+"). El triángulo se recoloca para seguir apuntando al
+        // centro del botón.
         style={{
           opacity: open ? 1 : 0,
           transform: open
-            ? "translateX(-50%) translateY(0) scale(1)"
-            : "translateX(-50%) translateY(-6px) scale(0.96)",
+            ? "translateY(0) scale(1)"
+            : "translateY(-6px) scale(0.96)",
+          transformOrigin: "top right",
           pointerEvents: open ? "auto" : "none",
           transition:
             "opacity 280ms cubic-bezier(0.4, 0, 0.2, 1), transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1)",
         }}
         className={[
-          // Dropdown chrome — width-fit-content para que se ajuste al
-          // item más largo + 1.5rem padding. Con sólo 2-3 entries
-          // evitamos un min-w fijo que dejaba aire vacío a la derecha.
-          "absolute left-1/2 top-[calc(100%+10px)] -translate-x-1/2 w-max flex flex-col list-none rounded-xl border p-1 backdrop-blur-xl",
+          "absolute right-0 top-[calc(100%+10px)] w-max flex flex-col list-none rounded-xl border p-1 backdrop-blur-xl",
           isLight
             ? "bg-white/95 border-[#1534DC]/12 shadow-[0_24px_60px_-12px_rgba(21,52,220,0.25)]"
             : "bg-[rgba(15,15,28,0.94)] border-white/12 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.45)]",
         ].join(" ")}
       >
-        {/* Pointer triangle */}
+        {/* Pointer triangle — alineado al centro del "+" (botón w-9 =
+            36px, su centro está a 18px del right-edge del LI / dropdown).
+            La punta queda 18px - 6px (half triangle) = 12px del right. */}
         <span
           aria-hidden
           className={[
-            "absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-l border-t",
+            "absolute -top-1.5 right-3 h-3 w-3 rotate-45 border-l border-t",
             isLight
               ? "bg-white/95 border-[#1534DC]/12"
               : "bg-[rgba(15,15,28,0.92)] border-white/12",
