@@ -157,14 +157,14 @@ export const SCRIPT: ScriptedReply[] = [
         id: "t2",
         kind: "tool",
         tool: "Verifico disponibilidad",
-        toolDetail: "Hubs en Costa Rica, Colombia, México y nueve países más",
+        toolDetail: "Hubs en Costa Rica, Colombia, Ecuador y seis países más",
         label: "Verifico disponibilidad",
         duration: 1100,
       },
       { id: "t3", kind: "ponder", label: "Preparo el handoff con los campos mínimos", duration: 400 },
     ],
     reply:
-      "Genial — armo el handoff. Necesito sólo: **nombre, email y un mini-brief de qué te interesa** (1-2 líneas). Te devolvemos contacto en menos de 24h con quien aplica de Costa Rica, Colombia, México o el hub que corresponda.",
+      "Genial — armo el handoff. Necesito sólo: **nombre, email y un mini-brief de qué te interesa** (1-2 líneas). Te devolvemos contacto en menos de 24h con quien aplica de Costa Rica, Colombia, Ecuador o el hub que corresponda.",
     suggestions: [
       "Quiero agendar ahora",
       "Mejor mandame info por email",

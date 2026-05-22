@@ -5,17 +5,15 @@
 // HubSpot guarda todos los leads en una sola DB; ESTO determina a
 // quién le llega el email de notificación inmediata.
 //
-// Si un país no tiene GM asignado todavía, va a holahola@shiftpn.com
-// (la bandeja general de Shift LATAM) para que el equipo de Ops lo
-// distribuya manualmente.
-//
 // Para cambiar el destinatario de un país, editá este archivo.
 // Para agregar/sacar países, editá también `app/contact/hubs.ts`.
+//
+// (Históricamente teníamos México y Perú con fallback a la bandeja
+// general porque no había GM público asignado. Ambos quedaron fuera
+// del sitio — si vuelven a aparecer, restaurá GENERAL_INBOX como
+// fallback.)
 
 import type { HubOption } from "@/app/contact/hubs";
-
-/** Bandeja general de Shift LATAM — fallback para países sin GM público. */
-const GENERAL_INBOX = "holahola@shiftpn.com";
 
 /**
  * Map de país → email destino. Mantener sincronizado con
@@ -33,7 +31,5 @@ export const HUB_EMAILS: Record<HubOption, string> = {
   Panamá: "jjaltmann@omgcr.com",                         // JJ Altmann
   Colombia: "gonzalo.pineros@shiftpn.co",                // Gonzalo Piñeros (GM Shift Colombia)
   Ecuador: "angelica.moreno@shiftpn.ec",                 // Angélica Moreno (GM Shift Ecuador)
-  Perú: GENERAL_INBOX,                                   // sin GM público → general
-  México: GENERAL_INBOX,                                 // sin GM público → general
   "República Dominicana": "andrea.ramirez@caribbeanpn.com", // Andrea Ramírez (Caribbean PN)
 };

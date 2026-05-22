@@ -5,7 +5,6 @@ import Image from 'next/image';
 import FooterSpring from "@/components/ui/FooterSpring";
 
 const countries = [
-    { name: "México", left: "33%", top: "32%" },
     { name: "Guatemala", left: "34.5%", top: "42%" },
     { name: "Honduras", left: "41%", top: "35.5%" },
     { name: "El Salvador", left: "41%", top: "39%" },
@@ -15,7 +14,6 @@ const countries = [
     { name: "Panamá", left: "44.5%", top: "49.5%" },
     { name: "Colombia", left: "59.5%", top: "51.5%" },
     { name: "Ecuador", left: "54.5%", top: "57%" },
-    { name: "Perú", left: "56.5%", top: "64%" },
 ];
 
 export default function RegionalMap() {

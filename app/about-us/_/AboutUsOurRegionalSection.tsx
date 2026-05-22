@@ -58,15 +58,6 @@ const regionalOffices = [
     email: "maria.calvo@shift-pn.hn",
     mapSrc: "/assets/images/aboutus/Honduras.svg",
   },
-  // {
-  //   name: "México",
-  //   title: "México",
-  //   description: "Lugar lugar lugar",
-  //   location: "Dirección de la oficina, Ciudad",
-  //   phone: "+5xx XXXX XXXX",
-  //   email: "nombrepersona@shift.com",
-  //   mapSrc: "/assets/images/aboutus/Honduras.svg",
-  // },
   {
     name: "Nicaragua",
     title: "Nicaragua",
@@ -85,15 +76,6 @@ const regionalOffices = [
     email: "jjaltmann@omgcr.com",
     mapSrc: "/assets/images/aboutus/Honduras.svg",
   },
-  // {
-  //   name: "Perú",
-  //   title: "Perú",
-  //   description: "Lugar lugar lugar",
-  //   location: "Dirección de la oficina, Ciudad",
-  //   phone: "+5xx XXXX XXXX",
-  //   email: "nombrepersona@shift.com",
-  //   mapSrc: "/assets/images/aboutus/Honduras.svg",
-  // },
   {
     name: "Rep. Dominicana",
     title: "Rep. Dominicana",

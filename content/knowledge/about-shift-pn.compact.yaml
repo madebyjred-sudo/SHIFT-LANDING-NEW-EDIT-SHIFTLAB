@@ -39,8 +39,6 @@ hubs_12_paises:
   nicaragua: "Managua — rmontenegro@shiftpn.com.ni — +505 2254-7627"
   panama: "Ciudad de Panamá — jjaltmann@omgcr.com — +507 269 3835"
   republica_dominicana: "Santo Domingo — andrea.ramirez@caribbeanpn.com — +1 809-274-6813"
-  mexico: "operación regional (sin contacto público — derivar a holahola@shiftpn.com)"
-  peru: "operación regional (sin contacto público — derivar a holahola@shiftpn.com)"
   miami_us: "Coral Gables FL — Daniela Biffi GM"
 
 equipo_clave:
@@ -61,7 +59,7 @@ competencia:
   principales: [LLYC, Edelman, Burson, Weber Shandwick, FleishmanHillard]
   diferenciador: |
     PR + creatividad + data + IA bajo un mismo modelo (Shifting Culture®), no verticales separados.
-    Cobertura nativa en 11 mercados latam con un solo P&L regional.
+    Cobertura nativa en 9 mercados latam con un solo P&L regional.
     Shift LAB: primera unidad de IA propietaria en comms LATAM.
     Campaign of the Year en PRWeek Global 2024.
 
@@ -100,7 +98,7 @@ links_internos:
     enlaces_sugeridos: ["nuestra página de servicios", "el detalle de cada capa", "cómo estructuramos los servicios", "lo que ofrecemos"]
   - path: "/about-us"
     titulo: "Sobre nosotros"
-    contenido: "Quiénes somos, liderazgo regional + por país, los 11 hubs con sus contactos."
+    contenido: "Quiénes somos, liderazgo regional + por país, los 9 hubs con sus contactos."
     enlaces_sugeridos: ["nuestra página de equipo", "quiénes somos", "el detalle del equipo regional"]
   - path: "/shift-lab"
     titulo: "Shift LAB"
@@ -124,16 +122,16 @@ links_internos:
     enlaces_sugeridos: ["nuestro newsroom", "los estudios sectoriales"]
   - path: "/contact"
     titulo: "Contacto"
-    contenido: "Formulario + emails + lista completa de los 11 hubs con direcciones y teléfonos."
+    contenido: "Formulario + emails + lista completa de los 9 hubs con direcciones y teléfonos."
     enlaces_sugeridos: ["la página de contacto", "el formulario de contacto"]
 
 faqs_principales:
   - q: "¿Qué hace Shift?"
-    a: "Agencia de comunicación estratégica + reputación corporativa + creatividad cultural, 11 países latam. Integra PR, creatividad, data e IA bajo Shifting Culture®."
+    a: "Agencia de comunicación estratégica + reputación corporativa + creatividad cultural, 9 países latam. Integra PR, creatividad, data e IA bajo Shifting Culture®."
   - q: "¿Servicios?"
     a: "4 capas: Estrategia corporativa+reputación; Creatividad+campañas; Media performance+data; Crisis. Sumar Shift LAB para IA aplicada."
   - q: "¿Países?"
-    a: "11 hubs latam: CR (hub), GT, SV, HN, NI, PA, CO, EC, PE, MX, RD. Más Miami (Shift US)."
+    a: "9 hubs latam: CR (hub), GT, SV, HN, NI, PA, CO, EC, RD. Más Miami (Shift US)."
   - q: "¿Sede?"
     a: "Costa Rica — Centro Empresarial Vía Lindora, 3er Piso, San José."
   - q: "¿Porter Novelli?"
@@ -159,7 +157,7 @@ faqs_principales:
   - q: "¿Crisis?"
     a: "Es nuestra 4ta capa. Acompañamos antes/durante/después. Si estás en crisis activa: escribí directo a holahola@shiftpn.com con asunto 'crisis' — conectamos en horas."
   - q: "¿Diferencia vs Edelman/LLYC?"
-    a: "Operamos las 4 patas (PR+creatividad+data+IA) bajo un mismo modelo (Shifting Culture®), no verticales separados. Tenemos Lab de IA propietaria. Cobertura nativa en 11 mercados con un solo P&L. +120 premios. Campaign of the Year en PRWeek Global 2024."
+    a: "Operamos las 4 patas (PR+creatividad+data+IA) bajo un mismo modelo (Shifting Culture®), no verticales separados. Tenemos Lab de IA propietaria. Cobertura nativa en 9 mercados con un solo P&L. +120 premios. Campaign of the Year en PRWeek Global 2024."
   - q: "¿Qué es IA Shifter?"
     a: "Agente de IA propietario que comprime data pública de consumidores latam (banca, fast food, seguros, retail, farmacia, vehículos) en conversaciones estratégicas accionables."
   - q: "¿Quién sos?"

@@ -14,7 +14,6 @@ type RegionalPoint = {
 };
 
 const REGIONAL_POINTS: RegionalPoint[] = [
-  { id: "mexico", label: "México", top: "35%", left: "28%" },
   { id: "El Salvador", label: "El Salvador", top: "39%", left: "34%" },
   { id: "honduras", label: "Honduras", top: "43.8%", left: "34%" },
   { id: "guatemala", label: "Guatemala", top: "48.5%", left: "28%" },
@@ -24,7 +23,6 @@ const REGIONAL_POINTS: RegionalPoint[] = [
   { id: "costa-rica", label: "Costa Rica", top: "55.2%", left: "38.6%" },
   { id: "colombia", label: "Colombia", top: "57.6%", left: "55.3%" },
   { id: "ecuador", label: "Ecuador", top: "64.8%", left: "46.8%" },
-  { id: "peru", label: "Perú", top: "72.3%", left: "52.4%" },
 ];
 
 function RegionalCapabilitiesMarkers({
@@ -45,7 +43,6 @@ function RegionalCapabilitiesMarkers({
   const [isTabletWideMap, setIsTabletWideMap] = useState(false);
 
   const below300Overrides: Record<string, { top: string; left: string }> = {
-    mexico: { top: "35.5%", left: "21.5%" },
     "El Salvador": { top: "39.5%", left: "36.5%" },
     honduras: { top: "44.5%", left: "36.5%" },
     guatemala: { top: "48%", left: "31.2%" },
@@ -53,7 +50,6 @@ function RegionalCapabilitiesMarkers({
 
   const below600Overrides: Record<string, { top: string; left: string }> = {
     ecuador: { top: "58.8%", left: "60.2%" },
-    peru: { top: "64.2%", left: "70.8%" },
   };
 
   useEffect(() => {
