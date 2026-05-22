@@ -146,35 +146,97 @@ function Caret() {
 }
 
 /**
- * Mini-markdown: **bold** + paragraph breaks. No-frills.
+ * Mini-markdown renderer para los mensajes del agente:
+ *   - **bold**
+ *   - [texto](href)  → <a> con styling del sistema
+ *   - Listas con `- ` o `*   ` o `1. ` al inicio de línea
+ *   - Saltos de párrafo (línea en blanco)
+ *   - Saltos de línea simples → <br/>
+ *
+ * No es CommonMark completo — apenas lo que el bot usa. Si en el futuro
+ * el modelo empieza a escribir tablas, headers o code fences, agregar
+ * acá. Mantener pequeño y predecible.
  */
 function FormattedMarkdown({ text }: { text: string }) {
-  const paragraphs = text.split(/\n\n+/);
+  // Particionar en bloques por línea en blanco. Cada bloque puede ser
+  // un párrafo o una lista (si todas sus líneas arrancan con bullet).
+  const blocks = text.split(/\n\n+/);
   return (
     <div className="space-y-2 text-[13.5px] leading-relaxed text-white/90">
-      {paragraphs.map((p, i) => (
-        <p key={i}>{renderInline(p)}</p>
-      ))}
+      {blocks.map((block, i) => {
+        const lines = block.split("\n").filter((l) => l.length > 0);
+        const isList = lines.length > 0 && lines.every((l) => /^[\s]*([-*]|\d+\.)\s+/.test(l));
+        if (isList) {
+          const items = lines.map((l) => l.replace(/^[\s]*([-*]|\d+\.)\s+/, ""));
+          return (
+            <ul key={i} className="list-disc space-y-1 pl-5 marker:text-white/40">
+              {items.map((it, j) => (
+                <li key={j}>{renderInline(it)}</li>
+              ))}
+            </ul>
+          );
+        }
+        return <p key={i}>{renderInline(block)}</p>;
+      })}
     </div>
   );
 }
 
+// Tokens inline que el renderer reconoce. Procesados en pasos sucesivos:
+// primero links (pueden contener `**` adentro), después bold, después
+// texto plano con saltos de línea.
 function renderInline(s: string): React.ReactNode {
+  return renderLinks(s);
+}
+
+function renderLinks(s: string): React.ReactNode {
+  const out: React.ReactNode[] = [];
+  const re = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let k = 0;
+  while ((m = re.exec(s))) {
+    if (m.index > last) {
+      out.push(<React.Fragment key={`tx-${k++}`}>{renderBold(s.slice(last, m.index), `b-${k}`)}</React.Fragment>);
+    }
+    const linkText = m[1];
+    const href = m[2];
+    const isExternal = /^https?:\/\//i.test(href);
+    out.push(
+      <a
+        key={`a-${k++}`}
+        href={href}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+        className="text-white underline underline-offset-[3px] decoration-white/30 hover:decoration-[#F540FF] transition-colors"
+      >
+        {renderBold(linkText, `lb-${k}`)}
+      </a>,
+    );
+    last = m.index + m[0].length;
+  }
+  if (last < s.length) {
+    out.push(<React.Fragment key={`tx-${k++}`}>{renderBold(s.slice(last), `b-${k}`)}</React.Fragment>);
+  }
+  return out;
+}
+
+function renderBold(s: string, keyPrefix: string): React.ReactNode {
   const out: React.ReactNode[] = [];
   const re = /\*\*([^*]+)\*\*/g;
   let last = 0;
   let m: RegExpExecArray | null;
   let k = 0;
   while ((m = re.exec(s))) {
-    if (m.index > last) out.push(renderLines(s.slice(last, m.index), `t-${k++}`));
+    if (m.index > last) out.push(renderLines(s.slice(last, m.index), `${keyPrefix}-t-${k++}`));
     out.push(
-      <strong key={`b-${k++}`} className="font-medium text-white">
+      <strong key={`${keyPrefix}-b-${k++}`} className="font-medium text-white">
         {m[1]}
       </strong>,
     );
     last = m.index + m[0].length;
   }
-  if (last < s.length) out.push(renderLines(s.slice(last), `t-${k++}`));
+  if (last < s.length) out.push(renderLines(s.slice(last), `${keyPrefix}-t-${k++}`));
   return out;
 }
 

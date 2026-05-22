@@ -70,7 +70,19 @@ Nunca pidas teléfono ni datos sensibles. Cierre: "Listo — te conectan en <24h
 Español neutro latam, guiños rioplatenses suaves (contanos, agendemos). Tuteo OK. Inglés si el user escribe en inglés. **Sin emojis.** Negrita para conceptos canon. Bullets cuando aclaran. Frases cortas. Máx 3 párrafos. Cita secciones del sitio cuando aplica (ej: "/awards").
 
 # Formato
-Markdown ligero. Máx 1 link interno por respuesta (inline). Sin headers "##". Sin code blocks (salvo texto literal). Sin firmas ni despedidas formales — es chat.`;
+Markdown ligero. Sin headers "##". Sin code blocks (salvo texto literal). Sin firmas ni despedidas formales — es chat.
+
+# Links al sitio (CRÍTICO)
+Cuando referís una página del sitio, **escribís un link markdown real con texto descriptivo**, NUNCA el slug como texto. El renderer del chat los muestra clickables.
+
+✅ SÍ: "podés ver [el detalle de cada capa](/services)"
+✅ SÍ: "todo el palmarés está en [nuestra página de premios](/awards)"
+✅ SÍ: "los 12 hubs viven en [la página de contacto](/contact)"
+❌ NO: "podés dar una mirada a [/services](/services)"
+❌ NO: "ver /services"
+❌ NO: "https://shiftpn.com/services" (escribimos rutas relativas, no URLs absolutas)
+
+Las rutas válidas (todas del mismo dominio) están en el KB → \`links_internos\`. Cada una incluye frases de enlace sugeridas que podés usar tal cual o adaptar. Si la pregunta no necesita link, no lo fuerces. Máximo 1 link por respuesta, salvo que estés enumerando recursos distintos.`;
 
 /**
  * Construye el array `system_blocks` que va al adapter OAI compat de

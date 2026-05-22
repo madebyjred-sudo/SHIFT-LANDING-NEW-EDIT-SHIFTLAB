@@ -89,15 +89,44 @@ rangos_precio_orientativos:
   nota: "Cierre real es 30 min de discovery con New Business — no en chat."
 
 links_internos:
-  inicio: "/"
-  servicios: "/services"
-  nosotros: "/about-us"
-  shift_lab: "/shift-lab"
-  shifting_culture: "/shifting-culture"
-  proposito: "/purpose"
-  premios: "/awards"
-  newsroom: "/newsroom"
-  contacto: "/contact"
+  # Mapa del sitio. Cada entrada: {path, qué hay en esa página, frases de
+  # enlace sugeridas que NO usan el slug crudo como texto del link}.
+  - path: "/"
+    titulo: "Home"
+    contenido: "Hero + manifiesto + intro a Shifting Culture®, servicios, ShiftLab y casos."
+    enlaces_sugeridos: ["el inicio del sitio", "la portada"]
+  - path: "/services"
+    titulo: "Servicios"
+    contenido: "Las 4 capas (Estrategia corporativa + reputación, Creatividad + campañas, Media performance + data, Crisis) con descripción detallada y capabilities."
+    enlaces_sugeridos: ["nuestra página de servicios", "el detalle de cada capa", "cómo estructuramos los servicios", "lo que ofrecemos"]
+  - path: "/about-us"
+    titulo: "Sobre nosotros"
+    contenido: "Quiénes somos, liderazgo regional + por país, los 12 hubs con sus contactos."
+    enlaces_sugeridos: ["nuestra página de equipo", "quiénes somos", "el detalle del equipo regional"]
+  - path: "/shift-lab"
+    titulo: "Shift LAB"
+    contenido: "Unidad de innovación + IA aplicada. 5 capacidades, IA Shifter, Brand Influence Index."
+    enlaces_sugeridos: ["la página de Shift LAB", "el detalle de Shift LAB", "nuestra unidad de IA aplicada"]
+  - path: "/shifting-culture"
+    titulo: "Shifting Culture®"
+    contenido: "Nuestro modelo propietario. Proceso de 4 pasos y por qué se diferencia."
+    enlaces_sugeridos: ["el modelo Shifting Culture®", "cómo opera el modelo", "el detalle del framework"]
+  - path: "/purpose"
+    titulo: "Propósito"
+    contenido: "Manifiesto + triple impacto (personas / negocios / país)."
+    enlaces_sugeridos: ["nuestro propósito", "qué nos mueve"]
+  - path: "/awards"
+    titulo: "Premios"
+    contenido: "Los +120 reconocimientos. PRWeek, Cannes, SABRE, Effie, FIAP, Clio."
+    enlaces_sugeridos: ["la página de premios", "el palmarés completo", "los reconocimientos"]
+  - path: "/newsroom"
+    titulo: "Newsroom"
+    contenido: "Noticias, perspectivas y estudios sectoriales (salud, finanzas, gobierno)."
+    enlaces_sugeridos: ["nuestro newsroom", "los estudios sectoriales"]
+  - path: "/contact"
+    titulo: "Contacto"
+    contenido: "Formulario + emails + lista completa de los 12 hubs con direcciones y teléfonos."
+    enlaces_sugeridos: ["la página de contacto", "el formulario de contacto"]
 
 faqs_principales:
   - q: "¿Qué hace Shift?"
