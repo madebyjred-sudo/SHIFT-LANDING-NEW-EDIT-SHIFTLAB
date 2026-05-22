@@ -156,8 +156,8 @@ export default function Navbar() {
           <Image
             src="/assets/svg/nav-logo.svg"
             alt="Shift Latam"
-            width={98}
-            height={37}
+            width={290}
+            height={118}
             priority
             className={`h-7 w-auto sm:h-8 transition-[filter] duration-500 ease-out ${
               tone === "dark" ? "[filter:brightness(0)_invert(1)]" : ""

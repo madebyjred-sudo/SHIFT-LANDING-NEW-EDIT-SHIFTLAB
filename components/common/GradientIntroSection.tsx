@@ -113,8 +113,8 @@ export default function GradientIntroSection({ variant }: GradientIntroSectionPr
               <Image
                 src="/assets/svg/nav-logo.svg"
                 alt="Logotipo Shift Latam — agencia regional de comunicación"
-                width={90}
-                height={37}
+                width={290}
+                height={118}
                 className="h-auto w-[130px] sm:w-[333px]"
                 priority
               />
