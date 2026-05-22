@@ -28,6 +28,10 @@ export type GlowMenuItem = {
   /** Render the dropdown trigger as a compact circular "+" icon button
    *  instead of a text pill. The icon rotates 45° to become "×" on open. */
   iconTrigger?: boolean;
+  /** Special treatment: render as a sub-brand lockup (Shift LAB style) with
+   *  always-on magenta halo. The label itself becomes the wordmark with a
+   *  color split (white/blue "Shift" + magenta "LAB"). */
+  highlight?: boolean;
 };
 
 export type GlowMenuProps = {
@@ -142,6 +146,17 @@ export function GlowMenu({ items, pathname, tone = "dark", className }: GlowMenu
             );
           }
 
+          if (item.highlight) {
+            return (
+              <HighlightItem
+                key={item.label}
+                item={item}
+                isActive={!!isActive}
+                isLight={isLight}
+              />
+            );
+          }
+
           return (
             <li
               key={item.label}
@@ -185,6 +200,82 @@ export function GlowMenu({ items, pathname, tone = "dark", className }: GlowMenu
         })}
       </ul>
     </motion.nav>
+  );
+}
+
+/**
+ * HighlightItem — slot premium del nav. Renderiza el wordmark de la
+ * sub-marca (ej. "Shift LAB") con color split via mask + gradient, más
+ * un halo magenta always-on respirando detrás. Pensado para destacar
+ * sub-marcas sin sacar al item del flujo de navegación.
+ *
+ * El SVG `/assets/images/shift-lab/shift-lab.svg` se usa como máscara
+ * sobre un linear-gradient con hard-stop al 73% — la misma técnica del
+ * hero de la página /shift-lab.
+ */
+function HighlightItem({
+  item,
+  isActive,
+  isLight,
+}: {
+  item: GlowMenuItem;
+  isActive: boolean;
+  isLight: boolean;
+}) {
+  // Shift portion picks up navbar tone — magenta Lab stays constant.
+  const shiftColor = isLight ? "#1534DC" : "#FFFFFF";
+  const labColor = "#F540FF";
+  const gradient = `linear-gradient(to right, ${shiftColor} 0%, ${shiftColor} 73%, ${labColor} 73%, ${labColor} 100%)`;
+
+  return (
+    <li className={item.hideOnMobile ? "hidden sm:block" : ""}>
+      <Link
+        href={item.href}
+        aria-current={isActive ? "page" : undefined}
+        aria-label="Shift LAB"
+        className="group relative inline-flex items-center rounded-full px-3.5 py-2.5"
+      >
+        {/* Halo always-on — magenta breathing aura. Más intensa en hover
+            o cuando la página activa es Shift LAB. */}
+        <motion.span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10 rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle at center, rgba(245,64,255,0.38) 0%, rgba(245,64,255,0.14) 55%, rgba(245,64,255,0) 100%)",
+          }}
+          animate={{ opacity: isActive ? [0.85, 1, 0.85] : [0.55, 0.85, 0.55] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+        />
+        {/* Glow extra en hover */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -inset-1 -z-10 rounded-full opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100"
+          style={{
+            background:
+              "radial-gradient(circle at center, rgba(245,64,255,0.55) 0%, rgba(245,64,255,0.18) 60%, rgba(245,64,255,0) 100%)",
+          }}
+        />
+
+        {/* Wordmark — el SVG sirve de máscara sobre el gradient bicolor.
+            Mantiene el aspect ratio original (476x124 → 3.84:1). */}
+        <span
+          aria-hidden
+          className="block h-[18px] w-[69px] sm:h-[20px] sm:w-[77px] transition-transform duration-300 group-hover:scale-[1.04]"
+          style={{
+            background: gradient,
+            maskImage: "url(/assets/images/shift-lab/shift-lab.svg)",
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskImage: "url(/assets/images/shift-lab/shift-lab.svg)",
+            WebkitMaskSize: "contain",
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+          }}
+        />
+      </Link>
+    </li>
   );
 }
 

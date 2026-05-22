@@ -13,13 +13,21 @@ const menuItems: GlowMenuItem[] = [
   { label: "Servicios", href: "/services" },
   { label: "Premios", href: "/awards", hideOnMobile: true },
   { label: "Contacto", href: "/contact" },
+  // Shift LAB sale del dropdown a un slot propio — wordmark con color
+  // split (Shift en blanco/azul / LAB magenta) + halo magenta always-on
+  // para destacarlo como sub-marca premium.
+  {
+    label: "Shift LAB",
+    href: "/shift-lab",
+    highlight: true,
+    hideOnMobile: true,
+  },
   {
     label: "Más",
     href: "#",
     iconTrigger: true,
     dropdown: [
       { label: "Shifting Culture®", href: "/shifting-culture" },
-      { label: "Shift LAB", href: "/shift-lab" },
       { label: "Propósito", href: "/purpose" },
     ],
   },

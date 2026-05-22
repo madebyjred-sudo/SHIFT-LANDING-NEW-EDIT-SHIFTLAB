@@ -92,7 +92,7 @@ export default function AgentIsland({
             exit={{ opacity: 0, scale: 0.92, y: 12 }}
             transition={spring}
             role="dialog"
-            aria-label="Shift Agent"
+            aria-label="Shifty"
             className="overflow-hidden flex flex-col origin-bottom-right"
             style={{
               width: "min(440px, calc(100vw - 32px))",
@@ -137,7 +137,7 @@ export default function AgentIsland({
             exit={{ opacity: 0, scale: 0.92, y: 8 }}
             transition={spring}
             onClick={onOpen}
-            aria-label="Abrir Shift Agent"
+            aria-label="Abrir Shifty"
             className="overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F540FF]/60"
             style={{
               borderRadius: 9999,
@@ -190,7 +190,7 @@ function CollapsedPill({
   busy: boolean;
   statusLabel: string;
 }) {
-  const label = busy ? statusLabel || "trabajando…" : "Asistente";
+  const label = busy ? statusLabel || "trabajando…" : "Shifty";
   return (
     <div className="flex items-center gap-2.5 pl-3 pr-4 py-2.5 select-none">
       <BrandIndicator active={busy} size={22} />

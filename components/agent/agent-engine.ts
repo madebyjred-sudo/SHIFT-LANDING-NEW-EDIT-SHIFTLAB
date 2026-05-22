@@ -293,7 +293,7 @@ export const INITIAL_GREETING: Message = {
   role: "agent",
   ts: 0,
   content:
-    "Hola, soy **Shifty** — el asistente del sitio de Shift LATAM. Te ayudo a entender qué hacemos, mostrarte casos, o conectarte con la persona indicada del equipo. ¿Por dónde arrancamos?",
+    "Soy **Shifty**. ¿Por dónde arrancamos?",
   thinking: [],
   revealedSteps: [],
   suggestions: [

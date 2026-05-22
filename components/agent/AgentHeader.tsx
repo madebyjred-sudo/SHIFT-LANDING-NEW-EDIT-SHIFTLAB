@@ -53,7 +53,7 @@ export default function AgentHeader({
           className="text-[10px] uppercase tracking-[0.18em] text-white/55 leading-tight"
           style={{ fontFamily: "var(--font-fira-mono), ui-monospace, monospace" }}
         >
-          Asistente
+          Shifty
         </div>
         <div
           className="mt-1 flex items-center gap-1.5 text-[11.5px] text-white/60 leading-tight"
