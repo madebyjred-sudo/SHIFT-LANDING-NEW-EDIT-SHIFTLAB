@@ -450,10 +450,13 @@ function DropdownItem({
             "opacity 280ms cubic-bezier(0.4, 0, 0.2, 1), transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1)",
         }}
         className={[
-          "absolute left-1/2 top-[calc(100%+12px)] -translate-x-1/2 min-w-[240px] flex flex-col gap-0.5 list-none rounded-2xl border p-2 backdrop-blur-xl",
+          // Dropdown chrome — width-fit-content para que se ajuste al
+          // item más largo + 1.5rem padding. Con sólo 2-3 entries
+          // evitamos un min-w fijo que dejaba aire vacío a la derecha.
+          "absolute left-1/2 top-[calc(100%+10px)] -translate-x-1/2 w-max flex flex-col list-none rounded-xl border p-1 backdrop-blur-xl",
           isLight
             ? "bg-white/95 border-[#1534DC]/12 shadow-[0_24px_60px_-12px_rgba(21,52,220,0.25)]"
-            : "bg-[rgba(15,15,28,0.92)] border-white/12 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.45)]",
+            : "bg-[rgba(15,15,28,0.94)] border-white/12 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.45)]",
         ].join(" ")}
       >
         {/* Pointer triangle */}
@@ -485,12 +488,15 @@ function DropdownItem({
                 onClick={closeMenu}
                 aria-current={subActive ? "page" : undefined}
                 className={[
-                  "block rounded-xl px-4 py-3 text-[13px] font-semibold uppercase tracking-[0.04em] whitespace-nowrap [font-family:var(--font-figtree,inherit)] transition-[background-color,color,padding-left] duration-200",
+                  // Items compactos — px-3 py-2 da 28px de alto por
+                  // item, en lugar de 43px. El dropdown deja de sentirse
+                  // hueco con sólo 2 entries.
+                  "block rounded-lg px-3 py-2 text-[12px] font-semibold uppercase tracking-[0.04em] whitespace-nowrap [font-family:var(--font-figtree,inherit)] transition-colors duration-200",
                   subActive
-                    ? "bg-[#F540FF]/15 text-[#F540FF] pl-6"
+                    ? "bg-[#F540FF]/15 text-[#F540FF]"
                     : isLight
-                      ? "text-[#1534DC] hover:bg-[#F540FF]/10 hover:text-[#F540FF] hover:pl-6"
-                      : "text-white/85 hover:bg-[#F540FF]/15 hover:text-[#F540FF] hover:pl-6",
+                      ? "text-[#1534DC] hover:bg-[#F540FF]/10 hover:text-[#F540FF]"
+                      : "text-white/85 hover:bg-[#F540FF]/15 hover:text-[#F540FF]",
                 ].join(" ")}
               >
                 {sub.label}
