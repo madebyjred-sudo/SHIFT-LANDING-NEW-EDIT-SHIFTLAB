@@ -293,7 +293,7 @@ export const INITIAL_GREETING: Message = {
   role: "agent",
   ts: 0,
   content:
-    "Soy **Shifty**. ¿Por dónde arrancamos?",
+    "Hola! Soy **Shifty**, un gusto. ¿Cómo te puedo ayudar?",
   thinking: [],
   revealedSteps: [],
   suggestions: [
