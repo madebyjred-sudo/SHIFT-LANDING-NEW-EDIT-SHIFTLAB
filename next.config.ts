@@ -18,11 +18,28 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
+  // Standalone output: produce un bundle auto-contenido en
+  // `.next/standalone/` que incluye node_modules necesarios y un
+  // `server.js` ejecutable. Esto es lo que subimos a cPanel — evita
+  // tener que correr `npm install` en el servidor (que rara vez tiene
+  // suficiente memoria) y evita el `next start` que requiere el repo
+  // completo.
+  output: "standalone",
   async headers() {
     return [
       {
         source: "/:path*",
         headers: securityHeaders,
+      },
+      {
+        // Asegura que el SSE de Shifty no se bufferee en el reverse
+        // proxy de cPanel (Apache/LiteSpeed). Sin esto, el stream
+        // llega de un solo golpe al final y la UI se siente rota.
+        source: "/api/agent/:path*",
+        headers: [
+          { key: "X-Accel-Buffering", value: "no" },
+          { key: "Cache-Control", value: "no-cache, no-transform" },
+        ],
       },
     ];
   },
