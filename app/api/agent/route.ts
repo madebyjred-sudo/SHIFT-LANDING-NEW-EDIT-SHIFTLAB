@@ -20,6 +20,8 @@
 
 import { rateLimit } from "@/lib/rate-limit";
 import { buildSystemBlocks } from "@/lib/agent/system-prompt";
+import { tryExtractLeadFromConversation } from "@/lib/hubspot/extract-lead";
+import { upsertContactWithNote } from "@/lib/hubspot/upsert-contact";
 
 export const runtime = "nodejs"; // needs fs to read KB
 export const dynamic = "force-dynamic"; // never cache responses
@@ -112,6 +114,28 @@ export async function POST(request: Request) {
   const messages = validateMessages(payload.messages);
   if (!messages) {
     return jsonError("Mensajes inválidos.", 400, "invalid_messages");
+  }
+
+  // ── HubSpot capture (fire-and-forget) ─────────────────────────────
+  // Si en el último mensaje del usuario detectamos email + nombre (post
+  // handoff de Shifty), pusheamos un Contact al CRM en background.
+  // NO bloqueamos el SSE — la latencia se mantiene < primer byte de
+  // Cerebro. Si falla HubSpot, log y seguimos. Si el email ya existe,
+  // HubSpot dedupe automático.
+  const lead = tryExtractLeadFromConversation(messages);
+  if (lead) {
+    upsertContactWithNote(lead)
+      .then((r) =>
+        r.ok
+          ? console.log(
+              "[shifty→hubspot] OK contactId:",
+              r.contactId,
+              "note:",
+              r.noteCreated,
+            )
+          : console.warn("[shifty→hubspot] partial:", r.errors.join(" | ")),
+      )
+      .catch((e) => console.error("[shifty→hubspot] threw:", e));
   }
 
   // Build Cerebro request. system_blocks goes server-side (no leak via
