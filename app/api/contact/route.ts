@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { HUB_OPTIONS, type HubOption } from "@/app/contact/hubs";
 import { rateLimit } from "@/lib/rate-limit";
+import { HUB_EMAILS } from "@/lib/contact-routing";
+import { upsertContactWithNote } from "@/lib/hubspot/upsert-contact";
 
 type ContactPayload = {
   hub?: string;
@@ -24,19 +26,9 @@ function getClientIp(request: Request): string {
 }
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const HUB_EMAILS: Record<HubOption, string> = {
-  "Costa Rica (Hub)": "fmartinez@shiftpn.co.cr",
-  Guatemala: "fmartinez@shiftpn.co.cr",
-  "El Salvador": "fmartinez@shiftpn.co.cr",
-  Honduras: "fmartinez@shiftpn.co.cr",
-  Nicaragua: "fmartinez@shiftpn.co.cr",
-  Panamá: "fmartinez@shiftpn.co.cr",
-  Colombia: "fmartinez@shiftpn.co.cr",
-  Ecuador: "fmartinez@shiftpn.co.cr",
-  Perú: "fmartinez@shiftpn.co.cr",
-  México: "fmartinez@shiftpn.co.cr",
-  "República Dominicana": "fmartinez@shiftpn.co.cr",
-};
+
+// HUB_EMAILS vive ahora en `lib/contact-routing.ts` — single source of
+// truth para ruteo por país. Cambiar destinatarios sin tocar este archivo.
 
 function isHubOption(value: string): value is HubOption {
   return HUB_OPTIONS.includes(value as HubOption);
@@ -202,7 +194,13 @@ export async function POST(request: Request) {
       auth: { user, pass },
     });
 
-    await transporter.sendMail({
+    // ── Email + HubSpot en paralelo ─────────────────────────────────
+    // El email al GM del país es el canal CRÍTICO (es lo que dispara
+    // respuesta rápida). El push a HubSpot es la base de datos
+    // unificada — no debe bloquear ni romper el flujo de email si
+    // falla. Por eso Promise.allSettled: si HubSpot truena, el lead
+    // igual llega al GM por email.
+    const emailPromise = transporter.sendMail({
       from,
       to: recipient,
       replyTo: email,
@@ -221,6 +219,54 @@ export async function POST(request: Request) {
       })(),
       html: buildContactEmailHtml(hub, email, idea),
     });
+
+    const hubspotPromise = upsertContactWithNote({
+      email,
+      brief: idea,
+      country: hub,
+      source: "contact-form",
+    });
+
+    const [emailRes, hubspotRes] = await Promise.allSettled([
+      emailPromise,
+      hubspotPromise,
+    ]);
+
+    // El email es el canal crítico — si falla, devolvemos error al
+    // usuario porque la promesa de "te contactamos" no se va a cumplir.
+    if (emailRes.status === "rejected") {
+      console.error("[api/contact] email failed:", emailRes.reason);
+      // HubSpot puede o no haber pasado — logueamos su estado igual
+      // para que quede registro del lead aunque sea en CRM.
+      if (hubspotRes.status === "fulfilled" && hubspotRes.value.ok) {
+        console.error(
+          "[api/contact] email failed PERO HubSpot OK — contactId:",
+          hubspotRes.value.contactId,
+        );
+      }
+      return NextResponse.json(
+        { ok: false, message: "No se pudo enviar el mensaje. Inténtalo de nuevo." },
+        { status: 500 },
+      );
+    }
+
+    // Email OK. Logueamos el estado de HubSpot pero NO devolvemos
+    // error al usuario si falló — el GM ya recibió el lead.
+    if (hubspotRes.status === "rejected") {
+      console.error("[api/contact] HubSpot threw:", hubspotRes.reason);
+    } else if (!hubspotRes.value.ok || hubspotRes.value.errors.length > 0) {
+      console.warn(
+        "[api/contact] HubSpot partial/failed:",
+        hubspotRes.value.errors.join(" | "),
+      );
+    } else {
+      console.log(
+        "[api/contact] HubSpot OK — contactId:",
+        hubspotRes.value.contactId,
+        "note:",
+        hubspotRes.value.noteCreated,
+      );
+    }
 
     return NextResponse.json({ ok: true, message: "Mensaje enviado con éxito." });
   } catch (err) {
