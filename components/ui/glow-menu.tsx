@@ -204,14 +204,12 @@ export function GlowMenu({ items, pathname, tone = "dark", className }: GlowMenu
 }
 
 /**
- * HighlightItem — slot premium del nav. Renderiza el wordmark de la
- * sub-marca (ej. "Shift LAB") con color split via mask + gradient, más
- * un halo magenta always-on respirando detrás. Pensado para destacar
- * sub-marcas sin sacar al item del flujo de navegación.
+ * HighlightItem — slot premium del nav.
  *
- * El SVG `/assets/images/shift-lab/shift-lab.svg` se usa como máscara
- * sobre un linear-gradient con hard-stop al 73% — la misma técnica del
- * hero de la página /shift-lab.
+ * Mismo treatment tipográfico que el resto del nav (Figtree uppercase
+ * 13px tracking-[0.04em]) pero con color split: "SHIFT" en el tono del
+ * navbar (blanco/azul), "LAB" en magenta. Halo magenta always-on
+ * respirando detrás para destacarlo como sub-marca.
  */
 function HighlightItem({
   item,
@@ -222,21 +220,19 @@ function HighlightItem({
   isActive: boolean;
   isLight: boolean;
 }) {
-  // Shift portion picks up navbar tone — magenta Lab stays constant.
-  const shiftColor = isLight ? "#1534DC" : "#FFFFFF";
-  const labColor = "#F540FF";
-  const gradient = `linear-gradient(to right, ${shiftColor} 0%, ${shiftColor} 73%, ${labColor} 73%, ${labColor} 100%)`;
-
   return (
     <li className={item.hideOnMobile ? "hidden sm:block" : ""}>
       <Link
         href={item.href}
         aria-current={isActive ? "page" : undefined}
-        aria-label="Shift LAB"
-        className="group relative inline-flex items-center rounded-full px-3.5 py-2.5"
+        className={[
+          "group relative inline-flex items-center gap-[3px] rounded-full px-4 py-2.5",
+          "text-[13px] font-semibold uppercase tracking-[0.04em] whitespace-nowrap",
+          "[font-family:var(--font-figtree,inherit)]",
+        ].join(" ")}
       >
-        {/* Halo always-on — magenta breathing aura. Más intensa en hover
-            o cuando la página activa es Shift LAB. */}
+        {/* Halo always-on — magenta breathing aura. Es el signal de
+            distinción visual sobre los items de texto plano. */}
         <motion.span
           aria-hidden
           className="pointer-events-none absolute inset-0 -z-10 rounded-full"
@@ -247,7 +243,7 @@ function HighlightItem({
           animate={{ opacity: isActive ? [0.85, 1, 0.85] : [0.55, 0.85, 0.55] }}
           transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
         />
-        {/* Glow extra en hover */}
+        {/* Glow extra en hover — refuerzo */}
         <span
           aria-hidden
           className="pointer-events-none absolute -inset-1 -z-10 rounded-full opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100"
@@ -257,23 +253,18 @@ function HighlightItem({
           }}
         />
 
-        {/* Wordmark — el SVG sirve de máscara sobre el gradient bicolor.
-            Mantiene el aspect ratio original (476x124 → 3.84:1). */}
         <span
-          aria-hidden
-          className="block h-[18px] w-[69px] sm:h-[20px] sm:w-[77px] transition-transform duration-300 group-hover:scale-[1.04]"
-          style={{
-            background: gradient,
-            maskImage: "url(/assets/images/shift-lab/shift-lab.svg)",
-            maskSize: "contain",
-            maskRepeat: "no-repeat",
-            maskPosition: "center",
-            WebkitMaskImage: "url(/assets/images/shift-lab/shift-lab.svg)",
-            WebkitMaskSize: "contain",
-            WebkitMaskRepeat: "no-repeat",
-            WebkitMaskPosition: "center",
-          }}
-        />
+          className={
+            isActive
+              ? "text-[#F540FF]"
+              : isLight
+                ? "text-[#1534DC]"
+                : "text-white/95"
+          }
+        >
+          SHIFT
+        </span>
+        <span className="text-[#F540FF]">LAB</span>
       </Link>
     </li>
   );
