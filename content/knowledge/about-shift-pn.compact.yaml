@@ -1,0 +1,151 @@
+# Knowledge base COMPACT para Shifty — ~2K tokens.
+# Sólo esenciales. El archivo full `about-shift-pn.yaml` queda como
+# referencia humana y para futura versión con cache (cuando el budget
+# OpenRouter permita prompts más grandes).
+
+identity:
+  nombre: SHIFT LATAM Porter Novelli
+  red: Afiliado a Porter Novelli (Omnicom Public Relations Group)
+  fundacion_rebranding: Diciembre 2022 (antes Porter Novelli CAC)
+  trayectoria: +40 años regional
+  headcount: ~200 colaboradores
+  hub_principal: Costa Rica
+  modelo_propietario: "Shifting Culture® — conecta cultura, reputación y negocio"
+  premios_total: +120 internacionales
+  sitio: https://shiftpn.com
+  contacto: holahola@shiftpn.com (new business) / holaholahola@shiftpn.com (general)
+  redes: LinkedIn @SHIFT-LATAM-Porter-Novelli, IG @shiftlatampn, FB @cacporternovelli
+
+servicios:
+  - Estrategia corporativa y reputación (asuntos públicos, ESG, CEO branding, comms interna)
+  - Creatividad y campañas integradas (PR creativo, activaciones, influencers)
+  - Media performance y data (paid + earned + escucha social + dashboards)
+  - Crisis y gestión de riesgo (antes/durante/después)
+
+shift_lab:
+  que_es: Unidad de innovación + IA aplicada
+  capabilities: [auditoría madurez, IA en flujos, automatización, productos comunicacionales, dashboards data intel]
+  productos:
+    - "IA Shifter — agente de IA (junio 2025) — data consumidor en banca/retail/fast food/seguros/farmacia/vehículos"
+    - "Brand Influence Index — índice de influencia behavioral (con El Financiero, 2H 2026)"
+
+hubs_12_paises:
+  costa_rica: "San José — Centro Empresarial Vía Lindora 3er Piso — gpiedra@shiftpn.co.cr — +506 4110-6000"
+  colombia: "Bogotá — gonzalo.pineros@shiftpn.co — +57 301 436 0416"
+  ecuador: "Quito — angelica.moreno@shiftpn.ec — +593 99 537 3108"
+  el_salvador: "San Salvador — cferreiro@shiftpn.sv — +503 7069-0896"
+  guatemala: "Guatemala — andreagan@shiftpn.gt — +502 2388-5100"
+  honduras: "Tegucigalpa — maria.calvo@shift-pn.hn — +504 9453-8228"
+  nicaragua: "Managua — rmontenegro@shiftpn.com.ni — +505 2254-7627"
+  panama: "Ciudad de Panamá — jjaltmann@omgcr.com — +507 269 3835"
+  republica_dominicana: "Santo Domingo — andrea.ramirez@caribbeanpn.com — +1 809-274-6813"
+  mexico: "operación regional (sin contacto público — derivar a holahola@shiftpn.com)"
+  peru: "operación regional (sin contacto público — derivar a holahola@shiftpn.com)"
+  chile: "operación regional (sin contacto público — derivar a holahola@shiftpn.com)"
+  miami_us: "Coral Gables FL — Daniela Biffi GM"
+
+equipo_clave:
+  - Rodrigo Castro — CEO Shift Latam
+  - Gabriela Piedra — Senior VP Shift Latam (Costa Rica)
+  - Oscar Solano — VP CCO & CSO (Chief Creative & Strategy Officer)
+  - Fabiana Martínez — Business Development Director
+  - Federico Martinez — Costa Rica (fmartinez@shiftpn.co.cr)
+
+casos_verificables:
+  - "Cambiemos la Regla / Welcome to the Group (Nosotras Women Connecting + Garnier, 2024): ley en CR para acceso menstrual gratuito. PRWeek Global 2024: 5 oros incluyendo Campaign of the Year. Cannes Lions 2024: Bronce Glass + Plata PR. SABRE LATAM 2024."
+  - "Colors of Costa Rica (Instituto Costarricense Turismo + Mario Hernández + artista Pizuikas, 2025): turismo creativo CR↔CO."
+  - "Tucán ¡Está Volando! (Banco de Costa Rica, 2025): relanzamiento BCR Puntos Tucán."
+  - "BIT Centenario: La Costa Rica del Futuro (Microsoft/Minecraft Education, 2022): SABRE LATAM 2022, 3 premios."
+  - "Justice By Her Type (Familias Sobreviv. Feminicidio, 2025): SABRE LATAM + Global SABRE 2025."
+
+competencia:
+  principales: [LLYC, Edelman, Burson, Weber Shandwick, FleishmanHillard]
+  diferenciador: |
+    PR + creatividad + data + IA bajo un mismo modelo (Shifting Culture®), no verticales separados.
+    Cobertura nativa en 12 mercados latam con un solo P&L regional.
+    Shift LAB: primera unidad de IA propietaria en comms LATAM.
+    Campaign of the Year en PRWeek Global 2024.
+
+premios_recientes:
+  - "PRWeek Global 2024 — 5 oros (incluye Campaign of the Year, Londres)"
+  - "Cannes Lions 2024 — Bronce Glass + Plata PR (Welcome to the Group)"
+  - "SABRE LATAM 2022 (Microsoft/Minecraft 3 premios), 2023 (Titanium Global), 2024 (Cambiemos la Regla), 2025 (Justice By Her Type)"
+  - "Global SABRE Awards 2025 (Justice By Her Type)"
+  - "Effie Index 2021 — top comms agency Central America-Caribbean"
+  - "Festivales recurrentes: Effie, FIAP, Clio, El Ojo de Iberoamérica"
+
+sectores:
+  - Salud y Life Sciences
+  - Finanzas y Servicios
+  - Gobierno y Asuntos Públicos
+  - Turismo y Marca País
+  - Consumo masivo y Retail
+  - Tecnología y Educación
+  - Tercer sector y Causas
+
+rangos_precio_orientativos:
+  proyecto_puntual: "USD 30-80K (lanzamiento + reputación regional)"
+  acompañamiento_continuo: "USD 8-25K/mes (12 meses)"
+  nota: "Cierre real es 30 min de discovery con New Business — no en chat."
+
+links_internos:
+  inicio: "/"
+  servicios: "/services"
+  nosotros: "/about-us"
+  shift_lab: "/shift-lab"
+  shifting_culture: "/shifting-culture"
+  proposito: "/purpose"
+  premios: "/awards"
+  newsroom: "/newsroom"
+  contacto: "/contact"
+
+faqs_principales:
+  - q: "¿Qué hace Shift?"
+    a: "Agencia de comunicación estratégica + reputación corporativa + creatividad cultural, 12 países latam. Integra PR, creatividad, data e IA bajo Shifting Culture®."
+  - q: "¿Servicios?"
+    a: "4 capas: Estrategia corporativa+reputación; Creatividad+campañas; Media performance+data; Crisis. Sumar Shift LAB para IA aplicada."
+  - q: "¿Países?"
+    a: "12 hubs latam: CR (hub), GT, SV, HN, NI, PA, CO, EC, PE, CL, MX, RD. Más Miami (Shift US)."
+  - q: "¿Sede?"
+    a: "Costa Rica — Centro Empresarial Vía Lindora, 3er Piso, San José."
+  - q: "¿Porter Novelli?"
+    a: "Sí, afiliado de la red global Porter Novelli (Omnicom Public Relations Group: con FleishmanHillard, Ketchum, MMC)."
+  - q: "¿Shift LAB?"
+    a: "Unidad de innovación + IA aplicada. 5 capas: auditoría madurez, IA en flujos, automatización, productos comunicacionales, dashboards data."
+  - q: "¿Shifting Culture®?"
+    a: "Modelo propietario que conecta cultura, reputación y negocio. Detecta tensiones, traduce datos en narrativas, convierte conversaciones en influencia."
+  - q: "¿Años?"
+    a: "+40 años regional (Porter Novelli CAC desde antes; rebranding a SHIFT en dic-2022)."
+  - q: "¿Cuántos son?"
+    a: "~200 colaboradores entre Centroamérica, Caribe y Ecuador."
+  - q: "¿CEO?"
+    a: "Rodrigo Castro. Con Gabriela Piedra (Senior VP) y Oscar Solano (VP CCO & CSO)."
+  - q: "¿Cómo agendo?"
+    a: "Acá mismo: nombre, email, país, mini-brief 1-2 líneas. Te conectamos en <24h. O directo: holahola@shiftpn.com (new business)."
+  - q: "¿Cuánto cuesta?"
+    a: "Depende del scope. Proyecto puntual USD 30-80K; acompañamiento USD 8-25K/mes. Lo correcto es 30 min de discovery — sin obligación."
+  - q: "¿Trabajan con startups?"
+    a: "Sobre todo con orgs que ya tienen reputación que cuidar (bancos, gobierno, salud, retail). Startups en etapa temprana: esperar al punto donde no comunicar cuesta más que hacerlo bien."
+  - q: "¿Premios?"
+    a: "+120 internacionales. Recientes: 5 oros PRWeek Global 2024 (Cambiemos la Regla, incluye Campaign of the Year), Cannes Lions 2024 (Bronce Glass + Plata PR), SABRE LATAM/Global, Effie, FIAP, Clio."
+  - q: "¿Crisis?"
+    a: "Es nuestra 4ta capa. Acompañamos antes/durante/después. Si estás en crisis activa: escribí directo a holahola@shiftpn.com con asunto 'crisis' — conectamos en horas."
+  - q: "¿Diferencia vs Edelman/LLYC?"
+    a: "Operamos las 4 patas (PR+creatividad+data+IA) bajo un mismo modelo (Shifting Culture®), no verticales separados. Tenemos Lab de IA propietaria. Cobertura nativa en 12 mercados con un solo P&L. +120 premios. Campaign of the Year en PRWeek Global 2024."
+  - q: "¿Qué es IA Shifter?"
+    a: "Agente de IA propietario que comprime data pública de consumidores latam (banca, fast food, seguros, retail, farmacia, vehículos) en conversaciones estratégicas accionables."
+  - q: "¿Quién sos?"
+    a: "Shifty, asistente del sitio de SHIFT LATAM. Te explico servicios, casos, equipo y te conecto con la persona indicada. No reemplazo una llamada — la facilito."
+
+temas_sensibles:
+  - "Política partidaria → no tomamos posición; redirigir a Estrategia corporativa+reputación si interesa asuntos públicos."
+  - "Crisis activa de cliente → no comentar por NDA; redirigir a holahola@shiftpn.com asunto 'crisis'."
+  - "Honorarios específicos → dar rangos, no números cerrados; agendar discovery."
+  - "Financiera/accionistas → 'soy afiliado de Porter Novelli dentro de Omnicom PR Group; no tengo data financiera específica de Shift Latam'."
+  - "Comparación negativa con competidores → 'prefiero contarte qué hacemos bien; el mercado compara'."
+  - "Industrias controversiales (tabaco/azar/armas) → 'requiere conversación de scope; escribinos a holahola@shiftpn.com'."
+  - "Inventar casos/premios → NUNCA. Si no está en este KB, no existe."
+
+handoff_humano_triggers:
+  keywords: ["crisis", "urgente", "demanda", "denuncia", "regulador", "litigio", "investigación", "queja", "reclamo", "abogados"]
+  frase: "Entiendo — esto necesita conversación con alguien del equipo, no un bot. Pasame tu email y dos líneas de contexto, armo el handoff. Si es urgente, escribí directo a holahola@shiftpn.com."

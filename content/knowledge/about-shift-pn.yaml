@@ -1,0 +1,720 @@
+# content/knowledge/about-shift-pn.yaml
+# Knowledge base para Shifty — chatbot público de la landing de SHIFT LATAM Porter Novelli.
+# Todo dato no obvio incluye fuente entre paréntesis en el comentario al lado.
+# Fecha de research: 2026-05-21. Verifique con Federico antes de publicar.
+
+identity:
+  nombre_oficial: "SHIFT LATAM Porter Novelli"
+  nombre_corto: "Shift Latam"
+  legacy: "Antes Porter Novelli Costa Rica / CAC Porter Novelli (CAC = Costa Rica, América Central y Caribe)"  # telediario.cr 2022-12-09
+  red_global: "Porter Novelli (red global), parte de Omnicom Public Relations Group (OPRG) junto con FleishmanHillard, Ketchum y MMC"  # elfinancierocr.com brandvoice
+  estructura_corporativa: "Afiliado de Porter Novelli en Latinoamérica; pertenece a Grupo Garnier"  # provokemedia.com
+  hub_principal: "Costa Rica — San José"
+  presencia_regional:
+    - Costa Rica   # hub principal
+    - Guatemala
+    - El Salvador
+    - Honduras
+    - Nicaragua
+    - Panamá
+    - Colombia
+    - Ecuador
+    - Perú         # operación en construcción
+    - Chile        # operación en construcción
+    - México       # operación en construcción
+    - República Dominicana
+    # Miami (Shift US) — oficina afiliada para mercado hispano US (lanzada 2025) # prweek.com 2024
+  presencia_total: "12 hubs + 1 oficina en Miami (Shift US)"
+  trayectoria: "Más de 40 años de experiencia regional en Centroamérica (la historia continúa con la red Porter Novelli, fundada hace más de 50 años)"  # telediario.cr
+  headcount_aprox: "~200 colaboradores en Centroamérica, Caribe y Ecuador"  # telediario.cr; elfinancierocr
+  rebranding: "El cambio de Porter Novelli → SHIFT Porter Novelli ocurrió el 9 de diciembre de 2022"  # telediario.cr
+  tagline: "Agencia de Comunicación Estratégica en Latinoamérica"  # landing /HomeIntroSection
+  manifiesto_visible: |
+    En SHIFT LATAM Porter Novelli somos una agencia de comunicación estratégica,
+    reputación corporativa y creatividad cultural con presencia regional. Diseñamos
+    estrategias que conectan reputación, cultura y crecimiento en mercados complejos
+    de Latinoamérica.
+  propuesta_valor: |
+    Integramos estrategia, creatividad, data e inteligencia artificial para
+    construir sistemas de influencia sostenibles. No hacemos campañas aisladas:
+    desarrollamos plataformas que generan conversación, confianza y resultados
+    medibles.
+  modelo_propietario: "Shifting Culture® — comunicación estratégica basada en cultura"  # landing /shifting-culture
+  sitio_web: "https://shiftpn.com"
+  redes_sociales:
+    facebook: "https://www.facebook.com/cacporternovelli/"
+    instagram: "https://www.instagram.com/shiftlatampn/"
+    linkedin: "https://cr.linkedin.com/company/shiftlatamporternovelli"
+  contactos_centrales:
+    consultas_generales: "holaholahola@shiftpn.com"      # landing /contact
+    new_business: "holahola@shiftpn.com"                  # landing /contact
+    ejecutivo_referencia: "fmartinez@shiftpn.co.cr (Federico Martinez)"  # provisto por el cliente, no verificado en sitio público
+  telefono_hub: "+506 4110-6000"  # crunchbase + telediario.cr
+
+servicios:
+  - id: crisis
+    nombre: "Crisis y gestión de riesgo"
+    descripcion: |
+      Acompañamos a organizaciones antes, durante y después de eventos sensibles
+      que pueden afectar reputación: incidentes operativos, exposición regulatoria,
+      controversias públicas, conflictos laborales o crisis digitales. Combinamos
+      monitoreo, vocería, manejo de stakeholders y narrativa estratégica.
+    cuando_aplica:
+      - Riesgos regulatorios o ambientales
+      - Disputas con autoridades o sindicatos
+      - Crisis digitales o virales
+      - Cambios de liderazgo bajo escrutinio
+      - Recall de producto o fallas operativas
+    casos_relevantes:
+      - "Cambiemos la Regla (Nosotras Women Connecting + Garnier Group) — impacto regulatorio: ley aprobada en CR para garantizar productos de higiene menstrual"  # prweek + larepublica.net 2024
+  - id: media-data
+    nombre: "Media performance y data"
+    descripcion: |
+      Distribución pagada, ganada y propia con medición continua. Integramos
+      data de consumo digital, escucha social y performance editorial para
+      decidir qué historia mover, en qué canal y a qué audiencia. Incluye
+      paid media, SEO/AEO, content marketing y dashboards ejecutivos.
+    capabilities:
+      - Performance digital (paid + earned)
+      - Escucha social y reputación en tiempo real
+      - Dashboards ejecutivos de reputación e influencia
+      - Mediciones de impacto en behavior y conversión
+    casos_relevantes:
+      - "Brand Influence Index — herramienta propietaria (en alianza con El Financiero CR) para medir influencia real de marcas con datos de comportamiento, no encuestas"  # elfinancierocr.com 2026
+      - "IA Shifter — agente de IA que analiza data pública digital de consumidores en categorías como banca, fast food, seguros y retail"  # delfino.cr 2025-06-19
+  - id: creatividad
+    nombre: "Creatividad y campañas integradas"
+    descripcion: |
+      Creatividad aplicada a problemas de negocio y cambio social. Diseñamos
+      plataformas integradas que combinan PR, contenido, activación, asuntos
+      públicos e influencia cultural. La creatividad no decora: traduce
+      tensiones culturales en ideas que mueven mercados.
+    capabilities:
+      - Campañas integradas regionales y locales
+      - PR creativo y storytelling de marca
+      - Activaciones culturales y experiencias
+      - Influencer y partnerships culturales
+      - Producción audiovisual y de contenido
+    casos_relevantes:
+      - "Bienvenidos al Grupo / Welcome to the Group — Cannes Lions 2024: Bronce Glass Lion + Plata PR Lion (con PHD y RIOT/TBWA Costa Rica)"  # larepublica.net
+      - "Colors of Costa Rica — Instituto Costarricense de Turismo (ICT) + Mario Hernández + artista Franko 'Pizuikas' Guevara, lanzado octubre 2025"  # latinspots.com
+      - "Tucán ¡Está Volando! — Banco de Costa Rica (BCR), 2025: relanzamiento del ecosistema de corresponsalía no bancaria"  # latinspots.com 2025
+      - "BIT Centenario: La Costa Rica del Futuro — Microsoft / Minecraft Education, 2022: SABRE Awards LATAM"  # telediario.cr; sanjosevolando 2023
+  - id: estrategia
+    nombre: "Estrategia corporativa y reputación"
+    descripcion: |
+      Consultoría de comunicación a nivel C-suite: arquitectura de reputación
+      corporativa, asuntos públicos, comunicación interna, posicionamiento
+      ejecutivo y narrativa institucional. Trabajamos con boards, CEOs y
+      equipos de relaciones gubernamentales para alinear lo que la compañía
+      hace con lo que el mercado escucha.
+    capabilities:
+      - Reputación corporativa y narrativa de marca
+      - Asuntos públicos y relaciones gubernamentales
+      - Comunicación interna y de cultura organizacional
+      - Posicionamiento ejecutivo (CEO branding)
+      - ESG, sostenibilidad y propósito
+      - Comunicación financiera y de relación con inversores
+    casos_relevantes:
+      - "Brand Influence Index — alianza con El Financiero CR para medir influencia corporativa con behavioral data"  # elfinancierocr.com
+      - "Acompañamiento estratégico a Banco de Costa Rica (BCR), entidad pública con marca de retail bancario"  # latinspots.com
+
+shiftlab:
+  que_es: "Shift LAB es la unidad de innovación e inteligencia artificial aplicada a comunicación de SHIFT LATAM. Integra tecnología, creatividad y negocio para mejorar análisis, acelerar decisiones y potenciar el criterio humano."  # landing /shift-lab
+  filosofia: |
+    No usamos IA como tendencia. La integramos como flujo operativo donde
+    humano y máquina trabajan en el mismo proceso. La tecnología sirve a la
+    estrategia, no al revés. No vendemos herramientas: diseñamos sistemas de
+    criterio donde la tecnología amplifica —no reemplaza— al equipo humano.
+  diferenciador: "Primera agencia de la región en operar con un agente de IA propietario (IA Shifter) que conecta data pública de consumidores con consultoría estratégica accionable en segundos"  # delfino.cr 2025
+  capabilities:
+    - id: "01"
+      titulo: "Auditorías de madurez digital"
+      descripcion: "Mapeo del estado real de data, herramientas, criterio y cultura de la organización para construir un plan de IA con horizontes claros."
+    - id: "02"
+      titulo: "Implementación de IA en flujos estratégicos"
+      descripcion: "Integración de modelos al ciclo de planeación, monitoreo de reputación y producción creativa. Sin reemplazar, amplificando."
+    - id: "03"
+      titulo: "Automatización de procesos"
+      descripcion: "Orquestación de tareas repetitivas para liberar tiempo del equipo y enfocarlo en lo que sólo el criterio humano resuelve bien."
+    - id: "04"
+      titulo: "Diseño de productos comunicacionales"
+      descripcion: "Herramientas internas, dashboards y micro-aplicaciones que viven dentro de las campañas y relaciones con audiencias."
+    - id: "05"
+      titulo: "Dashboards ejecutivos y data intelligence"
+      descripcion: "Indicadores accionables de reputación, conversación social, performance editorial y eficiencia operativa, en un solo lugar."
+  productos_propietarios:
+    - nombre: "IA Shifter"
+      lanzamiento: "Junio 2025"
+      descripcion: "Agente de IA que comprime data pública digital de consumidores (banca, vehículos, fast food, seguros, retail, farmacia) en conversaciones estratégicas accesibles en segundos."  # delfino.cr
+    - nombre: "Brand Influence Index"
+      lanzamiento: "Segundo semestre 2026"  # elfinancierocr.com
+      descripcion: "Índice de influencia de marca para Costa Rica desarrollado con El Financiero. Mide señales reales de comportamiento (no encuestas de percepción): consumo de contenido, conversación pública y signos de confianza."
+
+shifting_culture:
+  registro: "Shifting Culture® (modelo propietario registrado)"  # landing /shifting-culture
+  descripcion: |
+    Es el modelo propietario de SHIFT LATAM que conecta cultura, reputación
+    y negocio en un solo sistema estratégico. Creemos que las marcas no
+    compiten por atención sino por significado, y ese significado se
+    construye desde la cultura.
+  como_funciona: |
+    Identifica tensiones culturales relevantes, traduce datos en narrativas
+    estratégicas y convierte conversaciones en influencia sostenible. No
+    diseñamos campañas aisladas: diseñamos movimientos que impactan
+    mercados y comunidades.
+  proceso:
+    - paso: "01"
+      titulo: "Detectamos tensiones culturales"
+    - paso: "02"
+      titulo: "Transformamos insights en ideas estratégicas"
+    - paso: "03"
+      titulo: "Activamos creatividad con medición"
+    - paso: "04"
+      titulo: "Generamos impacto real"
+  por_que_es_diferente: |
+    Shifting Culture® no es un marco conceptual. Es una metodología
+    aplicada que integra estrategia, creatividad, asuntos públicos y data
+    bajo un mismo sistema operativo regional.
+
+proposito:
+  declaracion: |
+    Nuestro propósito es mover cultura para generar impacto real en
+    negocios y comunidades. Creemos que la comunicación estratégica no
+    sólo debe influir, sino transformar. Conectamos empresas, líderes y
+    organizaciones con las conversaciones que definen el futuro de
+    Latinoamérica.
+  triple_impacto:
+    - dimension: "En las personas"
+      descripcion: "Cultivando confianza, orgullo y sentido de pertenencia."
+    - dimension: "En los negocios"
+      descripcion: "Fortaleciendo reputaciones que crean valor a largo plazo."
+    - dimension: "En el país"
+      descripcion: "Impulsando una comunicación que eleve la conversación pública y fomente el bien común."
+
+sectores:
+  - nombre: "Salud y Life Sciences"
+    descripcion: "Comunicación científica, manejo regulatorio, reputación médica y estrategia institucional."
+  - nombre: "Finanzas y Servicios"
+    descripcion: "Narrativa financiera, reputación corporativa, crisis y asuntos públicos."
+  - nombre: "Gobierno y Asuntos Públicos"
+    descripcion: "Gestión de agenda pública, narrativa institucional y comunicación estratégica."
+  - nombre: "Turismo y Marca País"
+    descripcion: "Posicionamiento territorial, campañas de marca país y promoción cultural."  # inferido del caso Colors of CR + Costa Rica del Futuro
+  - nombre: "Consumo masivo y Retail"
+    descripcion: "Lanzamientos, plataformas culturales y manejo de marca en categorías de alta competencia."  # inferido de IA Shifter
+  - nombre: "Tecnología y Educación"
+    descripcion: "Posicionamiento de plataformas tecnológicas, educación digital y reputación de innovación."  # inferido de caso Microsoft/Minecraft
+  - nombre: "Tercer sector y Causas"
+    descripcion: "Campañas de impacto social, ONGs y advocacy con resultados regulatorios o comportamentales."  # inferido de Cambiemos la Regla
+
+hubs:
+  - pais: "Costa Rica"
+    rol: "Hub principal y sede regional"
+    ciudad: "San José"
+    direccion: "Centro Empresarial Vía Lindora, 3er Piso"
+    telefono: "+506 4110-6000"
+    contacto_email: "gpiedra@shiftpn.co.cr"  # landing /about-us
+    contacto_nombre: "Gabriela Piedra (Senior VP Shift Latam)"
+  - pais: "Colombia"
+    ciudad: "Bogotá"
+    direccion: "CRA 15 # 88-21 Of. 403"
+    telefono: "+57 301 436 0416"
+    contacto_email: "gonzalo.pineros@shiftpn.co"
+    contacto_nombre: "Gonzalo Piñeros (General Manager Shift Colombia)"
+  - pais: "Ecuador"
+    ciudad: "Quito"
+    direccion: "Italia n32118, Avenida Mariana de Jesús"
+    telefono: "+593 99 537 3108"
+    contacto_email: "angelica.moreno@shiftpn.ec"
+    contacto_nombre: "Angélica Moreno (General Manager Shift Ecuador)"
+  - pais: "El Salvador"
+    ciudad: "San Salvador"
+    direccion: "85 Avenida Norte, #619, San Salvador"
+    telefono: "+503 7069-0896"
+    contacto_email: "cferreiro@shiftpn.sv"
+    contacto_nombre: "Camila Ferreiro (General Manager Shift El Salvador)"
+  - pais: "Guatemala"
+    ciudad: "Ciudad de Guatemala"
+    direccion: "5ª Avenida 5-55 Zona 14, Edificio Europlaza, Torre 2, Nivel 10"
+    telefono: "+502 2388-5100"
+    contacto_email: "andreagan@shiftpn.gt"
+    contacto_nombre: "Andrea Gandara (General Director Shift Guatemala)"
+  - pais: "Honduras"
+    ciudad: "Tegucigalpa"
+    direccion: "Bulevar Suyapa, Torre Metropolis II, Piso 23"
+    telefono: "+504 9453-8228"
+    contacto_email: "maria.calvo@shift-pn.hn"
+    contacto_nombre: "María Calvo"
+  - pais: "Nicaragua"
+    ciudad: "Managua"
+    direccion: "Ofiplaza El Retiro, Edificio 6, Piso 1, Suite 614"
+    telefono: "+505 2254-7627"
+    contacto_email: "rmontenegro@shiftpn.com.ni"
+    contacto_nombre: "Rosario Montenegro (General Manager Shift Nicaragua)"
+  - pais: "Panamá"
+    ciudad: "Ciudad de Panamá"
+    direccion: "Financial Park, Piso 6, Costa del Este, Juan Díaz"
+    telefono: "+507 269 3835"
+    contacto_email: "jjaltmann@omgcr.com"
+    contacto_nombre: "# TBD — JJ Altmann (verificar rol con Federico)"
+  - pais: "República Dominicana"
+    ciudad: "Santo Domingo"
+    direccion: "Av. Abraham Lincoln 1061, Piantini"
+    telefono: "+1 809-274-6813"
+    contacto_email: "andrea.ramirez@caribbeanpn.com"
+    contacto_nombre: "Andrea Ramírez"
+  - pais: "México"
+    ciudad: "# TBD — operación en construcción/restructuración"
+    contacto_email: "# TBD — no encontrado en research público"
+    contacto_nombre: "# TBD — no encontrado en research público"
+  - pais: "Perú"
+    ciudad: "# TBD — operación en construcción/restructuración"
+    contacto_email: "# TBD — no encontrado en research público"
+    contacto_nombre: "# TBD — no encontrado en research público"
+  - pais: "Chile"
+    ciudad: "# TBD — operación en construcción/restructuración"
+    contacto_email: "# TBD — no encontrado en research público"
+    contacto_nombre: "# TBD — no encontrado en research público"
+  - pais: "Estados Unidos (Shift US)"
+    ciudad: "Coral Gables, Florida (Miami)"  # prweek.com 2024
+    rol: "Oficina afiliada para mercado hispano US"
+    contacto_email: "# TBD — verificar con Federico"
+    contacto_nombre: "Daniela Biffi (General Manager Miami)"  # landing /about-us
+
+equipo_publico:
+  liderazgo_regional:
+    - nombre: "Rodrigo Castro"
+      rol: "CEO Shift Latam"
+      bio_corta: "Lidera la estrategia regional y la integración entre creatividad, data e IA. Vocero principal de la agencia ante medios trade."  # telediario.cr; latinspots.com
+    - nombre: "Gabriela Piedra"
+      rol: "Senior Vice President Shift Latam"
+      bio_corta: "40 años custodiando reputaciones. Lidera la oferta de reputación corporativa y la operación del hub Costa Rica."  # telediario.cr
+    - nombre: "Oscar Solano"
+      rol: "VP - CCO & CSO Shift Latam (Chief Creative & Strategy Officer)"
+      bio_corta: "Lidera creatividad y estrategia regional. Vocero de campañas premiadas en Cannes Lions, SABRE y PRWeek."  # latinspots.com
+    - nombre: "Fabiana Martínez"
+      rol: "Business Development Director Shift Latam"
+      bio_corta: "# TBD — verificar bio con Federico"
+    - nombre: "Ana Solera"
+      rol: "Creative Art Director Shift Latam"
+    - nombre: "Ana Fonseca"
+      rol: "Operations Lead Shift Costa Rica"
+  liderazgo_pais:
+    - nombre: "Gonzalo Piñeros"
+      pais: "Colombia"
+      rol: "General Manager"
+    - nombre: "Angélica Moreno"
+      pais: "Ecuador"
+      rol: "General Manager"
+    - nombre: "Camila Ferreiro"
+      pais: "El Salvador"
+      rol: "General Manager"
+    - nombre: "Andrea Gandara"
+      pais: "Guatemala"
+      rol: "General Director"
+    - nombre: "Rosario Montenegro"
+      pais: "Nicaragua"
+      rol: "General Manager"
+    - nombre: "Daniela Biffi"
+      pais: "Miami (Shift US)"
+      rol: "General Manager"
+  liderazgo_costa_rica:
+    - nombre: "Sarah Beirute"
+      rol: "VP PR & Experience Shift Costa Rica"
+    - nombre: "Nathy Chinchilla"
+      rol: "Head of Creative Shift Costa Rica"
+    - nombre: "Johanna Perlaza"
+      rol: "Account Director Shift Costa Rica"
+    - nombre: "Pamela Campos"
+      rol: "Account Director Shift Costa Rica"
+    - nombre: "Carmen Mata"
+      rol: "Experience Lead Shift Costa Rica"
+    - nombre: "Melanie Méndez"
+      rol: "Account Supervisor Shift Costa Rica"
+    - nombre: "Johanna Mora"
+      rol: "Account Supervisor Shift Costa Rica"
+  otros_paises:
+    - nombre: "Camila Chaquea"
+      pais: "Colombia"
+      rol: "Chief Digital Officer Shift Colombia"
+    - nombre: "Paula Rozo"
+      pais: "Colombia"
+      rol: "General Account Director"
+    - nombre: "Laura Hurtado"
+      pais: "Colombia"
+      rol: "Digital Director"
+    - nombre: "Loly Cando"
+      pais: "Ecuador"
+      rol: "General Account Director"
+    - nombre: "Andrés Herrera"
+      pais: "Guatemala"
+      rol: "Innovation & Digital Director"
+  contacto_directo_cliente:
+    - nombre: "Federico Martinez"
+      rol: "# TBD — verificar título exacto (probable: Country/Account Lead Costa Rica o New Business)"
+      email: "fmartinez@shiftpn.co.cr"
+
+casos_publicos:
+  - cliente: "Nosotras Women Connecting"
+    año: 2024
+    pais: "Costa Rica"
+    industria: "Tercer sector / Causa social"
+    servicio: "Creatividad + asuntos públicos + advocacy"
+    nombre_campana: "Cambiemos la Regla / Welcome to the Group"
+    partners: ["PHD Costa Rica", "RIOT/TBWA Costa Rica", "Grupo Garnier"]
+    descripcion: "Campaña contra el impuesto de lujo a productos menstruales en Costa Rica. Concepto: 'PADvertising' con la frase 'Cambiemos la regla' (juego de palabras entre cambiar la ley y cambiar el período)."
+    resultado: "Aprobación del proyecto de ley para garantizar acceso gratuito a productos de higiene menstrual."
+    premios:
+      - "PRWeek Global Awards 2024 — 5 oros (Best LATAM Campaign, Best CSR Campaign, Best Non-Profit Campaign, Best Public Sector Campaign, Campaign of the Year)"
+      - "Cannes Lions 2024 — Bronce Glass Lion + Plata PR Lion"
+      - "SABRE Awards Latin America 2024"
+  - cliente: "Instituto Costarricense de Turismo (ICT)"
+    año: 2025
+    pais: "Costa Rica / Colombia"
+    industria: "Turismo / Marca País"
+    servicio: "Creatividad cultural + activación de marca país"
+    nombre_campana: "Colors of Costa Rica"
+    partners: ["Mario Hernández (marca de lujo)", "Franko 'Pizuikas' Guevara (artista)"]
+    descripcion: "Alianza cultural entre Costa Rica y Colombia: 5 carteras de edición limitada con arte del artista costarricense Pizuikas, vendidas en evento exclusivo en Bogotá."
+    resultado: "Posicionamiento de Costa Rica como destino de turismo creativo. Fondos a la Fundación Mariposas Son Colombia (santuarios móviles para hospitales pediátricos)."
+  - cliente: "Banco de Costa Rica (BCR)"
+    año: 2025
+    pais: "Costa Rica"
+    industria: "Banca / Servicios Financieros"
+    servicio: "Creatividad + plataforma de marca + media"
+    nombre_campana: "Tucán ¡Está Volando!"
+    descripcion: "Relanzamiento del ecosistema BCR Puntos Tucán (corresponsalía no bancaria con +10 años) como marca viva integrada a la cultura de barrio. Concepto: 'Lo que hacés en el banco, sin ir al banco. Sin salir del barrio.'"
+    canales: "TV, radio, digital, OOH, transit, jingle modernizado, personaje 3D animado"
+    resultado: "# TBD — no se publicaron métricas oficiales"
+  - cliente: "Microsoft / Minecraft Education"
+    año: 2022
+    pais: "Costa Rica"
+    industria: "Tecnología / Educación"
+    servicio: "Creatividad + asuntos públicos + activación"
+    nombre_campana: "BIT Centenario: La Costa Rica del Futuro"
+    descripcion: "Plataforma educativa que llevó la conmemoración del centenario costarricense al mundo Minecraft. Niños y jóvenes diseñaron 'la Costa Rica del futuro' en el videojuego."
+    premios:
+      - "SABRE Awards Latin America 2022 — 3 premios"
+      - "Festival de Antigua 2023 — Bronce en categoría entertainment-games"
+  - cliente: "Grupo de Familias Sobreviviendo a Feminicidio"
+    año: 2025
+    pais: "Costa Rica"
+    industria: "Tercer sector / Causa social"
+    servicio: "Creatividad + advocacy"
+    nombre_campana: "Justice By Her Type"
+    partners: ["Grupo Garnier"]
+    descripcion: "Campaña en defensa de víctimas de feminicidio."
+    premios:
+      - "SABRE Awards Latin America 2025 (finalista/ganador)"
+      - "Global SABRE Awards 2025 — ganador"
+
+competencia:
+  principales_latam:
+    - nombre: "LLYC (Llorente y Cuenca)"
+      foco: "Reputación corporativa, asuntos públicos, fuerte en España y todo LATAM"
+      donde_compite_con_shift: "Reputación corporativa regional, crisis"
+    - nombre: "Edelman LATAM"
+      foco: "Trust Barometer, reputación corporativa, fuerte en Brasil y México"
+      donde_compite_con_shift: "Reputación corporativa, healthcare"
+    - nombre: "Burson (ex-Burson Cohn & Wolfe)"
+      foco: "PR corporativo global, fuerte en mercados grandes (MX, BR)"
+      donde_compite_con_shift: "Cuentas regionales B2B y FMCG"
+    - nombre: "Weber Shandwick"
+      foco: "Reputación + cultura organizacional, parte de IPG"
+      donde_compite_con_shift: "Reputación corporativa, internal comms"
+    - nombre: "FleishmanHillard"
+      foco: "PR corporativo global, también dentro de OPRG (sister agency dentro de Omnicom)"
+      donde_compite_con_shift: "Casi nunca compite — es hermana corporativa dentro de Omnicom"
+    - nombre: "Ágora (Brasil)"
+      foco: "PR brasileño, agencia del año 2025 PRovoke Media LATAM"
+      donde_compite_con_shift: "Mercado brasileño (Shift no opera en Brasil)"
+  como_diferenciamos: |
+    1. PR + creatividad + data + IA bajo un mismo modelo operativo (Shifting
+       Culture®), no como verticales separados.
+    2. Cobertura nativa en 12 mercados latinoamericanos con un solo P&L
+       regional — gobernanza única, ejecución local.
+    3. ShiftLab: primera unidad de IA propietaria en agencia de comms LATAM
+       (IA Shifter, Brand Influence Index).
+    4. Premiación reciente que coloca a la agencia en el top regional:
+       Campaign of the Year en PRWeek Global Awards 2024, Cannes Lions
+       2024, SABRE LATAM 2022-2025, +120 premios acumulados.
+    5. Fuerte en industrias reguladas y de alto riesgo (banca, gobierno,
+       salud) donde la cultura y el contexto local pesan más que la
+       metodología global.
+  donde_no_competimos: |
+    No competimos con boutiques creativas puras de un solo mercado ni con
+    redes globales que sólo tienen oficina abogada en el país. Tampoco
+    somos una agencia digital-first ni una consultora McKinsey-style.
+
+awards_publicos:
+  resumen: "Más de 120 premios internacionales acumulados"  # landing /awards
+  reconocimientos_principales:
+    - nombre: "Effie Awards"
+      contexto: "Top communications agency in Central America-Caribbean (Effie Index 2021)"  # telediario.cr
+    - nombre: "SABRE Awards Latin America"
+      años:
+        - año: 2022
+          notas: "3 premios incluyendo el caso Microsoft/Minecraft Costa Rica del Futuro"
+        - año: 2023
+          notas: "Única agencia latina en ganar el Grand Prix Latino y el Titanium Global en SABRE Awards"  # revistasumma.com
+        - año: 2024
+          notas: "Welcome to the Group / Cambiemos la Regla; 4 nominaciones, varias categorías"  # provokemedia
+        - año: 2025
+          notas: "Justice By Her Type — ganador SABRE LATAM y Global SABRE"  # ideazite
+    - nombre: "Cannes Lions"
+      años:
+        - año: 2024
+          notas: "Bronce Glass Lion + Plata PR Lion para Bienvenidos al Grupo / Welcome to the Group"  # larepublica.net
+    - nombre: "PRWeek Global Awards"
+      años:
+        - año: 2024
+          notas: "5 oros para Cambiemos la Regla — Best LATAM Campaign, Best CSR, Best Non-Profit, Best Public Sector, y Campaign of the Year (Londres)"  # larepublica.net + revistasumma
+    - nombre: "FIAP (Festival Iberoamericano de la Publicidad)"
+      notas: "Reconocimientos múltiples — verificar año con Federico"
+    - nombre: "Clio Awards"
+      notas: "Mencionado en landing /awards"
+    - nombre: "PRovoke Media LatAm Agency of the Year"
+      notas: "Porter Novelli LATAM (red) ha sido reconocida; verificar si Shift CR figura específicamente"  # provokemedia.com
+  festivales_donde_compite_regularmente:
+    - "Effie Awards Latin America"
+    - "SABRE Awards Latin America"
+    - "Global SABRE Awards"
+    - "Cannes Lions"
+    - "FIAP"
+    - "PRWeek Global Awards"
+    - "Clio Awards"
+    - "El Ojo de Iberoamérica"
+    - "Festival de Antigua"
+
+tono_de_marca:
+  voz_principal: "Colega-experto con autoridad — consultor estratégico que también tiene chispa creativa. No es McKinsey (demasiado frío) ni publicista pop (demasiado liviano)."
+  registro: "Español neutro latam con guiños rioplatenses suaves (uso de 'vos' en algunos puntos: 'agendemos', 'arranquemos', 'contanos', 'mandame'). Acepta el tuteo neutro también."
+  vocabulario:
+    palabras_canon:
+      - "reputación"
+      - "cultura"
+      - "estrategia"
+      - "influencia"
+      - "criterio"
+      - "tensiones culturales"
+      - "narrativa"
+      - "sistemas"
+      - "movimientos"
+      - "impacto medible"
+      - "comunicación estratégica"
+      - "creatividad cultural"
+      - "data"
+      - "performance"
+    palabras_propietarias:
+      - "Shifting Culture®"
+      - "Shift LAB"
+      - "IA Shifter"
+      - "Brand Influence Index"
+      - "PADvertising (caso Cambiemos la Regla)"
+    anglicismos_aceptados:
+      - "New Business"
+      - "performance"
+      - "media"
+      - "branding"
+      - "stakeholder"
+      - "insights"
+      - "PR" (públicas/relaciones públicas; ambos usos son válidos)
+  patrones_de_inicio:
+    - "Genial — armo el handoff."
+    - "Honestamente, depende."
+    - "Buena pregunta —"
+    - "Operamos en…"
+    - "Diseñamos sistemas donde…"
+    - "No hacemos campañas aisladas:"
+    - "Te cuento."
+  ritmo:
+    - "Frases cortas + bullets cuando el contenido lo pide."
+    - "Negrita para conceptos canon (no abusar)."
+    - "Una idea por párrafo; no apilamos contexto."
+    - "Citamos páginas/secciones del sitio cuando aplica ('te dejo el link a /awards')."
+  prohibido:
+    - "Lenguaje grandilocuente sin sustento ('revolucionario', 'líderes absolutos', 'únicos en LATAM' — sí somos referentes, no únicos)."
+    - "Métricas sin fuente ('+1.000% de engagement')."
+    - "Promesas de precio sin discovery ('te lo dejo en 10K')."
+    - "Lenguaje político partidario o tomas de posición ideológicas."
+    - "Compromisos en nombre de clientes (NDA, casos sensibles)."
+    - "Mencionar competidores por nombre en sentido negativo."
+    - "Inventar nombres de personas, casos o premios que no estén en este KB."
+    - "Hablar en primera persona del singular ('yo creo'); Shifty habla por la agencia."
+    - "Emojis (Shift no usa emojis en comunicación corporativa)."
+
+faqs:
+  - pregunta: "¿Qué hace Shift?"
+    respuesta: "Somos una agencia de comunicación estratégica, reputación corporativa y creatividad cultural con presencia en 12 países de Latinoamérica. Integramos PR, creatividad, data e IA bajo un modelo propietario llamado Shifting Culture®. No hacemos campañas aisladas: diseñamos plataformas que generan conversación, confianza y resultados medibles."
+    keywords: ["qué hacen", "qué es shift", "a qué se dedican", "quiénes son", "agencia"]
+  - pregunta: "¿Qué servicios ofrecen?"
+    respuesta: "Cuatro capas que se combinan según el momento de la organización: 1) Estrategia corporativa y reputación, 2) Creatividad y campañas integradas, 3) Media performance + data, 4) Crisis y gestión de riesgo. Sumá Shift LAB si querés innovación + IA aplicada. ¿Te cuento más sobre alguna?"
+    keywords: ["servicios", "qué ofrecen", "qué hacen", "capabilities", "ofrecen"]
+  - pregunta: "¿En qué países operan?"
+    respuesta: "Tenemos 12 hubs en Latinoamérica: Costa Rica (hub principal), Guatemala, El Salvador, Honduras, Nicaragua, Panamá, Colombia, Ecuador, Perú, Chile, México y República Dominicana. Sumamos también una oficina en Miami (Shift US) para el mercado hispano de Estados Unidos."
+    keywords: ["países", "presencia", "operan", "oficinas", "hubs", "latinoamérica", "región"]
+  - pregunta: "¿Cuál es su sede principal?"
+    respuesta: "Costa Rica. Estamos en el Centro Empresarial Vía Lindora, 3er Piso, en San José. Es el hub regional desde donde coordinamos toda la operación latam."
+    keywords: ["sede", "headquarters", "dónde están", "oficina principal", "costa rica"]
+  - pregunta: "¿Son parte de Porter Novelli global?"
+    respuesta: "Sí. SHIFT LATAM es afiliado de Porter Novelli, la red global de comunicación que forma parte de Omnicom Public Relations Group (junto con FleishmanHillard, Ketchum y MMC). Eso nos da metodologías y clientes globales con ejecución local en cada uno de nuestros 12 mercados."
+    keywords: ["porter novelli", "omnicom", "red global", "afiliado", "global"]
+  - pregunta: "¿Qué es Shift LAB?"
+    respuesta: "Es nuestra unidad de innovación e inteligencia artificial aplicada a comunicación. No usamos IA como tendencia: la integramos como flujo operativo para mejorar análisis, acelerar decisiones y potenciar el criterio humano. Cinco capas: auditoría de madurez digital, implementación en flujos estratégicos, automatización, productos comunicacionales y dashboards de data intelligence."
+    keywords: ["shift lab", "shiftlab", "ia", "ai", "inteligencia artificial", "innovación", "tecnología"]
+  - pregunta: "¿Qué es Shifting Culture®?"
+    respuesta: "Es nuestro modelo propietario. Conecta cultura, reputación y negocio en un solo sistema: detecta tensiones culturales relevantes, traduce datos en narrativas estratégicas y convierte conversaciones en influencia sostenible. No es un marco conceptual — es metodología aplicada en cada cuenta."
+    keywords: ["shifting culture", "modelo", "metodología", "propietario", "cultura"]
+  - pregunta: "¿Cuántos años tienen?"
+    respuesta: "Más de 40 años de trayectoria regional en Centroamérica (heredando una historia más larga dentro de la red Porter Novelli, que pasa los 50). Hicimos rebranding de Porter Novelli a SHIFT Porter Novelli en diciembre de 2022."
+    keywords: ["años", "historia", "trayectoria", "antigüedad", "fundación", "cuándo nacieron"]
+  - pregunta: "¿Cuántas personas trabajan en Shift?"
+    respuesta: "Alrededor de 200 colaboradores entre Centroamérica, Caribe y Ecuador, distribuidos en los 12 hubs."
+    keywords: ["headcount", "tamaño", "personas", "equipo", "empleados", "cuántos son"]
+  - pregunta: "¿Quién es Federico Martinez?"
+    respuesta: "Es uno de los ejecutivos de Shift Costa Rica. Si querés, te paso su correo directo: fmartinez@shiftpn.co.cr. ¿Querés que armemos un brief breve para que él te contacte?"
+    keywords: ["federico martinez", "federico", "fmartinez"]
+  - pregunta: "¿Quién es el CEO?"
+    respuesta: "Rodrigo Castro es el CEO de Shift Latam. Junto a Gabriela Piedra (Senior VP) y Oscar Solano (VP - CCO & CSO), lidera la estrategia regional."
+    keywords: ["ceo", "director general", "rodrigo castro", "fundador", "líder", "presidente"]
+  - pregunta: "¿Cómo agendo una reunión?"
+    respuesta: "Armamos el handoff acá mismo: contame tu nombre, email y un mini-brief (1-2 líneas) de qué te interesa. Te devolvemos contacto en menos de 24h con la persona del hub que aplica. O escribinos directo a holahola@shiftpn.com (new business)."
+    keywords: ["agendar", "reunión", "hablamos", "contacto", "meeting", "llamada", "consulta"]
+  - pregunta: "¿Cuánto cuesta una campaña?"
+    respuesta: "Honestamente, depende del scope. Un proyecto puntual de reputación + lanzamiento regional puede arrancar en USD 30-80K. Un acompañamiento estratégico continuo de 12 meses suele estar entre 8-25K/mes. Lo más útil es una llamada de 30 minutos donde mapeamos tu caso y te paso un rango realista — sin obligación."
+    keywords: ["precio", "costo", "cuesta", "tarifa", "presupuesto", "fees", "honorarios"]
+  - pregunta: "¿Trabajan con startups?"
+    respuesta: "Trabajamos sobre todo con organizaciones que ya tienen presencia y reputación que cuidar — bancos, gobierno, marca país, salud, retail. Para startups en etapa muy temprana, normalmente recomendamos esperar al punto donde el costo de no comunicar es mayor que el de hacerlo bien. Pero si tu startup ya tiene contexto regulatorio o disputa pública, conversamos."
+    keywords: ["startup", "emprendimiento", "early stage", "pequeña empresa"]
+  - pregunta: "¿Tienen casos en mi industria?"
+    respuesta: "Probablemente sí. Tenemos experiencia fuerte en banca y servicios financieros (caso BCR), gobierno y marca país (Instituto Costarricense de Turismo, Microsoft/Minecraft Costa Rica del Futuro), salud, tercer sector y causas sociales (Cambiemos la Regla con Nosotras Women Connecting). Contame qué industria y te paso casos relevantes."
+    keywords: ["industria", "casos", "experiencia", "sector", "vertical", "ejemplos"]
+  - pregunta: "¿Qué los diferencia de Edelman o LLYC?"
+    respuesta: "Tres cosas: 1) Operamos los cuatro lados (PR + creatividad + data + IA) bajo un mismo modelo (Shifting Culture®), no como verticales separados. 2) Tenemos un Lab de IA propietaria (IA Shifter, Brand Influence Index) — somos la primera agencia de la región con un agente de IA propio para consultoría. 3) Cobertura nativa en 12 mercados latam con un solo P&L regional: gobernanza única, ejecución local. Y +120 premios internacionales, incluido Campaign of the Year en PRWeek Global 2024."
+    keywords: ["edelman", "llyc", "burson", "competencia", "diferencia", "competidores", "porter novelli vs"]
+  - pregunta: "¿Qué premios tienen?"
+    respuesta: "Más de 120 premios internacionales. Los más recientes incluyen 5 oros en PRWeek Global Awards 2024 por 'Cambiemos la Regla' (incluyendo Campaign of the Year), Cannes Lions 2024 (Bronce Glass + Plata PR), múltiples SABRE Awards LATAM y Global, Effie Index, FIAP y Clio. Te puedo pasar más detalle si querés."
+    keywords: ["premios", "awards", "reconocimientos", "trofeos", "cannes", "effie", "sabre"]
+  - pregunta: "¿Manejan crisis de reputación?"
+    respuesta: "Es una de nuestras 4 capas principales. Acompañamos antes, durante y después de eventos sensibles — riesgo regulatorio, conflictos laborales, crisis digitales, recalls, cambios de liderazgo bajo escrutinio. Si estás en una crisis activa, lo más rápido es escribirnos a holahola@shiftpn.com con el asunto 'crisis' y conectamos con el equipo en horas."
+    keywords: ["crisis", "issue", "riesgo", "emergencia", "controversia", "problema"]
+  - pregunta: "¿Hacen asuntos públicos / lobby?"
+    respuesta: "Sí, manejamos asuntos públicos y narrativa institucional como parte de Estrategia corporativa y reputación. Trabajamos con organizaciones que necesitan gestionar agenda pública, relación con reguladores y vocería frente a stakeholders políticos. Nuestro enfoque es comunicación estratégica, no influence-peddling."
+    keywords: ["asuntos públicos", "lobby", "lobbying", "relaciones gubernamentales", "público", "regulador"]
+  - pregunta: "¿Hacen creatividad publicitaria también?"
+    respuesta: "Sí, en formato integrado. Nuestra capa de Creatividad y campañas integradas combina PR creativo, contenido, activación e influencia cultural. Cuando un caso necesita producción publicitaria pura (BTL/ATL de alto volumen), articulamos con partners creativos como PHD y RIOT/TBWA — así nació, por ejemplo, 'Welcome to the Group' que ganó Cannes Lions 2024."
+    keywords: ["creatividad", "publicidad", "agencia creativa", "campaña", "btl", "atl"]
+  - pregunta: "¿Trabajan con marcas pequeñas?"
+    respuesta: "Sí, siempre que el scope tenga sentido para los dos lados. Acompañamos a marcas medianas regionales con proyectos puntuales (lanzamiento, reposicionamiento, gestión de un issue) o con acompañamiento mensual liviano. La conversación honesta es: ¿cuál es el problema más caro de no resolver?"
+    keywords: ["pequeñas", "medianas", "pyme", "no soy grande", "scope"]
+  - pregunta: "¿Qué hace IA Shifter exactamente?"
+    respuesta: "Es nuestro agente de IA propietario. Comprime data pública digital de consumidores en categorías como banca, vehículos, fast food, seguros, retail y farmacia, y la traduce en conversaciones estratégicas accionables. En segundos podés acceder a hallazgos clave del comportamiento de consumidores en LATAM sin esperar un informe de 60 páginas."
+    keywords: ["ia shifter", "agente ia", "shifter", "asistente virtual", "qué hace la ia"]
+  - pregunta: "¿Qué es el Brand Influence Index?"
+    respuesta: "Es un índice que mide influencia real de marcas en Costa Rica usando data de comportamiento (no encuestas de percepción): consumo de contenido, conversación pública y signos de confianza. Lo lanzamos en alianza con El Financiero. Sale en el segundo semestre de 2026."
+    keywords: ["brand influence index", "índice", "medición", "el financiero"]
+  - pregunta: "¿Tienen redes sociales?"
+    respuesta: "Sí — estamos en LinkedIn como SHIFT LATAM Porter Novelli, Instagram como @shiftlatampn y Facebook como SHIFT Porter Novelli. Te dejo los links en la página de contacto."
+    keywords: ["redes sociales", "instagram", "linkedin", "facebook", "twitter", "rrss"]
+  - pregunta: "¿Tienen blog o newsroom?"
+    respuesta: "Tenemos un newsroom con noticias, perspectivas y estudios sectoriales (salud y life sciences, finanzas, gobierno y asuntos públicos). Lo encontrás en /newsroom."
+    keywords: ["blog", "noticias", "newsroom", "insights", "contenido", "publicaciones"]
+  - pregunta: "¿Trabajan con ONGs o causas sociales?"
+    respuesta: "Sí — uno de los trabajos más reconocidos del equipo es 'Cambiemos la Regla' con Nosotras Women Connecting, que llevó a la aprobación de una ley en Costa Rica para garantizar acceso a productos de higiene menstrual. También trabajamos con Grupo de Familias Sobreviviendo a Feminicidio en 'Justice By Her Type'. La causa social es parte de cómo entendemos comunicación con impacto."
+    keywords: ["ongs", "causa social", "tercer sector", "impacto", "advocacy", "social", "nonprofit"]
+  - pregunta: "¿Cómo funciona el contacto inicial?"
+    respuesta: "Lo más simple: contame qué te interesa (servicios, una industria, un problema específico), tu email y país, y te conectamos con la persona indicada del hub regional. Si preferís escribir directo: holaholahola@shiftpn.com para consultas generales o holahola@shiftpn.com para new business."
+    keywords: ["primer contacto", "cómo empezar", "proceso", "qué necesito", "inicio"]
+  - pregunta: "¿Quién es Shifty?"
+    respuesta: "Soy el asistente del sitio de SHIFT LATAM. Puedo explicarte servicios, mostrarte casos, contarte sobre Shift LAB, o conectarte con la persona del equipo que aplica. No sustituyo una conversación con un consultor — la facilito."
+    keywords: ["shifty", "quién eres", "asistente", "bot", "chatbot", "qué eres"]
+
+temas_sensibles:
+  - tema: "Política partidaria"
+    razon: "Shift trabaja con asuntos públicos pero no toma posición partidaria. Mencionar partidos, candidatos o procesos electorales con valoración política rompe neutralidad."
+    redirect: "Si te interesa cómo manejamos asuntos públicos, te cuento sobre nuestra capa de Estrategia corporativa y reputación. ¿Querés un caso?"
+  - tema: "Crisis activa de un cliente"
+    razon: "Por NDA y por respeto al cliente, Shifty no comenta crisis específicas en curso ni confirma si Shift está manejando un caso público."
+    redirect: "No puedo confirmar trabajos en curso por NDA. Si necesitás manejar una crisis, escribinos directo a holahola@shiftpn.com con el asunto 'crisis' y conectamos en horas."
+  - tema: "Honorarios específicos por cliente"
+    razon: "Los fees varían por scope, mercado y duración. Dar números sin discovery induce a expectativa irreal."
+    redirect: "Los honorarios dependen del scope. Te paso rangos honestos: USD 30-80K para proyectos puntuales, USD 8-25K/mes para acompañamientos. Lo correcto es 30 min de discovery."
+  - tema: "Información financiera de Shift, accionistas o estructura interna"
+    razon: "Shift es parte de Omnicom (NYSE: OMC) pero no se reportan métricas individuales de la afiliada LATAM. Especular daña reputación."
+    redirect: "No tengo información financiera pública de Shift Latam específica. Si querés saber sobre estructura corporativa: somos afiliado de Porter Novelli dentro de Omnicom Public Relations Group."
+  - tema: "Comparación negativa con competidores específicos"
+    razon: "Hablar mal de LLYC, Edelman, Burson, etc. es no profesional y no es la voz de Shift."
+    redirect: "Prefiero contarte qué hacemos bien nosotros y dejar que el mercado compare. ¿Te paso 3 casos puntuales en tu industria?"
+  - tema: "Industrias controversiales (tabaco, juegos de azar, armas)"
+    razon: "Shift no tiene posición pública declarada sobre estas industrias. Comprometerse sin alineación interna es un riesgo."
+    redirect: "Para industrias reguladas con sensibilidades altas, lo correcto es una conversación de scope con el equipo de New Business. Escribinos a holahola@shiftpn.com."
+  - tema: "Datos personales del equipo más allá de lo público"
+    razon: "Privacidad de colaboradores."
+    redirect: "Solo comparto roles y direcciones de correo profesionales publicadas en el sitio. Para contacto directo te conecto con la persona indicada."
+  - tema: "Inventar casos o premios"
+    razon: "Shifty nunca debe alucinar logros."
+    redirect: "Si te conté algo y querés verificarlo, mandame qué dato y te lo confirmo contra fuente. Si no lo tengo, te lo digo directo."
+
+derivar_a_humano:
+  trigger_keywords:
+    - "crisis"
+    - "urgente"
+    - "demanda"
+    - "denuncia"
+    - "abogados"
+    - "regulador"
+    - "investigación"
+    - "litigio"
+    - "estoy enojado"
+    - "quiero quejarme"
+    - "queja"
+    - "reclamo"
+  mensaje_handoff: |
+    Entiendo — esto necesita conversación con alguien del equipo, no un bot.
+    Escribime tu email y un par de líneas de contexto, y armo el handoff
+    para que te contacten en horas. Si es urgente, escribí directo a
+    holahola@shiftpn.com con el asunto que corresponda.
+
+links_internos_canonicos:
+  inicio: "/"
+  servicios: "/services"
+  nosotros: "/about-us"
+  shift_lab: "/shift-lab"
+  shifting_culture: "/shifting-culture"
+  proposito: "/purpose"
+  premios: "/awards"
+  newsroom: "/newsroom"
+  contacto: "/contact"
+
+fuentes_externas_verificables:
+  - "https://shiftpn.com — sitio oficial"
+  - "https://www.telediario.cr/nacional/porter-novelli-renueva-imagen-cambia-shift-porter-novelli — rebranding 2022"
+  - "https://www.elfinancierocr.com/brandvoice/innovacion-y-liderazgo-shift-porter-novelli/X4SMXAOGJZFJXIHUT2DIJ4HGUI/story/ — perfil agencia"
+  - "https://www.elfinancierocr.com/negocios/shift-porter-novelli-y-el-financiero-lanzan-nuevo/ — Brand Influence Index 2026"
+  - "https://delfino.cr/2025/06/shift-latam-porter-novelli-crea-agente-de-inteligencia-artificial-con-hallazgos-del-consumidor-costarricense — IA Shifter"
+  - "https://www.latinspots.com/noticia/shift-latam-porter-novelli-impulsa-colors-of-costa-rica/94034 — caso ICT"
+  - "https://www.latinspots.com/noticia/shift-latam-porter-novelli-relanza-el-ecosistema-tucn-para-el-bcr/92814 — caso BCR"
+  - "https://www.latinspots.com/noticia/shift-porter-novelli-solano-y-castro-valenta-y-diferenciacin/91514 — interview Solano+Castro"
+  - "https://www.larepublica.net/noticia/shift-porter-novelli-costa-rica-triunfa-con-cinco-oros-en-los-pr-week-global-awards-en-londres — PRWeek 2024"
+  - "https://comercioynegocios.org/destacado/shift-porter-novelli-reafirma-su-liderazgo-en-comunicacion-integrada-en-latinoamerica/ — Cannes 2024 + SABRE 2024"
+  - "https://www.prweek.com/article/1916183/porter-novelli-affiliate-shift-latam-launches-shift-us-miami-office — Shift US Miami"
+  - "https://cr.linkedin.com/company/shiftporternovelli — LinkedIn corporativo"
+  - "https://www.provokemedia.com/events-awards/sabre-awards/sabre-awards-latin-america/2025-sabre-awards-latin-america-winners — SABRE 2025"
+  - "https://ideazite.com/awards/canneslions/2025/campaigns/justice-by-her-type-grupo-de-familias-sobreviviendo-a-feminicidio-shift-porter-novelli-2025/ — Justice By Her Type"
+  - "https://revistasumma.com/costa-rica-shift-porter-novelli-unica-agencia-latina-en-ganar-el-grand-prix-latino-y-el-titanium-global-en-sabre-awards/ — SABRE 2023 Titanium"
+
+metadata:
+  version: "1.0"
+  fecha_creacion: "2026-05-21"
+  fuente_principal: "Repo /Users/juan/shiftpn-web (Next.js landing en construcción) + research público a sitios trade y prensa CR"
+  pendientes_para_federico:
+    - "Confirmar título/rol exacto de Federico Martinez"
+    - "Confirmar contactos directos de operaciones México, Perú y Chile (¿están realmente operativas o son países en mapa con plan de aterrizaje?)"
+    - "Verificar bio de Fabiana Martínez y rol de JJ Altmann en Panamá"
+    - "Decidir si el bot debe revelar el contacto de Federico en respuestas o solo derivar a holahola@shiftpn.com"
+    - "Confirmar si Brand Influence Index ya tiene fecha exacta de lanzamiento (segundo semestre 2026)"
+    - "Aprobar los rangos de precios (USD 30-80K proyecto, 8-25K/mes acompañamiento) — están sacados del agent-types.ts del repo, no del sitio público"
+    - "Verificar lista completa de premios FIAP, Clio y El Ojo de Iberoamérica con años específicos"
+    - "Validar listado completo de clientes activos para citar en respuestas (hoy solo confirmo casos con prensa pública)"
+    - "Confirmar si Shift trabaja o no en industrias controversiales (tabaco, alcohol, juegos de azar) — política oficial"

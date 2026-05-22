@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import LenisProvider from "@/components/layout/LenisProvider";
 import { LiquidGlassFilter } from "@/components/ui/liquid-glass";
+import ShiftAgent from "@/components/agent/ShiftAgent";
 import { SITE_NAME, SITE_URL } from "@/app/seo";
 
 const firaSans = Fira_Sans({
@@ -109,6 +110,10 @@ export default function RootLayout({
           <div className="bg-[#0A0E27]">
             <Footer />
           </div>
+          {/* Shift Agent — floating AI assistant. Persists across all
+              pages. UI-only for now; the engine plugs in via
+              `components/agent/agent-engine.ts`. */}
+          <ShiftAgent />
         </LenisProvider>
         <script
           type="application/ld+json"
