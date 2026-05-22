@@ -11,7 +11,12 @@
 //   - Max conversation length (last 12 turns kept, older dropped).
 //   - Max user message length (1500 chars).
 //   - Bearer key + base URL via server-only env vars.
-//   - reasoning.enabled=false to avoid Gemini thinking tokens eating budget.
+//
+// Modelo: gemini-3.5-flash. Decisión consciente — calidad antes que
+// cantidad. La razón cuesta más por turno ($0.012 promedio vs $0.0016
+// de 2.5-flash), pero el reasoning interno mejora la robustez de
+// guardrails (jailbreak, off-topic, lead capture flow) y la fidelidad
+// a la KB. A $50/mes da ~4K turnos/mes — suficiente para una landing.
 
 import { rateLimit } from "@/lib/rate-limit";
 import { buildSystemBlocks } from "@/lib/agent/system-prompt";
@@ -26,7 +31,7 @@ const CEREBRO_BASE_URL =
   process.env.CEREBRO_BASE_URL ||
   "https://shift-cerebro-production.up.railway.app";
 const CEREBRO_API_KEY = process.env.CEREBRO_API_KEY || "";
-const MODEL_ID = process.env.AGENT_MODEL_ID || "google/gemini-2.5-flash";
+const MODEL_ID = process.env.AGENT_MODEL_ID || "google/gemini-3.5-flash";
 
 type IncomingMessage = { role: "user" | "assistant"; content: string };
 
@@ -115,19 +120,21 @@ export async function POST(request: Request) {
     model: MODEL_ID,
     stream: true,
     temperature: 0.4,
-    // 500 = ~3-4 párrafos en español. Techo de costo por turno
-    // ~$0.00125 (gemini-2.5-flash a $2.50/M completion). Cómodo dentro
-    // del budget $50/mes (≥30K turns mensuales).
-    max_tokens: 500,
+    // 800 = ~200 tokens de reasoning interno (Gemini 3.5 los exige) +
+    // ~600 tokens de respuesta visible (~3-4 párrafos en español).
+    // Techo de costo por turno ~$0.012 (gemini-3.5-flash a $9/M
+    // completion incluyendo reasoning).
+    max_tokens: 800,
     messages: messages.map((m) => ({ role: m.role, content: m.content })),
     system_blocks: buildSystemBlocks(),
     tenant: "shift-pn",
     app_id_hint: "shift-pn-landing",
     trace_label: "shifty-landing",
     mode: "normal",
-    // gemini-2.5-flash doesn't have mandatory reasoning, so this is a no-op
-    // but kept defensively for when we upgrade models.
-    reasoning: { enabled: false },
+    // gemini-3.5-flash requires reasoning enabled (OpenRouter rebota con
+    // 400 si pasamos enabled:false). Lo dejamos OFF en el cliente pero
+    // el provider lo fuerza ON. Aceptamos el costo extra por la calidad
+    // de razonamiento en guardrails y flow de captura.
   };
 
   let upstream: Response;
