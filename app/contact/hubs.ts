@@ -8,7 +8,6 @@ export const HUB_OPTIONS = [
   "Colombia",
   "Ecuador",
   "Perú",
-  "Chile",
   "México",
   "República Dominicana",
 ] as const;

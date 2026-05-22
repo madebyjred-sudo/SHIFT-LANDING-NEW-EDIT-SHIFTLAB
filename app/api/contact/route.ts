@@ -34,7 +34,6 @@ const HUB_EMAILS: Record<HubOption, string> = {
   Colombia: "fmartinez@shiftpn.co.cr",
   Ecuador: "fmartinez@shiftpn.co.cr",
   Perú: "fmartinez@shiftpn.co.cr",
-  Chile: "fmartinez@shiftpn.co.cr",
   México: "fmartinez@shiftpn.co.cr",
   "República Dominicana": "fmartinez@shiftpn.co.cr",
 };

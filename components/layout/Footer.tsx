@@ -26,7 +26,6 @@ const COUNTRIES: Country[] = [
   { name: "Panamá",          timeZone: "America/Panama",        img: UNSPLASH("1632505702897-cc41b0ba3b64") },
   { name: "Nicaragua",       timeZone: "America/Managua",       img: UNSPLASH("1711609065017-749841408b17") },
   { name: "México",          timeZone: "America/Mexico_City",   img: UNSPLASH("1630646188133-c1db51adad97") },
-  { name: "Chile",           timeZone: "America/Santiago",      img: UNSPLASH("1558517286-6b7b81953cb5") },
   { name: "Colombia",        timeZone: "America/Bogota",        img: UNSPLASH("1714686495394-73e2bb1bbd39") },
   { name: "Ecuador",         timeZone: "America/Guayaquil",     img: UNSPLASH("1706957614198-8d2e5f0ed6ea") },
   { name: "El Salvador",     timeZone: "America/El_Salvador",   img: UNSPLASH("1690384451505-2aef8ae1b0ef") },

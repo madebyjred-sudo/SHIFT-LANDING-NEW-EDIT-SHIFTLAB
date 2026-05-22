@@ -13,15 +13,6 @@ const regionalOffices = [
     email: "gpiedra@shiftpn.co.cr",
     mapSrc: "/assets/images/aboutus/Costa Rica.svg",
   },
-  // {
-  //   name: "Chile",
-  //   title: "Chile",
-  //   description: "Lugar lugar lugar",
-  //   location: "Dirección de la oficina, Ciudad",
-  //   phone: "+5xx XXXX XXXX",
-  //   email: "nombrepersona@shift.com",
-  //   mapSrc: "/assets/images/aboutus/Costa Rica.svg",
-  // },
   {
     name: "Colombia",
     title: "Colombia",

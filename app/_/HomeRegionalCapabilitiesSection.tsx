@@ -25,7 +25,6 @@ const REGIONAL_POINTS: RegionalPoint[] = [
   { id: "colombia", label: "Colombia", top: "57.6%", left: "55.3%" },
   { id: "ecuador", label: "Ecuador", top: "64.8%", left: "46.8%" },
   { id: "peru", label: "Perú", top: "72.3%", left: "52.4%" },
-  { id: "chile", label: "Chile", top: "82.3%", left: "52.4%" },
 ];
 
 function RegionalCapabilitiesMarkers({
@@ -55,7 +54,6 @@ function RegionalCapabilitiesMarkers({
   const below600Overrides: Record<string, { top: string; left: string }> = {
     ecuador: { top: "58.8%", left: "60.2%" },
     peru: { top: "64.2%", left: "70.8%" },
-    chile: { top: "70.8%", left: "66%" },
   };
 
   useEffect(() => {

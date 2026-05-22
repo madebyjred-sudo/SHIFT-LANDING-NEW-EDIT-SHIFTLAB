@@ -16,7 +16,6 @@ const countries = [
     { name: "Colombia", left: "59.5%", top: "51.5%" },
     { name: "Ecuador", left: "54.5%", top: "57%" },
     { name: "Perú", left: "56.5%", top: "64%" },
-    { name: "Chile", left: "55.5%", top: "76%" },
 ];
 
 export default function RegionalMap() {
