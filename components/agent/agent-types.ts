@@ -157,7 +157,7 @@ export const SCRIPT: ScriptedReply[] = [
         id: "t2",
         kind: "tool",
         tool: "Verifico disponibilidad",
-        toolDetail: "Hubs en Costa Rica, Colombia, Ecuador y seis países más",
+        toolDetail: "Hubs en Costa Rica, Colombia, Venezuela y siete países más + Miami",
         label: "Verifico disponibilidad",
         duration: 1100,
       },

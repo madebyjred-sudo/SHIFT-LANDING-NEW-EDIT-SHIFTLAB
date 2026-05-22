@@ -19,9 +19,10 @@ identity:
     - Panamá
     - Colombia
     - Ecuador
+    - Venezuela
     - República Dominicana
     # Miami (Shift US) — oficina afiliada para mercado hispano US (lanzada 2025) # prweek.com 2024
-  presencia_total: "9 hubs + 1 oficina en Miami (Shift US)"
+  presencia_total: "10 hubs + 1 oficina en Miami (Shift US)"
   trayectoria: "Más de 40 años de experiencia regional en Centroamérica (la historia continúa con la red Porter Novelli, fundada hace más de 50 años)"  # telediario.cr
   headcount_aprox: "~200 colaboradores en Centroamérica, Caribe y Ecuador"  # telediario.cr; elfinancierocr
   rebranding: "El cambio de Porter Novelli → SHIFT Porter Novelli ocurrió el 9 de diciembre de 2022"  # telediario.cr
@@ -260,12 +261,19 @@ hubs:
     direccion: "Av. Abraham Lincoln 1061, Piantini"
     telefono: "+1 809-274-6813"
     contacto_email: "andrea.ramirez@caribbeanpn.com"
-    contacto_nombre: "Andrea Ramírez"
+    contacto_nombre: "Andrea Ramírez (General Manager Shift Caribe)"
+  - pais: "Venezuela"
+    ciudad: "Caracas (operación remota desde Madrid)"
+    direccion: "# TBD"
+    telefono: "+34 663 20 83 20"
+    contacto_email: "# TBD — pendiente email corporativo"
+    contacto_nombre: "Valentina Rosas Godoy (Director Shift Venezuela)"
   - pais: "Estados Unidos (Shift US)"
     ciudad: "Coral Gables, Florida (Miami)"  # prweek.com 2024
     rol: "Oficina afiliada para mercado hispano US"
-    contacto_email: "# TBD — verificar con Federico"
-    contacto_nombre: "Daniela Biffi (General Manager Miami)"  # landing /about-us
+    telefono: "+1 786 973 6648"
+    contacto_email: "# TBD — pendiente email corporativo"
+    contacto_nombre: "Karla Cobreiro (Office Director Miami); Daniela Biffi (GM Miami legacy)"
 
 equipo_publico:
   liderazgo_regional:
@@ -417,7 +425,7 @@ competencia:
   como_diferenciamos: |
     1. PR + creatividad + data + IA bajo un mismo modelo operativo (Shifting
        Culture®), no como verticales separados.
-    2. Cobertura nativa en 9 mercados latinoamericanos con un solo P&L
+    2. Cobertura nativa en 10 mercados latinoamericanos con un solo P&L
        regional — gobernanza única, ejecución local.
     3. ShiftLab: primera unidad de IA propietaria en agencia de comms LATAM
        (IA Shifter, Brand Influence Index).
@@ -531,19 +539,19 @@ tono_de_marca:
 
 faqs:
   - pregunta: "¿Qué hace Shift?"
-    respuesta: "Somos una agencia de comunicación estratégica, reputación corporativa y creatividad cultural con presencia en 9 países de Latinoamérica. Integramos PR, creatividad, data e IA bajo un modelo propietario llamado Shifting Culture®. No hacemos campañas aisladas: diseñamos plataformas que generan conversación, confianza y resultados medibles."
+    respuesta: "Somos una agencia de comunicación estratégica, reputación corporativa y creatividad cultural con presencia en 10 países de Latinoamérica. Integramos PR, creatividad, data e IA bajo un modelo propietario llamado Shifting Culture®. No hacemos campañas aisladas: diseñamos plataformas que generan conversación, confianza y resultados medibles."
     keywords: ["qué hacen", "qué es shift", "a qué se dedican", "quiénes son", "agencia"]
   - pregunta: "¿Qué servicios ofrecen?"
     respuesta: "Cuatro capas que se combinan según el momento de la organización: 1) Estrategia corporativa y reputación, 2) Creatividad y campañas integradas, 3) Media performance + data, 4) Crisis y gestión de riesgo. Sumá Shift LAB si querés innovación + IA aplicada. ¿Te cuento más sobre alguna?"
     keywords: ["servicios", "qué ofrecen", "qué hacen", "capabilities", "ofrecen"]
   - pregunta: "¿En qué países operan?"
-    respuesta: "Tenemos 9 hubs en Latinoamérica: Costa Rica (hub principal), Guatemala, El Salvador, Honduras, Nicaragua, Panamá, Colombia, Ecuador y República Dominicana. Sumamos también una oficina en Miami (Shift US) para el mercado hispano de Estados Unidos."
+    respuesta: "Tenemos 10 hubs en Latinoamérica: Costa Rica (hub principal), Guatemala, El Salvador, Honduras, Nicaragua, Panamá, Colombia, Ecuador, Venezuela y República Dominicana. Sumamos también una oficina en Miami (Shift US) para el mercado hispano de Estados Unidos."
     keywords: ["países", "presencia", "operan", "oficinas", "hubs", "latinoamérica", "región"]
   - pregunta: "¿Cuál es su sede principal?"
     respuesta: "Costa Rica. Estamos en el Centro Empresarial Vía Lindora, 3er Piso, en San José. Es el hub regional desde donde coordinamos toda la operación latam."
     keywords: ["sede", "headquarters", "dónde están", "oficina principal", "costa rica"]
   - pregunta: "¿Son parte de Porter Novelli global?"
-    respuesta: "Sí. SHIFT LATAM es afiliado de Porter Novelli, la red global de comunicación que forma parte de Omnicom Public Relations Group (junto con FleishmanHillard, Ketchum y MMC). Eso nos da metodologías y clientes globales con ejecución local en cada uno de nuestros 9 mercados."
+    respuesta: "Sí. SHIFT LATAM es afiliado de Porter Novelli, la red global de comunicación que forma parte de Omnicom Public Relations Group (junto con FleishmanHillard, Ketchum y MMC). Eso nos da metodologías y clientes globales con ejecución local en cada uno de nuestros 10 mercados."
     keywords: ["porter novelli", "omnicom", "red global", "afiliado", "global"]
   - pregunta: "¿Qué es Shift LAB?"
     respuesta: "Es nuestra unidad de innovación e inteligencia artificial aplicada a comunicación. No usamos IA como tendencia: la integramos como flujo operativo para mejorar análisis, acelerar decisiones y potenciar el criterio humano. Cinco capas: auditoría de madurez digital, implementación en flujos estratégicos, automatización, productos comunicacionales y dashboards de data intelligence."
@@ -555,7 +563,7 @@ faqs:
     respuesta: "Más de 40 años de trayectoria regional en Centroamérica (heredando una historia más larga dentro de la red Porter Novelli, que pasa los 50). Hicimos rebranding de Porter Novelli a SHIFT Porter Novelli en diciembre de 2022."
     keywords: ["años", "historia", "trayectoria", "antigüedad", "fundación", "cuándo nacieron"]
   - pregunta: "¿Cuántas personas trabajan en Shift?"
-    respuesta: "Alrededor de 200 colaboradores entre Centroamérica, Caribe y Ecuador, distribuidos en los 9 hubs."
+    respuesta: "Alrededor de 200 colaboradores entre Centroamérica, Caribe y Ecuador, distribuidos en los 10 hubs."
     keywords: ["headcount", "tamaño", "personas", "equipo", "empleados", "cuántos son"]
   - pregunta: "¿Quién es Federico Martinez?"
     respuesta: "Es uno de los ejecutivos de Shift Costa Rica. Si querés, te paso su correo directo: fmartinez@shiftpn.co.cr. ¿Querés que armemos un brief breve para que él te contacte?"
@@ -576,7 +584,7 @@ faqs:
     respuesta: "Probablemente sí. Tenemos experiencia fuerte en banca y servicios financieros (caso BCR), gobierno y marca país (Instituto Costarricense de Turismo, Microsoft/Minecraft Costa Rica del Futuro), salud, tercer sector y causas sociales (Cambiemos la Regla con Nosotras Women Connecting). Contame qué industria y te paso casos relevantes."
     keywords: ["industria", "casos", "experiencia", "sector", "vertical", "ejemplos"]
   - pregunta: "¿Qué los diferencia de Edelman o LLYC?"
-    respuesta: "Tres cosas: 1) Operamos los cuatro lados (PR + creatividad + data + IA) bajo un mismo modelo (Shifting Culture®), no como verticales separados. 2) Tenemos un Lab de IA propietaria (IA Shifter, Brand Influence Index) — somos la primera agencia de la región con un agente de IA propio para consultoría. 3) Cobertura nativa en 9 mercados latam con un solo P&L regional: gobernanza única, ejecución local. Y +120 premios internacionales, incluido Campaign of the Year en PRWeek Global 2024."
+    respuesta: "Tres cosas: 1) Operamos los cuatro lados (PR + creatividad + data + IA) bajo un mismo modelo (Shifting Culture®), no como verticales separados. 2) Tenemos un Lab de IA propietaria (IA Shifter, Brand Influence Index) — somos la primera agencia de la región con un agente de IA propio para consultoría. 3) Cobertura nativa en 10 mercados latam con un solo P&L regional: gobernanza única, ejecución local. Y +120 premios internacionales, incluido Campaign of the Year en PRWeek Global 2024."
     keywords: ["edelman", "llyc", "burson", "competencia", "diferencia", "competidores", "porter novelli vs"]
   - pregunta: "¿Qué premios tienen?"
     respuesta: "Más de 120 premios internacionales. Los más recientes incluyen 5 oros en PRWeek Global Awards 2024 por 'Cambiemos la Regla' (incluyendo Campaign of the Year), Cannes Lions 2024 (Bronce Glass + Plata PR), múltiples SABRE Awards LATAM y Global, Effie Index, FIAP y Clio. Te puedo pasar más detalle si querés."

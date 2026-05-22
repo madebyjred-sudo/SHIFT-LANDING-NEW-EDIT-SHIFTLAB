@@ -24,6 +24,9 @@ const people: { src: string }[] = [
   { src: "/assets/images/aboutus/persona-4.jpg" },  // Gonzalo Piñeros
   { src: "/assets/images/aboutus/persona-5.jpg" },  // Angélica Moreno
   { src: "/assets/images/aboutus/persona-6.jpg" },  // Camila Ferreiro
+  { src: "/assets/images/aboutus/persona-25.jpg" }, // Valentina Rosas Godoy (Venezuela)
+  { src: "/assets/images/aboutus/persona-26.jpg" }, // Andrea Ramírez (Caribe)
+  { src: "/assets/images/aboutus/persona-27.jpg" }, // Karla Cobreiro (Miami)
 ];
 
 // Increase this to slow down the intro auto-scroll.

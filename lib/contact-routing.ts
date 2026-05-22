@@ -31,5 +31,6 @@ export const HUB_EMAILS: Record<HubOption, string> = {
   Panamá: "jjaltmann@omgcr.com",                         // JJ Altmann
   Colombia: "gonzalo.pineros@shiftpn.co",                // Gonzalo Piñeros (GM Shift Colombia)
   Ecuador: "angelica.moreno@shiftpn.ec",                 // Angélica Moreno (GM Shift Ecuador)
-  "República Dominicana": "andrea.ramirez@caribbeanpn.com", // Andrea Ramírez (Caribbean PN)
+  Venezuela: "holahola@shiftpn.com",                     // Valentina Rosas Godoy — pendiente email corp
+  "República Dominicana": "andrea.ramirez@caribbeanpn.com", // Andrea Ramírez (GM Shift Caribe)
 };

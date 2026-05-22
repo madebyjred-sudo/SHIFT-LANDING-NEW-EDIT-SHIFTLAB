@@ -38,8 +38,9 @@ hubs_12_paises:
   honduras: "Tegucigalpa — maria.calvo@shift-pn.hn — +504 9453-8228"
   nicaragua: "Managua — rmontenegro@shiftpn.com.ni — +505 2254-7627"
   panama: "Ciudad de Panamá — jjaltmann@omgcr.com — +507 269 3835"
-  republica_dominicana: "Santo Domingo — andrea.ramirez@caribbeanpn.com — +1 809-274-6813"
-  miami_us: "Coral Gables FL — Daniela Biffi GM"
+  republica_dominicana: "Santo Domingo — Andrea Ramírez GM Shift Caribe — andrea.ramirez@caribbeanpn.com — +1 809-274-6813"
+  venezuela: "Caracas (op. remota desde Madrid) — Valentina Rosas Godoy Directora — +34 663 20 83 20"
+  miami_us: "Coral Gables FL — Karla Cobreiro Office Director — +1 786 973 6648"
 
 equipo_clave:
   - Rodrigo Castro — CEO Shift Latam
@@ -47,6 +48,9 @@ equipo_clave:
   - Oscar Solano — VP CCO & CSO (Chief Creative & Strategy Officer)
   - Fabiana Martínez — Business Development Director
   - Federico Martinez — Costa Rica (fmartinez@shiftpn.co.cr)
+  - Andrea Ramírez — General Manager Shift Caribe (RD)
+  - Valentina Rosas Godoy — Director Shift Venezuela
+  - Karla Cobreiro — Office Director Miami
 
 casos_verificables:
   - "Cambiemos la Regla / Welcome to the Group (Nosotras Women Connecting + Garnier, 2024): ley en CR para acceso menstrual gratuito. PRWeek Global 2024: 5 oros incluyendo Campaign of the Year. Cannes Lions 2024: Bronce Glass + Plata PR. SABRE LATAM 2024."
@@ -59,7 +63,7 @@ competencia:
   principales: [LLYC, Edelman, Burson, Weber Shandwick, FleishmanHillard]
   diferenciador: |
     PR + creatividad + data + IA bajo un mismo modelo (Shifting Culture®), no verticales separados.
-    Cobertura nativa en 9 mercados latam con un solo P&L regional.
+    Cobertura nativa en 10 mercados latam con un solo P&L regional.
     Shift LAB: primera unidad de IA propietaria en comms LATAM.
     Campaign of the Year en PRWeek Global 2024.
 
@@ -98,7 +102,7 @@ links_internos:
     enlaces_sugeridos: ["nuestra página de servicios", "el detalle de cada capa", "cómo estructuramos los servicios", "lo que ofrecemos"]
   - path: "/about-us"
     titulo: "Sobre nosotros"
-    contenido: "Quiénes somos, liderazgo regional + por país, los 9 hubs con sus contactos."
+    contenido: "Quiénes somos, liderazgo regional + por país, los 10 hubs con sus contactos."
     enlaces_sugeridos: ["nuestra página de equipo", "quiénes somos", "el detalle del equipo regional"]
   - path: "/shift-lab"
     titulo: "Shift LAB"
@@ -122,16 +126,16 @@ links_internos:
     enlaces_sugeridos: ["nuestro newsroom", "los estudios sectoriales"]
   - path: "/contact"
     titulo: "Contacto"
-    contenido: "Formulario + emails + lista completa de los 9 hubs con direcciones y teléfonos."
+    contenido: "Formulario + emails + lista completa de los 10 hubs con direcciones y teléfonos."
     enlaces_sugeridos: ["la página de contacto", "el formulario de contacto"]
 
 faqs_principales:
   - q: "¿Qué hace Shift?"
-    a: "Agencia de comunicación estratégica + reputación corporativa + creatividad cultural, 9 países latam. Integra PR, creatividad, data e IA bajo Shifting Culture®."
+    a: "Agencia de comunicación estratégica + reputación corporativa + creatividad cultural, 10 países latam. Integra PR, creatividad, data e IA bajo Shifting Culture®."
   - q: "¿Servicios?"
     a: "4 capas: Estrategia corporativa+reputación; Creatividad+campañas; Media performance+data; Crisis. Sumar Shift LAB para IA aplicada."
   - q: "¿Países?"
-    a: "9 hubs latam: CR (hub), GT, SV, HN, NI, PA, CO, EC, RD. Más Miami (Shift US)."
+    a: "10 hubs latam: CR (hub), GT, SV, HN, NI, PA, CO, EC, VE, RD. Más Miami (Shift US)."
   - q: "¿Sede?"
     a: "Costa Rica — Centro Empresarial Vía Lindora, 3er Piso, San José."
   - q: "¿Porter Novelli?"
@@ -157,7 +161,7 @@ faqs_principales:
   - q: "¿Crisis?"
     a: "Es nuestra 4ta capa. Acompañamos antes/durante/después. Si estás en crisis activa: escribí directo a holahola@shiftpn.com con asunto 'crisis' — conectamos en horas."
   - q: "¿Diferencia vs Edelman/LLYC?"
-    a: "Operamos las 4 patas (PR+creatividad+data+IA) bajo un mismo modelo (Shifting Culture®), no verticales separados. Tenemos Lab de IA propietaria. Cobertura nativa en 9 mercados con un solo P&L. +120 premios. Campaign of the Year en PRWeek Global 2024."
+    a: "Operamos las 4 patas (PR+creatividad+data+IA) bajo un mismo modelo (Shifting Culture®), no verticales separados. Tenemos Lab de IA propietaria. Cobertura nativa en 10 mercados con un solo P&L. +120 premios. Campaign of the Year en PRWeek Global 2024."
   - q: "¿Qué es IA Shifter?"
     a: "Agente de IA propietario que comprime data pública de consumidores latam (banca, fast food, seguros, retail, farmacia, vehículos) en conversaciones estratégicas accionables."
   - q: "¿Quién sos?"

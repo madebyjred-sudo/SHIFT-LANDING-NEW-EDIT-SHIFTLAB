@@ -85,6 +85,24 @@ const regionalOffices = [
     email: "andrea.ramirez@caribbeanpn.com",
     mapSrc: "/assets/images/aboutus/Rep. Dominicana.svg",
   },
+  {
+    name: "Venezuela",
+    title: "Venezuela",
+    description: "Caracas",
+    location: "Dirección por confirmar",
+    phone: "+34 663 20 83 20",
+    email: "holahola@shiftpn.com",
+    mapSrc: "/assets/images/aboutus/Costa Rica.svg",
+  },
+  {
+    name: "Miami",
+    title: "Miami (Shift US)",
+    description: "Coral Gables, Florida",
+    location: "Oficina afiliada para mercado hispano US",
+    phone: "+1 786 973 6648",
+    email: "holahola@shiftpn.com",
+    mapSrc: "/assets/images/aboutus/Costa Rica.svg",
+  },
 ];
 
 export default function HomeIntroSection() {

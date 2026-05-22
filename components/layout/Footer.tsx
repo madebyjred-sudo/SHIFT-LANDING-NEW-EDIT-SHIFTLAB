@@ -30,7 +30,9 @@ const COUNTRIES: Country[] = [
   { name: "El Salvador",     timeZone: "America/El_Salvador",   img: UNSPLASH("1690384451505-2aef8ae1b0ef") },
   { name: "Guatemala",       timeZone: "America/Guatemala",     img: UNSPLASH("1669025467363-ace9bad030dc") },
   { name: "Honduras",        timeZone: "America/Tegucigalpa",   img: UNSPLASH("1625106497878-0dee231cd4e6") },
+  { name: "Venezuela",       timeZone: "America/Caracas",       img: UNSPLASH("1610987013014-c7c30988fbaa") },
   { name: "Rep. Dominicana", timeZone: "America/Santo_Domingo", img: UNSPLASH("1741318102788-34a3b1a79513") },
+  { name: "Miami",           timeZone: "America/New_York",      img: UNSPLASH("1601581875309-fafbf2d3ed3a") },
 ];
 
 // -------------------------------------------------------------------

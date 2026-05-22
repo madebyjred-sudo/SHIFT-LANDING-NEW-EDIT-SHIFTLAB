@@ -23,6 +23,8 @@ const REGIONAL_POINTS: RegionalPoint[] = [
   { id: "costa-rica", label: "Costa Rica", top: "55.2%", left: "38.6%" },
   { id: "colombia", label: "Colombia", top: "57.6%", left: "55.3%" },
   { id: "ecuador", label: "Ecuador", top: "64.8%", left: "46.8%" },
+  { id: "venezuela", label: "Venezuela", top: "52.8%", left: "52.8%" },
+  { id: "miami", label: "Miami", top: "27%", left: "39%" },
 ];
 
 function RegionalCapabilitiesMarkers({

@@ -126,6 +126,21 @@ const ABOUTUS = [
     title: "Laura Hurtado",
     description: "Digital Director Shift \n Colombia",
   },
+  {
+    imageSrc: "/assets/images/aboutus/persona-25.jpg",
+    title: "Valentina Rosas Godoy",
+    description: "Director Shift Venezuela",
+  },
+  {
+    imageSrc: "/assets/images/aboutus/persona-26.jpg",
+    title: "Andrea Ramírez",
+    description: "General Manager Shift \n Caribe",
+  },
+  {
+    imageSrc: "/assets/images/aboutus/persona-27.jpg",
+    title: "Karla Cobreiro",
+    description: "Office Director Miami",
+  },
 ] as const;
 
 function subscribePrefersReducedMotion(onChange: () => void) {
