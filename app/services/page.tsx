@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import HomeIntroSection from "./_/HomeIntroSection";
 import HomeServiciosSection from "./_/HomeServiciosSection";
+import ServiciosDetalleTable from "./_/ServiciosDetalleTable";
 import { createPageMetadata, createWebPageSchema } from "@/app/seo";
 
 const PAGE_TITLE = "Servicios";
@@ -29,6 +30,7 @@ export default function ServicesPage() {
       />
       <HomeIntroSection />
       <HomeServiciosSection />
+      <ServiciosDetalleTable />
     </>
   );
 }

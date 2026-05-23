@@ -50,7 +50,7 @@ const SERVICIOS: Service[] = [
     category: "REPUTACIÓN",
     title: "Estrategia Corporativa y Reputación",
     description:
-      "Auditorías de reputación, narrativa corporativa, asuntos públicos, ESG, posicionamiento y gobernanza comunicacional.",
+      "Consultoría a nivel C-suite: arquitectura de reputación corporativa, asuntos públicos, comunicación interna, posicionamiento ejecutivo y narrativa institucional. Alineamos lo que la compañía hace con lo que el mercado escucha.",
     ctaLabel: "Conversemos sobre reputación",
     ctaSubject: "Reputacion",
     posterSrc: "/assets/images/servicios/influencia.svg",
@@ -69,7 +69,7 @@ const SERVICIOS: Service[] = [
     category: "CREATIVIDAD",
     title: "Creatividad y Campañas Integradas",
     description:
-      "Plataformas culturales, storytelling ejecutivo, branded content, activaciones y campañas regionales.",
+      "Creatividad aplicada a problemas de negocio y cambio social. Plataformas que combinan PR, contenido, activación, asuntos públicos e influencia cultural. Traducimos tensiones culturales en ideas que mueven mercados.",
     ctaLabel: "Conversemos sobre creatividad",
     ctaSubject: "Creatividad",
     posterSrc: "/assets/images/servicios/creatividad.svg",
@@ -88,7 +88,7 @@ const SERVICIOS: Service[] = [
     category: "MEDIA + DATA",
     title: "Media Performance y Data",
     description:
-      "Planificación digital, optimización, dashboards, modelos de atribución y growth media.",
+      "Distribución pagada, ganada y propia con medición continua. Integramos data de consumo digital, escucha social y performance editorial para decidir qué historia mover, en qué canal y a qué audiencia.",
     ctaLabel: "Conversemos sobre performance",
     ctaSubject: "Media-Performance",
     posterSrc: "/assets/images/servicios/media-performance.svg",
@@ -107,7 +107,7 @@ const SERVICIOS: Service[] = [
     category: "CRISIS",
     title: "Crisis y Gestión de Riesgo",
     description:
-      "Modelos preventivos, simulaciones, entrenamiento de voceros y respuesta 24/7.",
+      "Acompañamos antes, durante y después de eventos sensibles que pueden afectar reputación. Monitoreo, vocería, manejo de stakeholders y narrativa estratégica — desde riesgos regulatorios hasta crisis digitales.",
     ctaLabel: "Conversemos sobre crisis",
     ctaSubject: "Crisis",
     posterSrc: "/assets/images/servicios/crisis.svg",
@@ -333,7 +333,6 @@ export default function HomeServiciosSection() {
   const navH = useNavbarHeight();
   const panelScrollPx = usePanelScrollPx(navH, lenis);
   const prefersReducedMotion = useReducedMotion() ?? false;
-  const activeIndex = useActiveCardIndex(SERVICIOS.length, navH);
 
   const panelMinFallback = `calc(100dvh - ${navH}px)`;
 
@@ -382,12 +381,6 @@ export default function HomeServiciosSection() {
           </div>
         </ServiciosScrollAudioProvider>
       </section>
-
-      <ServicesProgressPill
-        index={activeIndex}
-        total={SERVICIOS.length}
-        category={SERVICIOS[activeIndex].category}
-      />
     </>
   );
 }
