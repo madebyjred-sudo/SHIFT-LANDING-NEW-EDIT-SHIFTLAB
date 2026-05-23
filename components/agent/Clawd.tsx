@@ -86,6 +86,8 @@ const EYE = { rMin: 3, rMax: 7, cMin: 10, cMax: 15 };
 // Component
 // ──────────────────────────────────────────────────────────────
 
+type Pose = "standing" | "sitting" | "walking-left" | "walking-right";
+
 type ClawdProps = {
   /** CSS pixels. Default 22. */
   size?: number;
@@ -93,12 +95,25 @@ type ClawdProps = {
   hovered?: boolean;
   /** Cambio de este número triggerea un wink one-shot (C). */
   triggerWink?: number;
+  /**
+   * Si true, Clawd cicla solo entre poses: standing → walking ±x →
+   * sitting → standing. Cada pose dura 5-9s. Usado cuando Clawd está
+   * en perch sobre el pill (no dentro del hint bubble).
+   */
+  autonomous?: boolean;
+  /**
+   * Cuánto puede caminar lateral (±px) dentro del perch. Default 8.
+   * Mantener chico para no salirse del pill.
+   */
+  walkRange?: number;
 };
 
 export default function Clawd({
   size = 22,
   hovered = false,
   triggerWink = 0,
+  autonomous = false,
+  walkRange = 8,
 }: ClawdProps) {
   const reduce = useReducedMotion();
   const svgRef = React.useRef<SVGSVGElement>(null);
@@ -109,6 +124,7 @@ export default function Clawd({
   );
   const [hairFrame, setHairFrame] = React.useState(0);
   const [footFrame, setFootFrame] = React.useState(0);
+  const [pose, setPose] = React.useState<Pose>("standing");
 
   // ── B. Eye blink loop (random 4.5-7s, duración 180ms) ──────────
   React.useEffect(() => {
@@ -252,56 +268,111 @@ export default function Clawd({
     return base;
   };
 
+  // ── Autonomous pose cycle (cuando perched standalone) ─────────
+  // Pesos: stay 40% · walk-L 15% · walk-R 15% · sit 20% · stand 10%
+  React.useEffect(() => {
+    if (!autonomous || reduce) return;
+    const pick = (): Pose => {
+      const r = Math.random();
+      if (r < 0.4) return pose;                         // stay
+      if (r < 0.55) return "walking-left";
+      if (r < 0.7) return "walking-right";
+      if (r < 0.9) return "sitting";
+      return "standing";
+    };
+    const t = window.setInterval(() => {
+      setPose(pick());
+    }, 5000 + Math.random() * 4000);                   // 5-9s
+    return () => window.clearInterval(t);
+  }, [autonomous, reduce, pose]);
+
+  // ── Cuando termina un walking, vuelve a standing ──────────────
+  // Walking dura ~1.8s y luego pose vuelve a standing (espera el
+  // próximo pick del cycle).
+  React.useEffect(() => {
+    if (!autonomous) return;
+    if (pose === "walking-left" || pose === "walking-right") {
+      const t = window.setTimeout(() => setPose("standing"), 1800);
+      return () => window.clearTimeout(t);
+    }
+  }, [pose, autonomous]);
+
   // ── Render ─────────────────────────────────────────────────────
   // A. Breathing  +  F. Excited bounce
   const breathDuration = hovered ? 1.6 : 3.2;
   const breathAmplitude = hovered ? -2 : -1;
   const scaleRange = hovered ? [1, 1.05, 1] : 1;
 
+  // Pose-driven transforms (outer wrapper) — separados del breathing
+  // (inner wrapper) para que ambos puedan correr en paralelo.
+  const poseAnimate = (() => {
+    if (!autonomous || reduce) return { x: 0, scaleY: 1, y: 0 };
+    switch (pose) {
+      case "walking-left":
+        return { x: -walkRange, scaleY: 1, y: 0 };
+      case "walking-right":
+        return { x: walkRange, scaleY: 1, y: 0 };
+      case "sitting":
+        // Cuerpo comprimido + bajado para "sentado"
+        return { x: 0, scaleY: 0.78, y: 3 };
+      case "standing":
+      default:
+        return { x: 0, scaleY: 1, y: 0 };
+    }
+  })();
+
   return (
     <motion.span
       className="inline-flex shrink-0"
-      animate={
-        reduce
-          ? undefined
-          : {
-              y: [0, breathAmplitude, 0],
-              scale: scaleRange,
-            }
-      }
-      transition={{
-        duration: breathDuration,
-        repeat: Infinity,
-        ease: "easeInOut",
-      }}
-      style={{ lineHeight: 0 }}
+      animate={poseAnimate}
+      transition={{ duration: 1.8, ease: "easeInOut" }}
+      style={{ lineHeight: 0, transformOrigin: "50% 100%" }}
     >
-      <svg
-        ref={svgRef}
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        shapeRendering="crispEdges"
-        aria-hidden
-        className="block"
+      {/* Inner wrapper: breathing (loop independiente del pose) */}
+      <motion.span
+        className="inline-flex"
+        animate={
+          reduce
+            ? undefined
+            : {
+                y: [0, breathAmplitude, 0],
+                scale: scaleRange,
+              }
+        }
+        transition={{
+          duration: breathDuration,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        style={{ lineHeight: 0 }}
       >
-        {CLAWD_IDLE.map((row, y) =>
-          row.map((_, x) => {
-            const color = getCellColor(y, x);
-            if (color === 0) return null;
-            return (
-              <rect
-                key={`${x}-${y}`}
-                x={x}
-                y={y}
-                width="1"
-                height="1"
-                fill={PALETTE[color]}
-              />
-            );
-          }),
-        )}
-      </svg>
+        <svg
+          ref={svgRef}
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          shapeRendering="crispEdges"
+          aria-hidden
+          className="block"
+        >
+          {CLAWD_IDLE.map((row, y) =>
+            row.map((_, x) => {
+              const color = getCellColor(y, x);
+              if (color === 0) return null;
+              return (
+                <rect
+                  key={`${x}-${y}`}
+                  x={x}
+                  y={y}
+                  width="1"
+                  height="1"
+                  fill={PALETTE[color]}
+                />
+              );
+            }),
+          )}
+        </svg>
+      </motion.span>
     </motion.span>
   );
 }

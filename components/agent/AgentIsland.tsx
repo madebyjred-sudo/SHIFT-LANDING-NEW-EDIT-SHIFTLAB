@@ -104,19 +104,29 @@ export default function AgentIsland({
   // Mostrar el hint flotante mientras el pill está colapsado y el
   // visitante NO lo ha abierto antes en esta sesión.
   const [showHint, setShowHint] = React.useState(false);
+  // Una vez que el visitante abrió el chat al menos una vez, Clawd se
+  // queda sentado encima del pill (con autonomous behaviors). Persistente
+  // dentro de la sesión.
+  const [chatEverOpened, setChatEverOpened] = React.useState(false);
+
   React.useEffect(() => {
     if (typeof window === "undefined") return;
     const seen = window.sessionStorage.getItem(HINT_SEEN_KEY);
-    if (seen) return;
+    if (seen) {
+      setChatEverOpened(true);
+      return;
+    }
     // Pequeño delay para que el hint aterrice después del primer paint
     // y del greeting del bot — evita pop-in agresivo.
     const t = window.setTimeout(() => setShowHint(true), 1800);
     return () => window.clearTimeout(t);
   }, []);
 
-  // Al abrir Shifty (desde pill o desde hint), marcamos visto y ocultamos.
+  // Al abrir Shifty (desde pill o desde hint), marcamos visto, ocultamos
+  // el hint, y activamos el mascot persistente que vivirá encima del pill.
   const handleOpen = React.useCallback(() => {
     setShowHint(false);
+    setChatEverOpened(true);
     if (typeof window !== "undefined") {
       window.sessionStorage.setItem(HINT_SEEN_KEY, "1");
     }
@@ -131,6 +141,8 @@ export default function AgentIsland({
         // abajo. Sin esto el pill queda DEBAJO de la barra del sistema
         // en iOS Safari.
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        // relative para que Clawd-on-pill se posicione respecto al wrapper.
+        position: "fixed",
       }}
     >
       {/* Hint flotante — solo visible mientras pill está colapsado y la
@@ -138,6 +150,13 @@ export default function AgentIsland({
           halo magenta no compita con la pill expandida. */}
       <AnimatePresence>
         {!open && showHint && <ShiftyHint onClick={handleOpen} />}
+      </AnimatePresence>
+
+      {/* Clawd sentado/caminando encima del pill — aparece después de
+          la primera interacción. Behavior autónomo (walk, sit, stand,
+          blink). Pointer-events none para no bloquear clicks al pill. */}
+      <AnimatePresence>
+        {!open && chatEverOpened && <ClawdOnPill />}
       </AnimatePresence>
 
       <AnimatePresence mode="wait" initial={false}>
@@ -215,6 +234,38 @@ export default function AgentIsland({
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+/**
+ * ClawdOnPill — Clawd persistente sentado/caminando encima del Shifty
+ * pill después de la primera interacción del visitante. Position fixed
+ * relative al wrapper de AgentIsland, justo arriba del pill con un
+ * overlap sutil ("sitting on" en vez de "floating above").
+ */
+function ClawdOnPill() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10, scale: 0.86 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 8, scale: 0.9, transition: { duration: 0.22 } }}
+      transition={{
+        duration: 0.55,
+        ease: [0.22, 1.4, 0.36, 1], // spring overshoot — drop in + bounce
+      }}
+      className="pointer-events-none absolute"
+      style={{
+        // Bottom: 30 = pill height (~38px) - 8px de overlap. Clawd
+        // queda sentado sobre el pill, no flotando arriba.
+        bottom: "30px",
+        // Right: 26 = aprox centro horizontal del pill (que mide ~110px
+        // y está alineado al right edge del wrapper).
+        right: "26px",
+        zIndex: 1,
+      }}
+    >
+      <Clawd size={24} autonomous />
+    </motion.div>
   );
 }
 
