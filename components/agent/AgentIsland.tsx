@@ -3,6 +3,7 @@
 import * as React from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import ShiftMark from "@/components/common/ShiftMark";
+import Clawd from "./Clawd";
 import type { AgentState, Message } from "./agent-types";
 import AgentHeader from "./AgentHeader";
 import AgentMessages from "./AgentMessages";
@@ -59,27 +60,10 @@ const HINT_MESSAGES = [
   "Empecemos a trabajar.",
 ];
 
-// Pixel alien hiper-minimalista a la izquierda del mensaje. 5×4 grid
-// con dos frames que alternan cada 420ms (efecto walking estilo Space
-// Invader). Cada celda = 1 unidad del viewBox; al renderse a 15×12px
-// con shapeRendering="crispEdges" cada "pixel" queda como cuadrado
-// nítido sin antialiasing.
-const ALIEN_FRAMES: number[][][] = [
-  // Frame A — patas A
-  [
-    [0, 1, 1, 1, 0],
-    [1, 0, 1, 0, 1],
-    [1, 1, 1, 1, 1],
-    [1, 0, 1, 0, 1],
-  ],
-  // Frame B — patas B (shifted → lectura de "caminata")
-  [
-    [0, 1, 1, 1, 0],
-    [1, 0, 1, 0, 1],
-    [1, 1, 1, 1, 1],
-    [0, 1, 0, 1, 0],
-  ],
-];
+// (Clawd vive en su propio archivo — Clawd.tsx — para mantener este
+// archivo enfocado en el shell del island. Clawd maneja todas sus
+// animaciones internas: breathing, blink, pupil tracking, hair wave,
+// foot tap, etc.)
 
 // sessionStorage key — la mantenemos local para no acoplar el componente
 // a un singleton externo. Si el visitante vuelve mañana, el hint
@@ -259,18 +243,9 @@ function charDelayMs(pos: number, total: number): number {
 function ShiftyHint({ onClick }: { onClick: () => void }) {
   const reduce = useReducedMotion();
   const [idx, setIdx] = React.useState(0);
-  const [walkFrame, setWalkFrame] = React.useState(0);
   const [text, setText] = React.useState("");
   const [phase, setPhase] = React.useState<TypePhase>("typing");
-
-  // Walk loop del alien — sólo si el OS no pide reduced motion.
-  React.useEffect(() => {
-    if (reduce) return;
-    const walk = window.setInterval(() => {
-      setWalkFrame((f) => (f + 1) % ALIEN_FRAMES.length);
-    }, 420);
-    return () => window.clearInterval(walk);
-  }, [reduce]);
+  const [hovered, setHovered] = React.useState(false);
 
   // Typewriter state machine: typing → hold → erasing → pause → next msg.
   // Si reduce-motion, mostramos el texto completo y rotamos sin animar.
@@ -324,6 +299,8 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
     <motion.button
       type="button"
       onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       aria-label="Abrir Shifty"
       initial={{ opacity: 0, y: 10, scale: 0.94 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -368,30 +345,10 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
       >
         <SurfaceSheen />
         <span className="relative z-[1] flex items-center gap-2">
-          {/* Pixel alien — 2 frames alternando cada 420ms (walking). */}
-          <svg
-            aria-hidden
-            width="15"
-            height="12"
-            viewBox="0 0 5 4"
-            shapeRendering="crispEdges"
-            className="block shrink-0"
-          >
-            {ALIEN_FRAMES[walkFrame].map((row, y) =>
-              row.map((on, x) =>
-                on ? (
-                  <rect
-                    key={`${x}-${y}`}
-                    x={x}
-                    y={y}
-                    width="1"
-                    height="1"
-                    fill="#F540FF"
-                  />
-                ) : null,
-              ),
-            )}
-          </svg>
+          {/* Clawd — mascot 24×24 con todas las animaciones idle (breath,
+              blink, hair wave, foot tap, pupil tracking). triggerWink se
+              actualiza con idx para que parpadee al cambiar de mensaje. */}
+          <Clawd size={22} hovered={hovered} triggerWink={idx} />
 
           {/* Typewriter container — minWidth fijo para que el bubble no
               cambie de ancho al escribir/borrar (longest message =
