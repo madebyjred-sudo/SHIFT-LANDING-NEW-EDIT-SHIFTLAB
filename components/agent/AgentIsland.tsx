@@ -82,7 +82,15 @@ export default function AgentIsland({
     : { type: "spring" as const, stiffness: 380, damping: 32, mass: 0.55 };
 
   return (
-    <div className="fixed z-[100] right-4 sm:right-6 bottom-4 sm:bottom-6">
+    <div
+      className="fixed z-[100] right-3 sm:right-6 bottom-3 sm:bottom-6"
+      style={{
+        // Safe area iOS — el iPhone notch/home indicator come ~34px
+        // abajo. Sin esto el pill queda DEBAJO de la barra del sistema
+        // en iOS Safari.
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+      }}
+    >
       <AnimatePresence mode="wait" initial={false}>
         {open ? (
           <motion.div
@@ -95,8 +103,11 @@ export default function AgentIsland({
             aria-label="Shifty"
             className="overflow-hidden flex flex-col origin-bottom-right"
             style={{
-              width: "min(440px, calc(100vw - 32px))",
-              height: "min(620px, calc(100vh - 96px))",
+              // 100dvh > 100vh para iOS Safari (cuenta sólo viewport
+              // visible real, no incluye URL bar oculta). vw-24 deja
+              // 12px de margen cada lado en mobile.
+              width: "min(440px, calc(100vw - 24px))",
+              height: "min(620px, calc(100dvh - 72px))",
               borderRadius: 22,
               background: SURFACE_BG,
               backdropFilter: SURFACE_BACKDROP,

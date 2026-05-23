@@ -93,7 +93,7 @@ export default function AgentComposer({
               }}
               placeholder={busy ? "trabajando…" : "pregunta algo…"}
               disabled={busy}
-              className="flex-1 resize-none bg-transparent px-2 py-2 text-[13.5px] text-white placeholder:text-white/30 outline-none disabled:opacity-60 caret-[#F540FF]"
+              className="flex-1 resize-none bg-transparent px-2 py-2 text-[16px] sm:text-[13.5px] text-white placeholder:text-white/30 outline-none disabled:opacity-60 caret-[#F540FF]"
               style={{ minHeight: "32px", maxHeight: "132px" }}
             />
           )}
