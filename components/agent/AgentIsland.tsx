@@ -242,9 +242,9 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className="relative cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F540FF]/60"
     >
-      {/* Halo magenta pulsante — el "click suggest". Sale por fuera del
-          bubble como halo radial difuso. opacity + scale oscilan en
-          phase para dar la sensación de respiración. */}
+      {/* Halo magenta con ritmo de heartbeat — dos pulsos rápidos +
+          pausa larga, en vez de respiración uniforme. Más vivo, atrae
+          la mirada sin volverse molesto. */}
       {!reduce && (
         <motion.span
           aria-hidden
@@ -254,14 +254,27 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
               "radial-gradient(closest-side, rgba(245,64,255,0.45), rgba(245,64,255,0) 72%)",
             filter: "blur(14px)",
           }}
-          animate={{ opacity: [0.4, 0.95, 0.4], scale: [1, 1.12, 1] }}
-          transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+          animate={{
+            opacity: [0.35, 0.95, 0.45, 0.85, 0.35],
+            scale: [1, 1.12, 1.04, 1.1, 1],
+          }}
+          transition={{
+            duration: 2.6,
+            repeat: Infinity,
+            ease: "easeInOut",
+            times: [0, 0.12, 0.25, 0.4, 1],
+          }}
         />
       )}
 
-      {/* Bubble — misma surface system que el resto (liquid glass). */}
-      <span
-        className="relative inline-flex items-center overflow-hidden rounded-full px-3.5 py-2"
+      {/* Bubble — micro-bounce al cambiar de mensaje (key={idx}) le da
+          el efecto "el mascot saluda cada vez que dice algo nuevo". */}
+      <motion.span
+        key={idx}
+        initial={reduce ? false : { scale: 0.96 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.32, ease: [0.22, 1.4, 0.36, 1] }}
+        className="relative inline-flex items-center overflow-hidden rounded-full pl-2.5 pr-3.5 py-2"
         style={{
           background: SURFACE_BG,
           backdropFilter: SURFACE_BACKDROP,
@@ -270,7 +283,33 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
         }}
       >
         <SurfaceSheen />
-        <span className="relative z-[1] flex items-center">
+        <span className="relative z-[1] flex items-center gap-2">
+          {/* Mascot — el brand mark con idle animation continua. Bob +
+              micro-tilt periódico, como si "respirara" + ocasionalmente
+              hiciera un wave. La rotación va en pasos asimétricos para
+              que no se sienta robótica. */}
+          <motion.span
+            aria-hidden
+            className="inline-flex shrink-0"
+            animate={
+              reduce
+                ? undefined
+                : {
+                    y: [0, -1.5, 0, -1.5, 0],
+                    rotate: [0, 0, -6, 0, 6, 0, 0, 0],
+                  }
+            }
+            transition={{
+              duration: 3.4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1],
+            }}
+            style={{ transformOrigin: "50% 70%" }}
+          >
+            <ShiftMark size={14} wingColor="#F540FF" bodyColor="#FFFFFF" />
+          </motion.span>
+
           <AnimatePresence mode="wait" initial={false}>
             <motion.span
               key={HINT_MESSAGES[idx]}
@@ -288,7 +327,7 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
             </motion.span>
           </AnimatePresence>
         </span>
-      </span>
+      </motion.span>
     </motion.button>
   );
 }
