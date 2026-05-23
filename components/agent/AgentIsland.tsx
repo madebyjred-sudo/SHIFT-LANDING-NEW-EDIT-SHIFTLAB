@@ -59,6 +59,28 @@ const HINT_MESSAGES = [
   "Empecemos a trabajar.",
 ];
 
+// Pixel alien hiper-minimalista a la izquierda del mensaje. 5×4 grid
+// con dos frames que alternan cada 420ms (efecto walking estilo Space
+// Invader). Cada celda = 1 unidad del viewBox; al renderse a 15×12px
+// con shapeRendering="crispEdges" cada "pixel" queda como cuadrado
+// nítido sin antialiasing.
+const ALIEN_FRAMES: number[][][] = [
+  // Frame A — patas A
+  [
+    [0, 1, 1, 1, 0],
+    [1, 0, 1, 0, 1],
+    [1, 1, 1, 1, 1],
+    [1, 0, 1, 0, 1],
+  ],
+  // Frame B — patas B (shifted → lectura de "caminata")
+  [
+    [0, 1, 1, 1, 0],
+    [1, 0, 1, 0, 1],
+    [1, 1, 1, 1, 1],
+    [0, 1, 0, 1, 0],
+  ],
+];
+
 // sessionStorage key — la mantenemos local para no acoplar el componente
 // a un singleton externo. Si el visitante vuelve mañana, el hint
 // reaparece (rotated, no spam — sessionStorage muere con la tab).
@@ -223,6 +245,7 @@ export default function AgentIsland({
 function ShiftyHint({ onClick }: { onClick: () => void }) {
   const reduce = useReducedMotion();
   const [idx, setIdx] = React.useState(0);
+  const [walkFrame, setWalkFrame] = React.useState(0);
 
   React.useEffect(() => {
     const interval = window.setInterval(() => {
@@ -230,6 +253,15 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
     }, 4500);
     return () => window.clearInterval(interval);
   }, []);
+
+  // Walk loop del alien — sólo si el OS no pide reduced motion.
+  React.useEffect(() => {
+    if (reduce) return;
+    const walk = window.setInterval(() => {
+      setWalkFrame((f) => (f + 1) % ALIEN_FRAMES.length);
+    }, 420);
+    return () => window.clearInterval(walk);
+  }, [reduce]);
 
   return (
     <motion.button
@@ -284,31 +316,33 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
       >
         <SurfaceSheen />
         <span className="relative z-[1] flex items-center gap-2">
-          {/* Mascot — el brand mark con idle animation continua. Bob +
-              micro-tilt periódico, como si "respirara" + ocasionalmente
-              hiciera un wave. La rotación va en pasos asimétricos para
-              que no se sienta robótica. */}
-          <motion.span
+          {/* Pixel alien — walks via swap entre 2 frames cada 420ms.
+              Hyper-minimalista (5×4 grid, ~12 pixels visibles), magenta
+              brand sobre dark bubble. Sin antialiasing (crispEdges)
+              para look pixel-art puro. */}
+          <svg
             aria-hidden
-            className="inline-flex shrink-0"
-            animate={
-              reduce
-                ? undefined
-                : {
-                    y: [0, -1.5, 0, -1.5, 0],
-                    rotate: [0, 0, -6, 0, 6, 0, 0, 0],
-                  }
-            }
-            transition={{
-              duration: 3.4,
-              repeat: Infinity,
-              ease: "easeInOut",
-              times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1],
-            }}
-            style={{ transformOrigin: "50% 70%" }}
+            width="15"
+            height="12"
+            viewBox="0 0 5 4"
+            shapeRendering="crispEdges"
+            className="block shrink-0"
           >
-            <ShiftMark size={14} wingColor="#F540FF" bodyColor="#FFFFFF" />
-          </motion.span>
+            {ALIEN_FRAMES[walkFrame].map((row, y) =>
+              row.map((on, x) =>
+                on ? (
+                  <rect
+                    key={`${x}-${y}`}
+                    x={x}
+                    y={y}
+                    width="1"
+                    height="1"
+                    fill="#F540FF"
+                  />
+                ) : null,
+              ),
+            )}
+          </svg>
 
           <AnimatePresence mode="wait" initial={false}>
             <motion.span
