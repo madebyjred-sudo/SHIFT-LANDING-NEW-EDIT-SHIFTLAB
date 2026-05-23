@@ -50,6 +50,20 @@ const SURFACE_SHADOW = [
   "0 4px 14px -6px rgba(0,0,0,0.5)",
 ].join(", ");
 
+// Mensajes rotativos del hint que aparece arriba del pill mientras está
+// colapsado. Cambian cada ~4.5s con crossfade. Se ocultan permanentemente
+// dentro de la sesión cuando el visitante abre Shifty por primera vez.
+const HINT_MESSAGES = [
+  "¿Necesitas ayuda?",
+  "Hablemos.",
+  "Empecemos a trabajar.",
+];
+
+// sessionStorage key — la mantenemos local para no acoplar el componente
+// a un singleton externo. Si el visitante vuelve mañana, el hint
+// reaparece (rotated, no spam — sessionStorage muere con la tab).
+const HINT_SEEN_KEY = "shifty:hint-seen";
+
 export default function AgentIsland({
   state,
   open,
@@ -81,9 +95,31 @@ export default function AgentIsland({
     ? { type: "tween" as const, duration: 0.16 }
     : { type: "spring" as const, stiffness: 380, damping: 32, mass: 0.55 };
 
+  // Mostrar el hint flotante mientras el pill está colapsado y el
+  // visitante NO lo ha abierto antes en esta sesión.
+  const [showHint, setShowHint] = React.useState(false);
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const seen = window.sessionStorage.getItem(HINT_SEEN_KEY);
+    if (seen) return;
+    // Pequeño delay para que el hint aterrice después del primer paint
+    // y del greeting del bot — evita pop-in agresivo.
+    const t = window.setTimeout(() => setShowHint(true), 1800);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  // Al abrir Shifty (desde pill o desde hint), marcamos visto y ocultamos.
+  const handleOpen = React.useCallback(() => {
+    setShowHint(false);
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(HINT_SEEN_KEY, "1");
+    }
+    onOpen();
+  }, [onOpen]);
+
   return (
     <div
-      className="fixed z-[100] right-3 sm:right-6 bottom-3 sm:bottom-6"
+      className="fixed z-[100] right-3 sm:right-6 bottom-3 sm:bottom-6 flex flex-col items-end gap-3"
       style={{
         // Safe area iOS — el iPhone notch/home indicator come ~34px
         // abajo. Sin esto el pill queda DEBAJO de la barra del sistema
@@ -91,6 +127,13 @@ export default function AgentIsland({
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
+      {/* Hint flotante — solo visible mientras pill está colapsado y la
+          sesión no marcó "seen". Se compone aparte del pill para que su
+          halo magenta no compita con la pill expandida. */}
+      <AnimatePresence>
+        {!open && showHint && <ShiftyHint onClick={handleOpen} />}
+      </AnimatePresence>
+
       <AnimatePresence mode="wait" initial={false}>
         {open ? (
           <motion.div
@@ -147,7 +190,7 @@ export default function AgentIsland({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 8 }}
             transition={spring}
-            onClick={onOpen}
+            onClick={handleOpen}
             aria-label="Abrir Shifty"
             className="overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F540FF]/60"
             style={{
@@ -166,6 +209,87 @@ export default function AgentIsland({
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+/**
+ * ShiftyHint — micro-burbujas rotativas arriba de la pill que invitan
+ * al click. Tres mensajes en loop (4.5s c/u) con crossfade vertical
+ * sutil. Halo magenta pulsa por debajo (~2.6s easeInOut) — el ritmo
+ * lento + offset del propio movimiento del mensaje le da la lectura
+ * "vivo, pero elegante". Click abre el panel y dismiss permanente
+ * dentro de la sesión.
+ */
+function ShiftyHint({ onClick }: { onClick: () => void }) {
+  const reduce = useReducedMotion();
+  const [idx, setIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    const interval = window.setInterval(() => {
+      setIdx((i) => (i + 1) % HINT_MESSAGES.length);
+    }, 4500);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return (
+    <motion.button
+      type="button"
+      onClick={onClick}
+      aria-label="Abrir Shifty"
+      initial={{ opacity: 0, y: 10, scale: 0.94 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 6, scale: 0.96, transition: { duration: 0.22 } }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      className="relative cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F540FF]/60"
+    >
+      {/* Halo magenta pulsante — el "click suggest". Sale por fuera del
+          bubble como halo radial difuso. opacity + scale oscilan en
+          phase para dar la sensación de respiración. */}
+      {!reduce && (
+        <motion.span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -m-4 rounded-full"
+          style={{
+            background:
+              "radial-gradient(closest-side, rgba(245,64,255,0.45), rgba(245,64,255,0) 72%)",
+            filter: "blur(14px)",
+          }}
+          animate={{ opacity: [0.4, 0.95, 0.4], scale: [1, 1.12, 1] }}
+          transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+        />
+      )}
+
+      {/* Bubble — misma surface system que el resto (liquid glass). */}
+      <span
+        className="relative inline-flex items-center overflow-hidden rounded-full px-3.5 py-2"
+        style={{
+          background: SURFACE_BG,
+          backdropFilter: SURFACE_BACKDROP,
+          WebkitBackdropFilter: SURFACE_BACKDROP,
+          boxShadow: SURFACE_SHADOW,
+        }}
+      >
+        <SurfaceSheen />
+        <span className="relative z-[1] flex items-center">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={HINT_MESSAGES[idx]}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              className="block whitespace-nowrap text-[11.5px] font-medium tracking-[0.02em] text-white/95"
+              style={{
+                fontFamily:
+                  "var(--font-fira-mono), ui-monospace, monospace",
+              }}
+            >
+              {HINT_MESSAGES[idx]}
+            </motion.span>
+          </AnimatePresence>
+        </span>
+      </span>
+    </motion.button>
   );
 }
 
