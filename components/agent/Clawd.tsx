@@ -82,6 +82,26 @@ const PUPIL_CELLS: Array<{ r: number; c: number }> = [
 // Bounds del iris (5×5 area). Override para blink y clamp para pupila.
 const EYE = { rMin: 3, rMax: 7, cMin: 10, cMax: 15 };
 
+// Cells del INTERIOR del iris que en el matrix original son transparentes
+// (0). Visualmente deben verse oscuros — son el "fondo del iris" detrás
+// del pupil. El diseño original asumía rendering sobre fondo oscuro
+// (navy bg) y por eso los dejaba transparentes. Pero cuando Clawd está
+// arriba del pill o sobre cualquier superficie clara, esos cells dejan
+// pasar la página y el ojo se ve "hueco".
+//
+// Pre-computamos el set una vez (cells row 4-8, col 10-15 que tengan
+// valor 0 en la matrix original). En render se overridean a color 1
+// (negro) — coherente con el outline + pupil.
+const IRIS_INTERIOR: Set<string> = (() => {
+  const s = new Set<string>();
+  for (let r = 4; r <= 8; r++) {
+    for (let c = 10; c <= 15; c++) {
+      if (CLAWD_IDLE[r][c] === 0) s.add(`${r},${c}`);
+    }
+  }
+  return s;
+})();
+
 // ──────────────────────────────────────────────────────────────
 // Component
 // ──────────────────────────────────────────────────────────────
@@ -223,12 +243,15 @@ export default function Clawd({
   const getCellColor = (r: number, c: number): number => {
     const base = CLAWD_IDLE[r][c];
 
-    // 1. Blink — máxima prioridad, overrides eye area
+    // 1. Blink — máxima prioridad, overrides eye area (incluyendo
+    //    transparent del iris interior → magenta para que se vea cerrado)
     if (blink && r >= EYE.rMin && r <= EYE.rMax && c >= EYE.cMin && c <= EYE.cMax) {
       // Línea horizontal de párpado en row 5
       if (r === 5 && c >= EYE.cMin && c <= EYE.cMax) return 1;
-      // Resto del eye area se vuelve magenta (párpado cerrado)
-      if (base === 5 || base === 1) return 2;
+      // Resto del eye area se vuelve magenta (párpado cerrado).
+      // Incluye base 0 (iris interior transparente) para que el blink
+      // tape el ojo completamente.
+      if (base === 5 || base === 1 || base === 0) return 2;
       return base;
     }
 
@@ -249,13 +272,22 @@ export default function Clawd({
       }
     }
 
-    // 3. Hair wave — shimmer en el mechón pink (cell (1,9) toggles)
+    // 3. Iris interior fill — cells transparentes dentro del ojo se
+    //    rendean como negro para que el ojo no se vea "hueco" cuando
+    //    Clawd está sobre superficies claras (page bg).
+    //    Va DESPUÉS del pupil offset para que la pupila desplazada
+    //    (que devuelve 1) tenga prioridad.
+    if (base === 0 && IRIS_INTERIOR.has(`${r},${c}`)) {
+      return 1;
+    }
+
+    // 4. Hair wave — shimmer en el mechón pink (cell (1,9) toggles)
     if (hairFrame === 1) {
       if (r === 1 && c === 9) return 4; // magenta → pink (mechón se "encrespa")
       if (r === 2 && c === 4) return 4; // outline → pink (highlight extra)
     }
 
-    // 4. Foot tap — un pie se retracta (bottom row del pie desaparece)
+    // 5. Foot tap — un pie se retracta (bottom row del pie desaparece)
     if (footFrame === 1 && r === 23 && c >= 6 && c <= 8) {
       // Pie izquierdo retraído — bottom outline transparente
       return 0;
