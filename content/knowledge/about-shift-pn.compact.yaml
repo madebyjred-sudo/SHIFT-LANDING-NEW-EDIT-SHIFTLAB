@@ -132,43 +132,62 @@ rangos_precio_orientativos:
 
 links_internos:
   # Mapa del sitio. Cada entrada: {path, qué hay en esa página, frases de
-  # enlace sugeridas que NO usan el slug crudo como texto del link}.
+  # enlace sugeridas que NO usan el slug crudo, + cuando_citar para que
+  # el LLM sepa elegir el link correcto según la pregunta — NO defaultear
+  # siempre a /shift-lab ni a /services}.
   - path: "/"
     titulo: "Home"
-    contenido: "Hero + manifiesto + intro a Shifting Culture®, servicios, ShiftLab y casos."
+    contenido: "Hero + manifiesto + intro a Shifting Culture®, servicios, Shift LAB y casos."
     enlaces_sugeridos: ["el inicio del sitio", "la portada"]
+    cuando_citar: "Pocas veces — solo si piden 'una vista general' o 'por dónde empezar a conocer Shift'."
+
   - path: "/services"
     titulo: "Servicios"
-    contenido: "Las 4 capas (Estrategia corporativa + reputación, Creatividad + campañas, Media performance + data, Crisis) con descripción detallada y capabilities."
-    enlaces_sugeridos: ["nuestra página de servicios", "el detalle de cada capa", "cómo estructuramos los servicios", "lo que ofrecemos"]
+    contenido: "Las 4 capas (Estrategia corporativa + reputación, Creatividad + campañas, Media performance + data, Crisis) en cards visuales con video, descripciones enriquecidas + nueva tabla 'Detalle de servicios' que muestra sub-servicios por capa y resultado típico de un engagement. Color bar por capa para identificación rápida."
+    enlaces_sugeridos: ["nuestra página de servicios", "el detalle de cada capa", "el desglose por capa", "lo que ofrecemos", "los sub-servicios de cada capa"]
+    cuando_citar: "Cuando preguntan qué hacemos en general, cómo está estructurada la oferta, qué incluye cada capa, qué sub-servicios concretos hay, qué entregamos en un engagement típico."
+
   - path: "/about-us"
     titulo: "Sobre nosotros"
-    contenido: "Quiénes somos, liderazgo regional + por país, los 10 hubs con sus contactos."
-    enlaces_sugeridos: ["nuestra página de equipo", "quiénes somos", "el detalle del equipo regional"]
+    contenido: "Quiénes somos, liderazgo regional + por país, los 10 hubs (CR, GT, SV, HN, NI, PA, CO, EC, VE, RD) + Miami, con sus contactos."
+    enlaces_sugeridos: ["nuestra página de equipo", "quiénes somos", "el detalle del equipo regional", "los líderes por país"]
+    cuando_citar: "Cuando preguntan por el equipo, hubs, cobertura regional, países, líderes, oficinas, años en el mercado."
+
   - path: "/shift-lab"
     titulo: "Shift LAB"
-    contenido: "Unidad de innovación + IA aplicada. 5 capacidades, IA Shifter, Brand Influence Index."
-    enlaces_sugeridos: ["la página de Shift LAB", "el detalle de Shift LAB", "nuestra unidad de IA aplicada"]
+    contenido: "La unidad de tecnología + IA aplicada a comunicación. Headline: 'Construimos donde vive la IA y se vuelve útil'. 3 capabilities (Diseño + Ingeniería · Inteligencia aplicada · Operación continua) + 5 servicios (auditoría de madurez en IA, IA integrada a flujos, automatización de tareas repetitivas, productos digitales a medida, dashboards e inteligencia de datos)."
+    enlaces_sugeridos: ["la página de Shift LAB", "el detalle de Shift LAB", "nuestra unidad de tecnología e IA", "el área de innovación"]
+    cuando_citar: "SOLO cuando preguntan específicamente por nuestra capacidad técnica/IA, software, automatización, productos digitales. NUNCA defaultear acá solo porque la palabra 'inteligencia' o 'media' aparece — para servicios generales, Shifting Culture, equipo, premios u otra cosa, citar la página correcta."
+
   - path: "/shifting-culture"
     titulo: "Shifting Culture®"
-    contenido: "Nuestro modelo propietario. Proceso de 4 pasos y por qué se diferencia."
-    enlaces_sugeridos: ["el modelo Shifting Culture®", "cómo opera el modelo", "el detalle del framework"]
+    contenido: "Nuestro modelo propietario. Proceso de 4 pasos y por qué se diferencia. Conecta cultura, reputación y negocio: detecta tensiones, traduce datos en narrativas, convierte conversaciones en influencia."
+    enlaces_sugeridos: ["el modelo Shifting Culture®", "cómo opera el modelo", "el detalle del framework", "cómo trabajamos"]
+    cuando_citar: "Cuando preguntan por metodología, framework, cómo trabajamos, qué es Shifting Culture, proceso de un engagement, diferenciador metodológico."
+
   - path: "/purpose"
     titulo: "Propósito"
     contenido: "Manifiesto + triple impacto (personas / negocios / país)."
-    enlaces_sugeridos: ["nuestro propósito", "qué nos mueve"]
+    enlaces_sugeridos: ["nuestro propósito", "qué nos mueve", "el manifiesto"]
+    cuando_citar: "Cuando preguntan por valores, propósito, misión, qué nos mueve, impacto social, por qué hacemos lo que hacemos."
+
   - path: "/awards"
     titulo: "Premios"
     contenido: "Los +120 reconocimientos. PRWeek, Cannes, SABRE, Effie, FIAP, Clio."
     enlaces_sugeridos: ["la página de premios", "el palmarés completo", "los reconocimientos"]
+    cuando_citar: "Cuando preguntan por premios, reconocimientos, palmarés, casos verificables, prueba de track record."
+
   - path: "/newsroom"
     titulo: "Newsroom"
     contenido: "Noticias, perspectivas y estudios sectoriales (salud, finanzas, gobierno)."
-    enlaces_sugeridos: ["nuestro newsroom", "los estudios sectoriales"]
+    enlaces_sugeridos: ["nuestro newsroom", "los estudios sectoriales", "las publicaciones"]
+    cuando_citar: "Cuando preguntan por estudios, perspectivas, contenidos publicados, análisis de sector, thought leadership, white papers."
+
   - path: "/contact"
     titulo: "Contacto"
     contenido: "Formulario + emails + lista completa de los 10 hubs con direcciones y teléfonos."
-    enlaces_sugeridos: ["la página de contacto", "el formulario de contacto"]
+    enlaces_sugeridos: ["la página de contacto", "el formulario de contacto", "los hubs con dirección y teléfono"]
+    cuando_citar: "Cuando quieren agendar, escribir email, llamar, ver hubs por país con dirección y teléfono. Si están en lead capture flow, NO mandar al form — guiarlos por chat."
 
 faqs_principales:
   - q: "¿Qué hace Shift?"

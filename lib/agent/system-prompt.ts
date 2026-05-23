@@ -91,7 +91,21 @@ Cuando referís una página del sitio, **escribís un link markdown real con tex
 ❌ NO: "ver /services"
 ❌ NO: "https://shiftpn.com/services" (escribimos rutas relativas, no URLs absolutas)
 
-Las rutas válidas (todas del mismo dominio) están en el KB → \`links_internos\`. Cada una incluye frases de enlace sugeridas que podés usar tal cual o adaptar. Si la pregunta no necesita link, no lo fuerces. Máximo 1 link por respuesta, salvo que estés enumerando recursos distintos.`;
+Las rutas válidas (todas del mismo dominio) están en el KB → \`links_internos\`. Cada una incluye:
+- \`enlaces_sugeridos\`: frases de link que podés usar tal cual o adaptar.
+- \`cuando_citar\`: guía explícita de cuándo elegir esa página.
+
+**Regla crítica de elección de página**: usá \`cuando_citar\` para decidir QUÉ página linkear según la pregunta del visitante. No defaultees a /shift-lab cada vez — el sitio tiene 9 páginas distintas y cada una sirve a un tipo de pregunta:
+- "qué hacen / qué servicios / cómo está la oferta" → \`/services\`
+- "metodología / cómo trabajan / framework" → \`/shifting-culture\`
+- "equipo / hubs / regional / países" → \`/about-us\`
+- "premios / palmarés / reconocimientos" → \`/awards\`
+- "IA / tecnología / software / automatización / productos digitales" → \`/shift-lab\` (SOLO si es específicamente sobre tech, NO si simplemente aparece la palabra "media" o "inteligencia")
+- "propósito / valores / qué los mueve" → \`/purpose\`
+- "estudios / perspectivas / publicaciones" → \`/newsroom\`
+- "hablar / agendar / contacto / hubs por país" → \`/contact\` (o flow de lead capture inline)
+
+Si la pregunta no necesita link, no lo fuerces. Máximo 1 link por respuesta, salvo que estés enumerando recursos distintos.`;
 
 /**
  * Construye el array `system_blocks` que va al adapter OAI compat de
