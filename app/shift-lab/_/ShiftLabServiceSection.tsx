@@ -8,33 +8,39 @@ type LabService = {
   id: string;
   title: string;
   body: string;
+  how?: string;
 };
 
 const SERVICES: LabService[] = [
   {
     id: "01",
-    title: "Auditorías de madurez digital",
-    body: "Mapeamos el estado real de tu organización: data, herramientas, criterio y cultura. Salimos con un plan de IA con horizontes claros.",
+    title: "Auditoría de madurez en IA",
+    body: "Mapeamos el estado real de tu organización: data, herramientas, criterio y cultura. Salimos con un plan con horizontes claros.",
+    how: "Cruzamos benchmarks de agencias globales con tu realidad operativa para que el plan sea ejecutable la semana que entra.",
   },
   {
     id: "02",
-    title: "Implementación de IA en flujos estratégicos",
-    body: "Integramos modelos al ciclo de planeación, monitoreo de reputación y producción creativa. Sin reemplazar, amplificando.",
+    title: "IA integrada a tus flujos de trabajo",
+    body: "Integramos modelos al ciclo de planeación, monitoreo de reputación y producción creativa. El flujo del equipo gana velocidad y consistencia.",
+    how: "Empezamos por un proceso real. Si resiste el lunes, va al plan.",
   },
   {
     id: "03",
-    title: "Automatización de procesos",
-    body: "Orquestación de tareas repetitivas para liberar tiempo del equipo y enfocarlo en lo que sólo el criterio humano resuelve bien.",
+    title: "Automatización de tareas repetitivas",
+    body: "Orquestamos tareas repetitivas para que el tiempo del equipo se libere hacia decisiones de criterio.",
+    how: "Distinguimos qué tareas consumen criterio por error y cuáles por necesidad. Automatizamos las primeras.",
   },
   {
     id: "04",
-    title: "Diseño de productos comunicacionales",
-    body: "Herramientas internas, dashboards y micro-aplicaciones que viven dentro de tus campañas y relaciones con audiencias.",
+    title: "Productos digitales a medida",
+    body: "Asistentes conversacionales, sistemas internos y herramientas digitales que viven dentro de tus campañas y relaciones con audiencias.",
+    how: "Cubrimos el ciclo completo: del diseño al monitoreo en producción.",
   },
   {
     id: "05",
-    title: "Dashboards ejecutivos y data intelligence",
+    title: "Dashboards e inteligencia de datos",
     body: "Indicadores accionables: reputación, conversación social, performance editorial y eficiencia operativa, en un solo lugar.",
+    how: "Cada indicador del dashboard apunta a una acción concreta del equipo.",
   },
 ];
 
@@ -157,9 +163,20 @@ function CardLi({
         {service.title}
       </h3>
 
-      <p className="mt-5 flex-1 [font-family:var(--font-fira-mono)] text-[13.5px] leading-[1.8] text-white/65">
+      <p className="mt-5 [font-family:var(--font-fira-mono)] text-[13.5px] leading-[1.8] text-white/65">
         {service.body}
       </p>
+
+      {service.how && (
+        <div className="mt-auto pt-6">
+          <div className="rounded-xl border border-[#F540FF]/20 bg-[#F540FF]/[0.06] px-4 py-3">
+            <p className="[font-family:var(--font-fira-mono)] text-[12px] leading-[1.65] text-white/85">
+              <span className="text-[#F540FF]">→ </span>
+              {service.how}
+            </p>
+          </div>
+        </div>
+      )}
     </motion.li>
   );
 }
@@ -199,9 +216,17 @@ function VerticalGrid() {
               <h3 className="mt-6 text-[22px] leading-[1.12] [font-family:var(--font-glitz-local)] text-white">
                 {service.title}
               </h3>
-              <p className="mt-4 flex-1 [font-family:var(--font-fira-mono)] text-[13px] leading-[1.75] text-white/60">
+              <p className="mt-4 [font-family:var(--font-fira-mono)] text-[13px] leading-[1.75] text-white/60">
                 {service.body}
               </p>
+              {service.how && (
+                <div className="mt-5 rounded-xl border border-[#F540FF]/20 bg-[#F540FF]/[0.06] px-3.5 py-2.5">
+                  <p className="[font-family:var(--font-fira-mono)] text-[11.5px] leading-[1.6] text-white/85">
+                    <span className="text-[#F540FF]">→ </span>
+                    {service.how}
+                  </p>
+                </div>
+              )}
             </motion.article>
           ))}
         </div>

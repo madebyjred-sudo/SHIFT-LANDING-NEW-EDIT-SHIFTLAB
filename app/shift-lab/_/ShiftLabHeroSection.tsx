@@ -95,8 +95,8 @@ export default function ShiftLabHeroSection() {
           className="mt-10 max-w-2xl [font-family:var(--font-fira-mono)] text-[14px] md:text-[15px] leading-[1.75] text-white/65"
         >
           Diseñamos sistemas donde la inteligencia humana y la artificial
-          trabajan en flujo continuo. La tecnología sirve a la estrategia, no
-          al revés.
+          trabajan en flujo continuo. La tecnología trabaja al servicio de
+          la estrategia y del criterio del equipo.
         </motion.p>
       </div>
     </section>

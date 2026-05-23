@@ -141,7 +141,7 @@ export const SCRIPT: ScriptedReply[] = [
       { id: "t3", kind: "ponder", label: "Explico la filosofía sin caer en hype", duration: 500 },
     ],
     reply:
-      "**Shift LAB** es la unidad de innovación + IA aplicada a comunicación. No usamos IA como tendencia — la integramos como **flujo operativo** para mejorar análisis, acelerar decisiones y potenciar criterio humano. Cinco capas: auditoría de madurez, implementación en flujos, automatización, productos comunicacionales, y data intelligence.",
+      "**Shift LAB** es la unidad de innovación e IA aplicada a comunicación de Shift LATAM. No fabricamos modelos — construimos el software donde vive la IA y se vuelve útil para briefs de comunicación. Cinco capas: auditoría de madurez en IA, IA integrada a flujos de trabajo, automatización de tareas repetitivas, productos digitales a medida, y dashboards e inteligencia de datos.",
     citations: [{ label: "Shift LAB", href: "/shift-lab" }],
     suggestions: [
       "Quiero una auditoría",

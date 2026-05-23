@@ -45,12 +45,12 @@ export default function ProblemWeSolveSection() {
 
           <p className="mt-10 max-w-2xl [font-family:var(--font-fira-mono)] text-[14px] md:text-[15px] leading-[1.85] text-white/70">
             Eliminamos fricción y elevamos la capacidad analítica de las
-            organizaciones. No vendemos herramientas:{" "}
+            organizaciones. Diseñamos{" "}
             <span className="text-white">
-              diseñamos sistemas de criterio
+              sistemas de criterio
             </span>{" "}
-            donde la tecnología amplifica —no reemplaza— al equipo humano que
-            ya hace el trabajo.
+            donde la tecnología se integra al equipo humano y acelera el
+            trabajo que ya hacen.
           </p>
 
           <div className="mt-12">
