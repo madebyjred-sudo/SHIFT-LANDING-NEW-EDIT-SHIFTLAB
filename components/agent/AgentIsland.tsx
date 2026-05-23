@@ -242,17 +242,26 @@ export default function AgentIsland({
  * "vivo, pero elegante". Click abre el panel y dismiss permanente
  * dentro de la sesión.
  */
+// ────────────────────────────────────────────────────────────────────
+// Typewriter helpers (compartidos por ShiftyHint)
+// ────────────────────────────────────────────────────────────────────
+type TypePhase = "typing" | "hold" | "erasing" | "pause";
+
+// Ease-in-out por char: lento al empezar, rápido en el medio, lento al
+// final. Lectura natural — como si pensara antes y después de cada
+// frase. Mid-speed ~35ms, edges ~75ms.
+function charDelayMs(pos: number, total: number): number {
+  if (total <= 1) return 60;
+  const t = pos / Math.max(1, total - 1);
+  return Math.round(75 - 40 * Math.sin(t * Math.PI));
+}
+
 function ShiftyHint({ onClick }: { onClick: () => void }) {
   const reduce = useReducedMotion();
   const [idx, setIdx] = React.useState(0);
   const [walkFrame, setWalkFrame] = React.useState(0);
-
-  React.useEffect(() => {
-    const interval = window.setInterval(() => {
-      setIdx((i) => (i + 1) % HINT_MESSAGES.length);
-    }, 4500);
-    return () => window.clearInterval(interval);
-  }, []);
+  const [text, setText] = React.useState("");
+  const [phase, setPhase] = React.useState<TypePhase>("typing");
 
   // Walk loop del alien — sólo si el OS no pide reduced motion.
   React.useEffect(() => {
@@ -263,6 +272,54 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
     return () => window.clearInterval(walk);
   }, [reduce]);
 
+  // Typewriter state machine: typing → hold → erasing → pause → next msg.
+  // Si reduce-motion, mostramos el texto completo y rotamos sin animar.
+  React.useEffect(() => {
+    const target = HINT_MESSAGES[idx];
+
+    if (reduce) {
+      setText(target);
+      const t = window.setTimeout(() => {
+        setIdx((i) => (i + 1) % HINT_MESSAGES.length);
+      }, 5000);
+      return () => window.clearTimeout(t);
+    }
+
+    let timer: number | undefined;
+
+    if (phase === "typing") {
+      if (text.length < target.length) {
+        timer = window.setTimeout(() => {
+          setText(target.slice(0, text.length + 1));
+        }, charDelayMs(text.length, target.length));
+      } else {
+        setPhase("hold");
+      }
+    } else if (phase === "hold") {
+      // 3.5s leyendo el mensaje completo
+      timer = window.setTimeout(() => setPhase("erasing"), 3500);
+    } else if (phase === "erasing") {
+      if (text.length > 0) {
+        // Borrar es ~3× más rápido que escribir
+        timer = window.setTimeout(() => {
+          setText(text.slice(0, -1));
+        }, 22);
+      } else {
+        setPhase("pause");
+      }
+    } else if (phase === "pause") {
+      // Pausa entre mensajes — respiración
+      timer = window.setTimeout(() => {
+        setIdx((i) => (i + 1) % HINT_MESSAGES.length);
+        setPhase("typing");
+      }, 650);
+    }
+
+    return () => {
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
+  }, [phase, text, idx, reduce]);
+
   return (
     <motion.button
       type="button"
@@ -271,12 +328,11 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
       initial={{ opacity: 0, y: 10, scale: 0.94 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 6, scale: 0.96, transition: { duration: 0.22 } }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="relative cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F540FF]/60"
+      transition={{ duration: 0.55, ease: [0.42, 0, 0.58, 1] }}
+      className="relative cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F540FF]/60"
     >
       {/* Halo magenta con ritmo de heartbeat — dos pulsos rápidos +
-          pausa larga, en vez de respiración uniforme. Más vivo, atrae
-          la mirada sin volverse molesto. */}
+          pausa larga, en vez de respiración uniforme. */}
       {!reduce && (
         <motion.span
           aria-hidden
@@ -299,13 +355,9 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
         />
       )}
 
-      {/* Bubble — micro-bounce al cambiar de mensaje (key={idx}) le da
-          el efecto "el mascot saluda cada vez que dice algo nuevo". */}
-      <motion.span
-        key={idx}
-        initial={reduce ? false : { scale: 0.96 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.32, ease: [0.22, 1.4, 0.36, 1] }}
+      {/* Bubble — overflow-hidden para que la sheen quede clipeada al
+          rounded. La tail vive AFUERA como sibling absolute. */}
+      <span
         className="relative inline-flex items-center overflow-hidden rounded-full pl-2.5 pr-3.5 py-2"
         style={{
           background: SURFACE_BG,
@@ -316,10 +368,7 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
       >
         <SurfaceSheen />
         <span className="relative z-[1] flex items-center gap-2">
-          {/* Pixel alien — walks via swap entre 2 frames cada 420ms.
-              Hyper-minimalista (5×4 grid, ~12 pixels visibles), magenta
-              brand sobre dark bubble. Sin antialiasing (crispEdges)
-              para look pixel-art puro. */}
+          {/* Pixel alien — 2 frames alternando cada 420ms (walking). */}
           <svg
             aria-hidden
             width="15"
@@ -344,24 +393,57 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
             )}
           </svg>
 
-          <AnimatePresence mode="wait" initial={false}>
+          {/* Typewriter container — minWidth fijo para que el bubble no
+              cambie de ancho al escribir/borrar (longest message =
+              "Empecemos a trabajar." con cursor). */}
+          <span
+            className="block whitespace-nowrap text-[11.5px] font-medium tracking-[0.02em] text-white/95"
+            style={{
+              fontFamily:
+                "var(--font-fira-mono), ui-monospace, monospace",
+              minWidth: "10rem",
+            }}
+          >
+            {text}
             <motion.span
-              key={HINT_MESSAGES[idx]}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -5 }}
-              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-              className="block whitespace-nowrap text-[11.5px] font-medium tracking-[0.02em] text-white/95"
-              style={{
-                fontFamily:
-                  "var(--font-fira-mono), ui-monospace, monospace",
+              aria-hidden
+              animate={{ opacity: reduce ? 1 : [1, 1, 0, 0, 1] }}
+              transition={{
+                duration: 1.0,
+                repeat: reduce ? 0 : Infinity,
+                ease: "linear",
+                times: [0, 0.5, 0.5, 1, 1],
               }}
-            >
-              {HINT_MESSAGES[idx]}
-            </motion.span>
-          </AnimatePresence>
+              className="ml-[2px] inline-block align-middle"
+              style={{
+                width: "5px",
+                height: "11px",
+                backgroundColor: "#F540FF",
+                verticalAlign: "-1px",
+              }}
+            />
+          </span>
         </span>
-      </motion.span>
+      </span>
+
+      {/* Tail/punta abajo apuntando hacia Shifty (que vive debajo en el
+          stack flex). Triangle via clip-path con el mismo backdrop
+          blur y dark surface para coherencia visual. Posicionada
+          ligeramente solapada con el bubble para ocultar el seam. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute"
+        style={{
+          bottom: "-7px",
+          right: "26px",
+          width: "14px",
+          height: "9px",
+          background: SURFACE_BG,
+          backdropFilter: SURFACE_BACKDROP,
+          WebkitBackdropFilter: SURFACE_BACKDROP,
+          clipPath: "polygon(0 0, 100% 0, 50% 100%)",
+        }}
+      />
     </motion.button>
   );
 }
