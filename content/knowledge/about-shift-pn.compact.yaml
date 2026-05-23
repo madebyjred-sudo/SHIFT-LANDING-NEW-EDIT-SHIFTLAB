@@ -23,11 +23,15 @@ servicios:
   - Crisis y gestión de riesgo (antes/durante/después)
 
 shift_lab:
-  que_es: Unidad de innovación + IA aplicada
-  capabilities: [auditoría madurez, IA en flujos, automatización, productos comunicacionales, dashboards data intel]
-  productos:
-    - "IA Shifter — agente de IA (junio 2025) — data consumidor en banca/retail/fast food/seguros/farmacia/vehículos"
-    - "Brand Influence Index — índice de influencia behavioral (con El Financiero, 2H 2026)"
+  que_es: "Unidad de tecnología e IA aplicada a comunicación de Shift Latam. Construimos donde vive la IA y se vuelve útil para briefs de comunicación."
+  capabilities_high_level: [diseño + ingeniería, inteligencia aplicada, operación continua]
+  servicios: [auditoría de madurez en IA, IA integrada a flujos de trabajo, automatización de tareas repetitivas, productos digitales a medida, dashboards e inteligencia de datos]
+  productos_publicos:
+    # NO MENCIONAR productos por nombre en respuestas. Productos internos
+    # están bajo NDA hasta nuevo aviso. Si preguntan por "qué productos
+    # construye Shift LAB", responder con tipos (asistentes, sistemas
+    # internos, dashboards) — no con nombres comerciales.
+    politica: "no_nombrar"
 
 hubs_12_paises:
   costa_rica: "San José — Centro Empresarial Vía Lindora 3er Piso — gpiedra@shiftpn.co.cr — +506 4110-6000"
@@ -201,7 +205,7 @@ faqs_principales:
   - q: "¿Porter Novelli?"
     a: "Sí, afiliado de la red global Porter Novelli (Omnicom Public Relations Group: con FleishmanHillard, Ketchum, MMC)."
   - q: "¿Shift LAB?"
-    a: "Unidad de innovación + IA aplicada. 5 capas: auditoría madurez, IA en flujos, automatización, productos comunicacionales, dashboards data."
+    a: "Unidad de tecnología e IA aplicada a comunicación. Construimos donde vive la IA y se vuelve útil para briefs de comunicación. 5 servicios: auditoría de madurez en IA, IA integrada a flujos de trabajo, automatización de tareas repetitivas, productos digitales a medida, y dashboards e inteligencia de datos."
   - q: "¿Shifting Culture®?"
     a: "Modelo propietario que conecta cultura, reputación y negocio. Detecta tensiones, traduce datos en narrativas, convierte conversaciones en influencia."
   - q: "¿Años?"
@@ -222,8 +226,6 @@ faqs_principales:
     a: "Es nuestra 4ta capa. Acompañamos antes/durante/después. Si estás en crisis activa: escribí directo a holahola@shiftpn.com con asunto 'crisis' — conectamos en horas."
   - q: "¿Diferencia vs Edelman/LLYC?"
     a: "Operamos las 4 patas (PR+creatividad+data+IA) bajo un mismo modelo (Shifting Culture®), no verticales separados. Tenemos Lab de IA propietaria. Cobertura nativa en 10 mercados con un solo P&L. +120 premios. Campaign of the Year en PRWeek Global 2024."
-  - q: "¿Qué es IA Shifter?"
-    a: "Agente de IA propietario que comprime data pública de consumidores latam (banca, fast food, seguros, retail, farmacia, vehículos) en conversaciones estratégicas accionables."
   - q: "¿Quién sos?"
     a: "Shifty, asistente del sitio de SHIFT LATAM. Te explico servicios, casos, equipo y te conecto con la persona indicada. No reemplazo una llamada — la facilito."
 
