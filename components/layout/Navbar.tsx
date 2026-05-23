@@ -9,8 +9,11 @@ import { GlowMenu, type GlowMenuItem } from "@/components/ui/glow-menu";
 
 const menuItems: GlowMenuItem[] = [
   { label: "Inicio", href: "/" },
-  { label: "Nosotros", href: "/about-us" },
-  { label: "Servicios", href: "/services" },
+  // En mobile escondemos Nosotros + Servicios + Premios + Shift LAB
+  // porque el pill no entra en 375px. Quedan visibles: Inicio +
+  // Contacto + "+". Los ocultos se acceden desde el dropdown del "+".
+  { label: "Nosotros", href: "/about-us", hideOnMobile: true },
+  { label: "Servicios", href: "/services", hideOnMobile: true },
   { label: "Premios", href: "/awards", hideOnMobile: true },
   { label: "Contacto", href: "/contact" },
   // Shift LAB sale del dropdown a un slot propio — wordmark con color
@@ -27,6 +30,13 @@ const menuItems: GlowMenuItem[] = [
     href: "#",
     iconTrigger: true,
     dropdown: [
+      // Estos 4 se muestran SIEMPRE en el dropdown — son redundantes en
+      // desktop (también están en el bar principal) pero garantizan
+      // acceso desde mobile donde no caben arriba.
+      { label: "Nosotros", href: "/about-us" },
+      { label: "Servicios", href: "/services" },
+      { label: "Premios", href: "/awards" },
+      { label: "Shift LAB", href: "/shift-lab" },
       { label: "Shifting Culture®", href: "/shifting-culture" },
       { label: "Propósito", href: "/purpose" },
     ],

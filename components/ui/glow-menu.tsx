@@ -168,7 +168,9 @@ export function GlowMenu({ items, pathname, tone = "dark", className }: GlowMenu
                   matchesHref(item.href, pathname) ? "page" : undefined
                 }
                 className={[
-                  "group relative inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[13px] font-semibold uppercase tracking-[0.04em] whitespace-nowrap [font-family:var(--font-figtree,inherit)] transition-colors duration-300",
+                  // Padding más apretado en mobile (px-3 vs px-4 desktop)
+                  // — clave para que el pill entre en pantallas <380px.
+                  "group relative inline-flex items-center gap-1.5 rounded-full px-3 sm:px-4 py-2.5 text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.04em] whitespace-nowrap [font-family:var(--font-figtree,inherit)] transition-colors duration-300",
                   isActive
                     ? "text-[#F540FF]"
                     : isLight
