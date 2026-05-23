@@ -152,18 +152,46 @@ export default function AgentIsland({
         {!open && showHint && <ShiftyHint onClick={handleOpen} />}
       </AnimatePresence>
 
-      {/* Clawd sentado/caminando encima del pill — aparece después de
-          la primera interacción. Behavior autónomo (walk, sit, stand,
-          blink). Pointer-events none para no bloquear clicks al pill. */}
+      {/* Clawd persistent perch — un solo Clawd que vive entre
+          on-pill y on-panel. Las dos posiciones comparten layoutId
+          ("clawd-perch") para que framer-motion anime la transición
+          geométrica cuando se abre/cierra el chat (en vez de fade
+          out / fade in se ve como un salto entre perches). */}
       <AnimatePresence>
-        {!open && chatEverOpened && <ClawdOnPill />}
-      </AnimatePresence>
-
-      {/* Clawd sentado/caminando encima del panel — visible mientras
-          el chat está abierto. Misma personalidad autónoma, pero
-          centrado horizontalmente sobre el panel ancho. */}
-      <AnimatePresence>
-        {open && <ClawdOnPanel />}
+        {chatEverOpened &&
+          (open ? (
+            <motion.div
+              key="clawd-on-panel"
+              layoutId="clawd-perch"
+              className="pointer-events-none absolute"
+              style={{
+                top: "-8px",
+                right: "calc(50% - 14px)",
+                zIndex: 2,
+              }}
+              transition={{
+                layout: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+              }}
+            >
+              <Clawd autonomous size={28} walkRange={16} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="clawd-on-pill"
+              layoutId="clawd-perch"
+              className="pointer-events-none absolute"
+              style={{
+                bottom: "30px",
+                right: "26px",
+                zIndex: 1,
+              }}
+              transition={{
+                layout: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+              }}
+            >
+              <Clawd autonomous size={24} walkRange={8} />
+            </motion.div>
+          ))}
       </AnimatePresence>
 
       <AnimatePresence mode="wait" initial={false}>
@@ -244,72 +272,10 @@ export default function AgentIsland({
   );
 }
 
-/**
- * ClawdOnPill — Clawd persistente sentado/caminando encima del Shifty
- * pill después de la primera interacción del visitante. Position fixed
- * relative al wrapper de AgentIsland, justo arriba del pill con un
- * overlap sutil ("sitting on" en vez de "floating above").
- */
-function ClawdOnPill() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10, scale: 0.86 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 8, scale: 0.9, transition: { duration: 0.22 } }}
-      transition={{
-        duration: 0.55,
-        ease: [0.22, 1.4, 0.36, 1], // spring overshoot — drop in + bounce
-      }}
-      className="pointer-events-none absolute"
-      style={{
-        // Bottom: 30 = pill height (~38px) - 8px de overlap. Clawd
-        // queda sentado sobre el pill, no flotando arriba.
-        bottom: "30px",
-        // Right: 26 = aprox centro horizontal del pill (que mide ~110px
-        // y está alineado al right edge del wrapper).
-        right: "26px",
-        zIndex: 1,
-      }}
-    >
-      <Clawd size={24} autonomous />
-    </motion.div>
-  );
-}
-
-/**
- * ClawdOnPanel — Clawd sentado/caminando encima del panel abierto.
- * Posicionado centro-horizontal sobre el panel (no en la esquina como
- * en el pill — el panel es ancho suficiente para que el centro tenga
- * sentido visual). Delay leve en el entrance para que primero crezca
- * el panel y después caiga Clawd encima — lectura "el panel se abre
- * y Clawd salta arriba".
- */
-function ClawdOnPanel() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: -10, scale: 0.86 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -6, scale: 0.9, transition: { duration: 0.18 } }}
-      transition={{
-        duration: 0.55,
-        delay: 0.2, // dejar que el panel haga su entrance primero
-        ease: [0.22, 1.4, 0.36, 1],
-      }}
-      className="pointer-events-none absolute"
-      style={{
-        // Top: -8 = clawd sticks 8px ABOVE panel's top edge (sitting on
-        // the rim). El restante 16px queda overlapped sobre el header.
-        top: "-8px",
-        // Centro horizontal sobre el panel: right calc 50% - 14 (clawd
-        // half-width 14 para size=28).
-        right: "calc(50% - 14px)",
-        zIndex: 2,
-      }}
-    >
-      <Clawd size={28} autonomous walkRange={16} />
-    </motion.div>
-  );
-}
+// NOTA: las funciones ClawdOnPill / ClawdOnPanel se inlinearon en la
+// AnimatePresence principal arriba para compartir el layoutId
+// "clawd-perch" — framer-motion anima la transición geométrica entre
+// las dos posiciones cuando se abre/cierra el chat.
 
 /**
  * ShiftyHint — micro-burbujas rotativas arriba de la pill que invitan
@@ -339,6 +305,25 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
   const [text, setText] = React.useState("");
   const [phase, setPhase] = React.useState<TypePhase>("typing");
   const [hovered, setHovered] = React.useState(false);
+  // Cada ~15s Clawd sale del bubble, camina encima del top por 3s,
+  // y vuelve adentro. Periodic walk-out for personality.
+  const [clawdOnTopOfHint, setClawdOnTopOfHint] = React.useState(false);
+
+  React.useEffect(() => {
+    if (reduce) return;
+    const trigger = () => {
+      setClawdOnTopOfHint(true);
+      window.setTimeout(() => setClawdOnTopOfHint(false), 3000);
+    };
+    // Primera salida después de 9s (deja tiempo a que el visitante
+    // lea el primer claim sin distracción).
+    const initialDelay = window.setTimeout(trigger, 9000);
+    const interval = window.setInterval(trigger, 15000);
+    return () => {
+      window.clearTimeout(initialDelay);
+      window.clearInterval(interval);
+    };
+  }, [reduce]);
 
   // Typewriter state machine: typing → hold → erasing → pause → next msg.
   // Si reduce-motion, mostramos el texto completo y rotamos sin animar.
@@ -438,10 +423,28 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
       >
         <SurfaceSheen />
         <span className="relative z-[1] flex items-center gap-2">
-          {/* Clawd — mascot 24×24 con todas las animaciones idle (breath,
-              blink, hair wave, foot tap, pupil tracking). triggerWink se
-              actualiza con idx para que parpadee al cambiar de mensaje. */}
-          <Clawd size={22} hovered={hovered} triggerWink={idx} />
+          {/* Clawd — vive dentro del bubble por default. Cada ~15s sale a
+              caminar encima (clawdOnTopOfHint). Usamos layoutId para que
+              framer-motion anime la transición geométrica entre las dos
+              posiciones automáticamente. Cuando está afuera, un
+              placeholder mantiene la layout interna del bubble estable. */}
+          {clawdOnTopOfHint ? (
+            <span
+              aria-hidden
+              style={{
+                display: "inline-block",
+                width: 22,
+                height: 22,
+              }}
+            />
+          ) : (
+            <motion.span
+              layoutId="clawd-hint-pos"
+              className="inline-flex shrink-0"
+            >
+              <Clawd size={22} hovered={hovered} triggerWink={idx} />
+            </motion.span>
+          )}
 
           {/* Typewriter container — minWidth fijo para que el bubble no
               cambie de ancho al escribir/borrar (longest message =
@@ -494,6 +497,30 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
           clipPath: "polygon(0 0, 100% 0, 50% 100%)",
         }}
       />
+
+      {/* Clawd caminando ENCIMA del bubble — visible cada ~15s por 3s.
+          Misma layoutId que el Clawd-inside, así que framer-motion anima
+          el "salto" entre la posición interior y la posición top
+          automáticamente. autonomous=true + walkRange grande para que
+          se mueva lateral sobre el techo. */}
+      {clawdOnTopOfHint && (
+        <motion.span
+          layoutId="clawd-hint-pos"
+          className="pointer-events-none absolute"
+          style={{
+            top: "-18px",
+            left: "14px",
+            zIndex: 3,
+          }}
+        >
+          <Clawd
+            size={22}
+            triggerWink={idx}
+            autonomous
+            walkRange={30}
+          />
+        </motion.span>
+      )}
     </motion.button>
   );
 }
