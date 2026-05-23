@@ -227,7 +227,7 @@ export default function HomeIntroSection() {
                     <div className="flex h-full flex-col">
                       <div>
                         <h3 className="text-[#E93CFF] text-[22px] font-bold leading-[0.95] [font-family:var(--font-glitz-local)]">
-                          {item.title}xx
+                          {item.title}
                         </h3>
                         <p className="mt-1 text-[#E93CFF] text-[12px] leading-[1.1] [font-family:var(--font-fira-sans)]">
                           {item.description}
