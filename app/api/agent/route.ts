@@ -144,11 +144,12 @@ export async function POST(request: Request) {
     model: MODEL_ID,
     stream: true,
     temperature: 0.4,
-    // 800 = ~200 tokens de reasoning interno (Gemini 3.5 los exige) +
-    // ~600 tokens de respuesta visible (~3-4 párrafos en español).
-    // Techo de costo por turno ~$0.012 (gemini-3.5-flash a $9/M
-    // completion incluyendo reasoning).
-    max_tokens: 800,
+    // 1500 = budget generoso para que el reasoning interno (Gemini 3.5
+    // lo fuerza ON y a veces come 400-600 tokens en queries complejos)
+    // no estrangule la respuesta visible. Antes con 800 se cortaba a
+    // media oración en queries tipo "campaña con IA en consumo masivo".
+    // Cost por turno: ~$0.013 max (gemini-3.5-flash a $9/M).
+    max_tokens: 1500,
     messages: messages.map((m) => ({ role: m.role, content: m.content })),
     system_blocks: buildSystemBlocks(),
     tenant: "shift-pn",

@@ -127,9 +127,14 @@ async function readSSEStream(
 // del LLM. Si el LLM termina antes que la choreography, cortamos en seco
 // y revelamos los pasos restantes de golpe.
 
+// Thinking labels GENÉRICOS — usados para TODOS los turnos (los
+// labels per-intent del SCRIPT se sienten canned / "guion fake"). Estos
+// 3 dan la sensación de trabajo real sin claim de saber qué está
+// pasando en el reasoning interno del modelo.
 const DEFAULT_THINKING: ThinkingStep[] = [
-  { id: "d1", kind: "ponder", label: "Leyendo tu mensaje", duration: 600 },
-  { id: "d2", kind: "ponder", label: "Buscando la mejor respuesta", duration: 900 },
+  { id: "d1", kind: "ponder", label: "Procesando tu mensaje", duration: 500 },
+  { id: "d2", kind: "ponder", label: "Buscando información relevante", duration: 800 },
+  { id: "d3", kind: "ponder", label: "Armando respuesta", duration: 600 },
 ];
 
 type StepController = {
@@ -173,7 +178,12 @@ export async function* runAgentTurn(
   lastUserInput: string,
 ): AsyncGenerator<TurnEvent> {
   const intent = matchScript(lastUserInput);
-  const steps = intent.thinking.length > 0 ? intent.thinking : DEFAULT_THINKING;
+  // SIEMPRE usamos DEFAULT_THINKING (genérico) — los pasos específicos
+  // por intent del SCRIPT ("Reviso el palmarés", etc.) se sentían como
+  // guion canned. El SCRIPT sigue siendo útil para citations + chips
+  // post-respuesta (intent.citations + intent.suggestions más abajo),
+  // pero el thinking visible va neutro.
+  const steps = DEFAULT_THINKING;
 
   // 1. Anunciar los pasos al UI de una.
   yield { type: "thinking-start", steps };
