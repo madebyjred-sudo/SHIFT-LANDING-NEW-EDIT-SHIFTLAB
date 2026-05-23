@@ -159,6 +159,13 @@ export default function AgentIsland({
         {!open && chatEverOpened && <ClawdOnPill />}
       </AnimatePresence>
 
+      {/* Clawd sentado/caminando encima del panel — visible mientras
+          el chat está abierto. Misma personalidad autónoma, pero
+          centrado horizontalmente sobre el panel ancho. */}
+      <AnimatePresence>
+        {open && <ClawdOnPanel />}
+      </AnimatePresence>
+
       <AnimatePresence mode="wait" initial={false}>
         {open ? (
           <motion.div
@@ -265,6 +272,41 @@ function ClawdOnPill() {
       }}
     >
       <Clawd size={24} autonomous />
+    </motion.div>
+  );
+}
+
+/**
+ * ClawdOnPanel — Clawd sentado/caminando encima del panel abierto.
+ * Posicionado centro-horizontal sobre el panel (no en la esquina como
+ * en el pill — el panel es ancho suficiente para que el centro tenga
+ * sentido visual). Delay leve en el entrance para que primero crezca
+ * el panel y después caiga Clawd encima — lectura "el panel se abre
+ * y Clawd salta arriba".
+ */
+function ClawdOnPanel() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -10, scale: 0.86 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -6, scale: 0.9, transition: { duration: 0.18 } }}
+      transition={{
+        duration: 0.55,
+        delay: 0.2, // dejar que el panel haga su entrance primero
+        ease: [0.22, 1.4, 0.36, 1],
+      }}
+      className="pointer-events-none absolute"
+      style={{
+        // Top: -8 = clawd sticks 8px ABOVE panel's top edge (sitting on
+        // the rim). El restante 16px queda overlapped sobre el header.
+        top: "-8px",
+        // Centro horizontal sobre el panel: right calc 50% - 14 (clawd
+        // half-width 14 para size=28).
+        right: "calc(50% - 14px)",
+        zIndex: 2,
+      }}
+    >
+      <Clawd size={28} autonomous walkRange={16} />
     </motion.div>
   );
 }
