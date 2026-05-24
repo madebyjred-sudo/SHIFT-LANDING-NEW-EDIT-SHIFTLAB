@@ -41,8 +41,13 @@ export default function ShiftLabHeroSection() {
         className="pointer-events-none absolute inset-0 bg-black/15"
       />
 
-      {/* ── OVERLAYS sobre el video ───────────────────────────── */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-center px-6 md:px-12 lg:px-20">
+      {/* ── OVERLAYS sobre el video ───────────────────────────────
+          Asimetría intencional: left padding chico (logo bien pegado al
+          borde izquierdo) + right padding generoso (headline respira
+          del borde derecho). En mobile cae a 1 columna así que el
+          padding también aplica a la headline — pl-4 deja el bloque
+          legible sin pegarlo al borde. */}
+      <div className="absolute inset-0 z-10 flex flex-col justify-center pl-4 pr-6 md:pl-6 md:pr-12 lg:pl-10 lg:pr-20">
         <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-8 lg:gap-16">
           {/* IZQUIERDA — Logo Shift Lab grande */}
           <div className="flex justify-start">
