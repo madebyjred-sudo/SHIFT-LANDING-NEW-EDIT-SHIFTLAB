@@ -11,7 +11,12 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   {
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=()",
+    // microphone=(self) → permite que el propio site pida mic (necesario
+    // para el dictado de Shifty via Web Speech API). camera/geolocation
+    // se mantienen disabled porque nada del sitio los necesita.
+    // Si en algún momento se quiere fully disable mic again, cambiar a
+    // microphone=() y desactivar el voice feature en agent UI.
+    value: "camera=(), microphone=(self), geolocation=()",
   },
 ];
 
@@ -32,9 +37,18 @@ const nextConfig: NextConfig = {
         headers: securityHeaders,
       },
       {
-        // Asegura que el SSE de Shifty no se bufferee en el reverse
-        // proxy de cPanel (Apache/LiteSpeed). Sin esto, el stream
-        // llega de un solo golpe al final y la UI se siente rota.
+        // HTML pages: no browser cache (siempre revalidar via etag).
+        // El bundle JS/CSS de /_next/static/* lleva hashes en el
+        // filename → ese se cachea forever. Pero el HTML que los
+        // referencia debe estar siempre fresco para que próximos
+        // deploys aterricen sin necesidad de hard refresh.
+        source: "/:path((?!_next|api|assets).*)",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, must-revalidate" },
+        ],
+      },
+      {
+        // SSE de Shifty no se buferea en nginx — chunks llegan vivos.
         source: "/api/agent/:path*",
         headers: [
           { key: "X-Accel-Buffering", value: "no" },

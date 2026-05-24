@@ -159,121 +159,106 @@ export default function AgentIsland({
   }, [open, onClose]);
 
   // ── Voice / speech-to-text ─────────────────────────────────────
-  // Snapshot del input cuando voice se activa, para que los nuevos
-  // chunks dictados se agreguen al final del texto ya escrito en vez
-  // de reemplazarlo.
   const [speechBase, setSpeechBase] = React.useState("");
+  // Error inline visible en el composer. Auto-clear después de 12s.
+  const [voiceError, setVoiceError] = React.useState<string | null>(null);
 
-  // Helper para detectar macOS — el error message es diferente porque
-  // hay que ir a Settings de sistema, no solo el browser.
   const isMacOS =
     typeof navigator !== "undefined" && /Mac/i.test(navigator.platform);
 
-  const showMicBlockedAlert = React.useCallback(
-    (errName?: string) => {
-      if (typeof window === "undefined") return;
-      const lines = [
-        "No pude acceder al micrófono.",
-        "",
-      ];
+  const flashVoiceError = React.useCallback((msg: string) => {
+    setVoiceError(msg);
+    window.setTimeout(() => setVoiceError(null), 12000);
+  }, []);
 
-      if (isMacOS) {
-        lines.push(
-          "Si activaste el mic en la barra del browser y sigue fallando, es probable que macOS tenga bloqueado el micrófono para tu browser a nivel sistema.",
-          "",
-          "Apple → Configuración del Sistema → Privacidad y seguridad → Micrófono → activá Google Chrome (o Safari).",
-          "",
-          "Después recargá la página y volvé a probar.",
-        );
-      } else {
-        lines.push(
-          "1. Hacé click en el ícono del candado o cámara/mic al lado de la URL.",
-          "2. Permití el micrófono.",
-          "3. Recargá la página.",
-        );
+  const messageForError = React.useCallback(
+    (errName: string, errMessage?: string): string => {
+      const detail = errMessage ? ` — ${errMessage}` : "";
+      switch (errName) {
+        case "NotAllowedError":
+        case "PermissionDeniedError":
+        case "SecurityError":
+        case "not-allowed":
+        case "service-not-allowed":
+          return isMacOS
+            ? `Mic bloqueado por macOS. Apple → Configuración del Sistema → Privacidad y seguridad → Micrófono → activá Chrome/Safari (${errName})${detail}`
+            : `Mic bloqueado. Click en el candado de la URL → permitir mic → recargar (${errName})${detail}`;
+        case "NotReadableError":
+          return `El mic está siendo usado por otra app (Zoom, Meet, etc). Cerrá esa app y volvé a probar (${errName})${detail}`;
+        case "NotFoundError":
+        case "OverconstrainedError":
+          return `No se detectó micrófono físico (${errName})${detail}`;
+        case "AbortError":
+          return `Cancelado (${errName})${detail}`;
+        case "not-supported":
+          return "Tu browser no soporta dictado. Probá Chrome / Edge / Safari actualizado.";
+        case "network":
+          return `Error de red al conectar al servicio de speech (${errName})${detail}`;
+        case "no-speech":
+          return ""; // benigno, no mostrar
+        default:
+          return `Error: ${errName}${detail}`;
       }
-
-      if (errName) {
-        lines.push("", `(detalle técnico: ${errName})`);
-      }
-
-      window.alert(lines.join("\n"));
     },
     [isMacOS],
   );
 
-  // handleVoiceToggle hace EL CHECK DE PERMISO DIRECTAMENTE en el
-  // click handler (user-gesture context preservado) en vez de delegarlo
-  // al hook. Si el browser permite, se activa voice; si no, alert
-  // explicativo y voice se queda apagado.
   const handleVoiceToggle = React.useCallback(async () => {
-    // Si ya está activo, solo desactivar (no requiere permiso)
     if (state.voice) {
       onToggleVoice();
+      setVoiceError(null);
       return;
     }
 
     if (typeof navigator === "undefined" || !navigator?.mediaDevices?.getUserMedia) {
-      window.alert(
-        "Tu navegador no soporta dictado por voz. Probá con Chrome, Edge o Safari actualizado.",
-      );
+      flashVoiceError(messageForError("not-supported"));
       return;
     }
 
-    console.info("[shifty voice] requesting mic permission...");
+    console.info("[shifty voice] step 1: requesting getUserMedia...");
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      console.info("[shifty voice] step 2: getUserMedia OK, stopping stream");
       stream.getTracks().forEach((t) => t.stop());
-      console.info("[shifty voice] mic permission granted ✓");
 
-      // Snapshot input + activar voice (la hook arranca SpeechRecognition)
+      console.info("[shifty voice] step 3: activating voice mode");
+      setVoiceError(null);
       setSpeechBase(input);
       onToggleVoice();
     } catch (err) {
       const e = err as { name?: string; message?: string };
+      const name = e?.name || "Unknown";
+      const message = e?.message || "";
       console.error(
-        "[shifty voice] getUserMedia failed:",
-        e?.name,
-        e?.message,
-        err,
+        "[shifty voice] getUserMedia FAILED",
+        "\n  name:", name,
+        "\n  message:", message,
+        "\n  full:", err,
       );
-
-      const name = e?.name || "";
-      if (name === "NotFoundError" || name === "OverconstrainedError") {
-        window.alert(
-          "No se detectó micrófono en tu dispositivo. Conectá uno y volvé a probar.",
-        );
-      } else {
-        // NotAllowedError / PermissionDeniedError / SecurityError / etc
-        showMicBlockedAlert(name);
-      }
+      flashVoiceError(messageForError(name, message));
     }
-  }, [state.voice, input, onToggleVoice, showMicBlockedAlert]);
+  }, [state.voice, input, onToggleVoice, flashVoiceError, messageForError]);
 
-  // El hook arranca SpeechRecognition cuando voice=true. Como ya pasamos
-  // el check de getUserMedia en handleVoiceToggle, acá solo hay que
-  // manejar errores DURANTE el dictado (network, no-speech, etc).
   useSpeechRecognition({
     active: state.voice,
     lang: "es-419",
     initialBase: speechBase,
     onTranscript: (text) => onInputChange(text),
     onError: (e) => {
-      console.warn("[shifty voice] recognition error:", e);
+      console.warn("[shifty voice] recognition runtime error:", e);
       if (e === "not-allowed" || e === "service-not-allowed") {
-        // Race condition — permission revoked between gUM check y SR start
         onToggleVoice();
-        showMicBlockedAlert(e);
+        flashVoiceError(messageForError(e));
       } else if (e === "not-supported") {
         onToggleVoice();
-        window.alert(
-          "Tu navegador no soporta dictado por voz. Probá con Chrome, Edge o Safari actualizado.",
-        );
+        flashVoiceError(messageForError(e));
       } else if (e === "no-speech" || e === "aborted") {
-        // Silencio largo o usuario lo cerró — onend ya restartea, ignore.
+        // Silencio o user-stop — onend reintenta, ignore.
       } else {
-        // network / audio-capture / unknown — log y dejar que onend recupere.
+        // network / audio-capture / unknown — log + flash sutil
+        const msg = messageForError(e);
+        if (msg) flashVoiceError(msg);
       }
     },
   });
@@ -381,6 +366,7 @@ export default function AgentIsland({
                 busy={busy}
                 voice={state.voice}
                 onToggleVoice={handleVoiceToggle}
+                voiceError={voiceError}
               />
             </div>
           </motion.div>

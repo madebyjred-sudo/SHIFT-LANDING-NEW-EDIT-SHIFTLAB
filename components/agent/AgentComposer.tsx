@@ -21,6 +21,7 @@ export default function AgentComposer({
   busy,
   voice,
   onToggleVoice,
+  voiceError,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -28,6 +29,7 @@ export default function AgentComposer({
   busy: boolean;
   voice: boolean;
   onToggleVoice: () => void;
+  voiceError?: string | null;
 }) {
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
 
@@ -42,6 +44,17 @@ export default function AgentComposer({
 
   return (
     <div className="border-t border-white/[0.08] px-3 py-3">
+      {voiceError && (
+        <div
+          role="alert"
+          className="mb-2 rounded-md border border-[#F540FF]/30 bg-[#F540FF]/[0.08] px-3 py-2 text-[11.5px] leading-snug text-white/85"
+          style={{
+            fontFamily: "var(--font-fira-mono), ui-monospace, monospace",
+          }}
+        >
+          {voiceError}
+        </div>
+      )}
       <div
         className={`relative flex items-end gap-2 rounded-lg border bg-white/[0.025] px-2 py-1.5 transition-all duration-200 ${
           voice
