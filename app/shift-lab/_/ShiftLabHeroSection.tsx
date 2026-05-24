@@ -49,8 +49,12 @@ export default function ShiftLabHeroSection() {
           legible sin pegarlo al borde. */}
       <div className="absolute inset-0 z-10 flex flex-col justify-center pl-4 pr-6 md:pl-6 md:pr-12 lg:pl-10 lg:pr-20">
         <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-8 lg:gap-16">
-          {/* IZQUIERDA — Logo Shift Lab grande */}
-          <div className="flex justify-start">
+          {/* IZQUIERDA — Logo Shift Lab grande.
+              En mobile (1-col) queda pegado al borde izquierdo del
+              viewport. En desktop/tablet (md+, 2-col) se pega al
+              borde DERECHO de su columna → queda hacia el centro del
+              viewport, balanceado con la headline a la derecha. */}
+          <div className="flex justify-start md:justify-end">
             <div
               role="img"
               aria-label="Shift Lab"
