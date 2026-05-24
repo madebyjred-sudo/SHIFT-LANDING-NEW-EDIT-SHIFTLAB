@@ -11,8 +11,11 @@ function resolveSiteUrl(): string {
     return "http://localhost:3000";
   }
 
-  // Self-hosted or CI build without env: set NEXT_PUBLIC_SITE_URL in production.
-  return "https://loymark-demo6934.netlify.app";
+  // Self-hosted o CI build sin env: fallback al dominio canónico de
+  // producción (shiftlatam.agency). Si se requiere apuntar a staging
+  // o preview, settear NEXT_PUBLIC_SITE_URL en el runtime (PM2
+  // ecosystem, .env.production, etc).
+  return "https://shiftlatam.agency";
 }
 
 export const SITE_URL = resolveSiteUrl();
