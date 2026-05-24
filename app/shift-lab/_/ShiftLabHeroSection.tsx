@@ -75,8 +75,12 @@ export default function ShiftLabHeroSection() {
             />
           </div>
 
-          {/* DERECHA — Headline + sub-text */}
-          <div className="md:justify-self-end md:text-left">
+          {/* DERECHA — Headline + sub-text.
+              Nudge vertical sutil en md+ para que el bloque caiga un
+              tris abajo del eje del logo — la headline queda
+              ligeramente desplazada respecto al wordmark, lo que
+              ayuda al ritmo visual diagonal del hero. */}
+          <div className="md:justify-self-end md:text-left md:translate-y-3 lg:translate-y-6">
             <h2 className="max-w-xl text-[22px] md:text-[30px] lg:text-[38px] font-semibold leading-[1.08] tracking-tight text-white [font-family:var(--font-figtree)]">
               Innovación e Inteligencia Artificial{" "}
               <span className="text-[#F540FF]">
