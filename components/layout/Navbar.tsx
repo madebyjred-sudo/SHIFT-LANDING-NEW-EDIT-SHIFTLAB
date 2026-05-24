@@ -30,13 +30,15 @@ const menuItems: GlowMenuItem[] = [
     href: "#",
     iconTrigger: true,
     dropdown: [
-      // Estos 4 se muestran SIEMPRE en el dropdown — son redundantes en
-      // desktop (también están en el bar principal) pero garantizan
-      // acceso desde mobile donde no caben arriba.
-      { label: "Nosotros", href: "/about-us" },
-      { label: "Servicios", href: "/services" },
-      { label: "Premios", href: "/awards" },
-      { label: "Shift LAB", href: "/shift-lab" },
+      // Los 4 primeros tienen mobileOnly: true → en mobile rellenan el
+      // dropdown (ya que el bar principal los esconde con hideOnMobile)
+      // pero en desktop quedan ocultos para evitar duplicar lo que ya
+      // está visible arriba. Shifting Culture + Propósito son
+      // exclusivos del dropdown en ambos breakpoints.
+      { label: "Nosotros", href: "/about-us", mobileOnly: true },
+      { label: "Servicios", href: "/services", mobileOnly: true },
+      { label: "Premios", href: "/awards", mobileOnly: true },
+      { label: "Shift LAB", href: "/shift-lab", mobileOnly: true },
       { label: "Shifting Culture®", href: "/shifting-culture" },
       { label: "Propósito", href: "/purpose" },
     ],

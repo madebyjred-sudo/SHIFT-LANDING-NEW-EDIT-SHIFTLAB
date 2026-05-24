@@ -21,6 +21,13 @@ export type GlowMenuItem = {
   href: string;
   /** Hide on small screens (collapse for compact mobile bar) */
   hideOnMobile?: boolean;
+  /**
+   * Mostrar SOLO en mobile. Útil para items del dropdown que en
+   * desktop ya están en el bar principal — evita duplicación visual
+   * cuando se abre el "+". En mobile el bar principal los oculta
+   * (hideOnMobile) así que el dropdown queda como único acceso.
+   */
+  mobileOnly?: boolean;
   /** Sub-items shown in a dropdown beneath this item */
   dropdown?: GlowMenuItem[];
   /** Override label shown on the trigger (e.g. "Más" instead of repeating the item label) */
@@ -480,6 +487,7 @@ function DropdownItem({
             <motion.li
               key={sub.label}
               role="none"
+              className={sub.mobileOnly ? "sm:hidden" : ""}
               initial={false}
               animate={
                 open
