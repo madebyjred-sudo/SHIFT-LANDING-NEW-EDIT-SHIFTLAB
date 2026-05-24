@@ -147,6 +147,16 @@ export default function AgentIsland({
     onOpen();
   }, [onOpen]);
 
+  // ESC para cerrar el panel — accessibility + keyboard power-user win.
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
   return (
     <div
       className="fixed z-[100] right-3 sm:right-6 bottom-3 sm:bottom-6 flex flex-col items-end gap-3"
@@ -262,6 +272,8 @@ export default function AgentIsland({
             initial={{ opacity: 0, scale: 0.92, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 8 }}
+            whileHover={reduce ? undefined : { scale: 1.03 }}
+            whileTap={reduce ? undefined : { scale: 0.97 }}
             transition={spring}
             onClick={handleOpen}
             aria-label="Abrir Shifty"
@@ -338,6 +350,11 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
     };
   }, [reduce]);
 
+  // Contador de cycles completos (cada vez que idx vuelve a 0).
+  // Después de ~3 cycles, alargamos el pause para no ser demanding —
+  // el visitante ya vio los 3 mensajes, no necesitamos repetir tan rápido.
+  const cycleCountRef = React.useRef(0);
+
   // Typewriter state machine: typing → hold → erasing → pause → next msg.
   // Si reduce-motion, mostramos el texto completo y rotamos sin animar.
   React.useEffect(() => {
@@ -374,11 +391,18 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
         setPhase("pause");
       }
     } else if (phase === "pause") {
-      // Pausa entre mensajes — respiración
-      timer = window.setTimeout(() => {
-        setIdx((i) => (i + 1) % HINT_MESSAGES.length);
-        setPhase("typing");
-      }, 650);
+      // Pausa entre mensajes — respiración. Después de 3 cycles
+      // completos, alargamos a 4s (menos demanding).
+      const longPause = cycleCountRef.current >= 3;
+      timer = window.setTimeout(
+        () => {
+          const next = (idx + 1) % HINT_MESSAGES.length;
+          if (next === 0) cycleCountRef.current += 1;
+          setIdx(next);
+          setPhase("typing");
+        },
+        longPause ? 4000 : 650,
+      );
     }
 
     return () => {
@@ -576,8 +600,12 @@ function CollapsedPill({
 }
 
 /**
- * BrandIndicator — el monograma de Shift como "indicator". Cuando está
- * activo, un halo magenta lo respira detrás.
+ * BrandIndicator — el monograma de Shift como "indicator".
+ *
+ * Dos estados:
+ *   - busy (active=true): halo magenta respira detrás indicando trabajo
+ *   - idle (active=false): pequeño dot verde pulsa arriba-derecha como
+ *     señal de "estoy vivo y listo"
  */
 function BrandIndicator({ active, size = 22 }: { active: boolean; size?: number }) {
   return (
@@ -585,7 +613,7 @@ function BrandIndicator({ active, size = 22 }: { active: boolean; size?: number 
       className="relative inline-flex shrink-0 items-center justify-center"
       style={{ width: size, height: size }}
     >
-      {active && (
+      {active ? (
         <motion.span
           aria-hidden
           className="absolute rounded-full"
@@ -596,6 +624,23 @@ function BrandIndicator({ active, size = 22 }: { active: boolean; size?: number 
           }}
           animate={{ opacity: [0.45, 1, 0.45], scale: [1, 1.18, 1] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        />
+      ) : (
+        // Online dot — cyan-green, subtle pulse. Señal pasiva de "live"
+        // cuando el bot no está trabajando. Posicionado top-right del mark.
+        <motion.span
+          aria-hidden
+          className="absolute rounded-full"
+          style={{
+            top: -1,
+            right: -2,
+            width: 5,
+            height: 5,
+            backgroundColor: "#5BFFAE",
+            boxShadow: "0 0 5px rgba(91,255,174,0.7)",
+          }}
+          animate={{ opacity: [0.7, 1, 0.7] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
         />
       )}
       <ShiftMark size={size} className="relative" />

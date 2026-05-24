@@ -40,22 +40,45 @@ export default function AgentMessages({
   });
 
   return (
-    <div
-      ref={containerRef}
-      className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-4"
-      style={{
-        scrollbarWidth: "thin",
-        scrollbarColor: "rgba(255,255,255,0.16) transparent",
-      }}
-    >
-      {messages.map((m, i) => (
-        <AgentMessage
-          key={m.id}
-          message={m}
-          isLast={i === messages.length - 1}
-          onQuickChip={onQuickChip}
-        />
-      ))}
+    <div className="relative min-h-0 flex-1">
+      {/* Scroll container — absolute para que los fade overlays floten encima */}
+      <div
+        ref={containerRef}
+        className="absolute inset-0 overflow-y-auto overscroll-contain px-4 py-4 space-y-4"
+        style={{
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgba(255,255,255,0.16) transparent",
+        }}
+      >
+        {messages.map((m, i) => (
+          <AgentMessage
+            key={m.id}
+            message={m}
+            isLast={i === messages.length - 1}
+            onQuickChip={onQuickChip}
+          />
+        ))}
+      </div>
+
+      {/* Top edge fade — sugiere que hay scroll arriba (history) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-3"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(11,11,18,0.96), rgba(11,11,18,0))",
+        }}
+      />
+
+      {/* Bottom edge fade — separa visualmente del composer */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-4"
+        style={{
+          background:
+            "linear-gradient(to top, rgba(11,11,18,0.96), rgba(11,11,18,0))",
+        }}
+      />
     </div>
   );
 }

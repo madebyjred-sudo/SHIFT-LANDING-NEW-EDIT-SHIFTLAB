@@ -42,10 +42,10 @@ export default function AgentComposer({
   return (
     <div className="border-t border-white/[0.08] px-3 py-3">
       <div
-        className={`relative flex items-end gap-2 rounded-lg border bg-white/[0.025] px-2 py-1.5 transition-colors duration-200 ${
+        className={`relative flex items-end gap-2 rounded-lg border bg-white/[0.025] px-2 py-1.5 transition-all duration-200 ${
           voice
-            ? "border-[#F540FF]/40"
-            : "border-white/[0.08] focus-within:border-white/25"
+            ? "border-[#F540FF]/40 shadow-[0_0_0_3px_rgba(245,64,255,0.08)]"
+            : "border-white/[0.08] focus-within:border-[#F540FF]/35 focus-within:bg-white/[0.04] focus-within:shadow-[0_0_0_3px_rgba(245,64,255,0.06)]"
         }`}
       >
         <AnimatePresence mode="wait">
@@ -93,6 +93,7 @@ export default function AgentComposer({
               }}
               placeholder={busy ? "trabajando…" : "pregunta algo…"}
               disabled={busy}
+              autoFocus
               className="flex-1 resize-none bg-transparent px-2 py-2 text-[16px] sm:text-[13.5px] text-white placeholder:text-white/30 outline-none disabled:opacity-60 caret-[#F540FF]"
               style={{ minHeight: "32px", maxHeight: "132px" }}
             />
