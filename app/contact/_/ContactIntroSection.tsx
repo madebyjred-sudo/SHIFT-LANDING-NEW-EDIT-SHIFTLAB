@@ -1,11 +1,31 @@
+import Image from "next/image";
 import GradientText from "@/components/ui/GradientText";
 
 export default function ContactIntroSection() {
   return (
     <section className="bg-white -mt-5 md:mt-0">
       <div className="mx-auto w-full max-w-[1380px] px-6 py-16 sm:px-10 sm:py-20 lg:px-16">
-        <div >
-          <h1 className="text-3xl md:mt-10 font-semibold leading-[110%] text-[#1534DC] sm:text-4xl lg:text-5xl">
+        <div>
+          {/* Opaline envelope icon como accent thematico previo al
+              headline. Más grande (80/96px) + halo magenta radial
+              detrás — necesario porque los iconos opaline tienen
+              edges semi-transparentes que se pierden contra el bg
+              blanco. El halo le da presencia sin romper la limpieza
+              del fondo. */}
+          <div
+            aria-hidden
+            className="relative mb-5 inline-flex h-20 w-20 items-center justify-center md:mb-7 md:h-24 md:w-24"
+          >
+            <span className="absolute inset-0 rounded-full bg-[#F540FF] opacity-15 blur-2xl" />
+            <Image
+              src="/assets/icons/opaline/envelope.png"
+              alt=""
+              width={96}
+              height={96}
+              className="relative h-full w-full object-contain"
+            />
+          </div>
+          <h1 className="text-3xl md:mt-2 font-semibold leading-[110%] text-[#1534DC] sm:text-4xl lg:text-5xl">
             <span className="sm:hidden font-glitz font-normal">
               <GradientText text="Conversemos sobre" className="inline" /><br />
               <GradientText text="tu Estrategia" className="inline" />

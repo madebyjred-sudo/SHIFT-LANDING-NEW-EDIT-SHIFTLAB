@@ -54,6 +54,24 @@ export default function AwardsHeroSection() {
     />
 
     const mainText = <>
+        {/* Opaline trophy icon — single accent thematically aligned con
+            la página de Premios. Más grande (72/96px) + halo magenta
+            radial detrás para mantener presencia contra el bg blanco
+            (los icons opaline tienen edges semi-transparentes que se
+            pierden sin halo). */}
+        <div
+            aria-hidden
+            className="relative z-10 mb-4 inline-flex h-[72px] w-[72px] items-center justify-center md:mb-6 md:h-24 md:w-24"
+        >
+            <span className="absolute inset-0 rounded-full bg-[#F540FF] opacity-15 blur-2xl" />
+            <Image
+                src="/assets/icons/opaline/trophy.png"
+                alt=""
+                width={96}
+                height={96}
+                className="relative h-full w-full object-contain"
+            />
+        </div>
         <h1 className="relative z-10 hidden font-glitz font-normal tracking-normal leading-[100%] md:block md:text-[50px]">
             <GradientText text="Una de las Agencias" />
             <GradientText text="Más Premiadas en" />

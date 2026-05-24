@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { LabDotGrid } from "@/components/ui/lab-primitives";
@@ -9,6 +10,8 @@ type LabService = {
   title: string;
   body: string;
   how?: string;
+  /** Opaline 3D icon — uno por servicio, accent visual sutil */
+  icon: string;
 };
 
 const SERVICES: LabService[] = [
@@ -17,30 +20,35 @@ const SERVICES: LabService[] = [
     title: "Auditoría de madurez en IA",
     body: "Mapeamos el estado real de tu organización: data, herramientas, criterio y cultura. Salimos con un plan con horizontes claros.",
     how: "Cruzamos benchmarks de agencias globales con tu realidad operativa para que el plan sea ejecutable la semana que entra.",
+    icon: "/assets/icons/opaline/eye.png",
   },
   {
     id: "02",
     title: "IA integrada a tus flujos de trabajo",
     body: "Integramos modelos al ciclo de planeación, monitoreo de reputación y producción creativa. El flujo del equipo gana velocidad y consistencia.",
     how: "Empezamos por un proceso real. Si resiste el lunes, va al plan.",
+    icon: "/assets/icons/opaline/gear.png",
   },
   {
     id: "03",
     title: "Automatización de tareas repetitivas",
     body: "Orquestamos tareas repetitivas para que el tiempo del equipo se libere hacia decisiones de criterio.",
     how: "Distinguimos qué tareas consumen criterio por error y cuáles por necesidad. Automatizamos las primeras.",
+    icon: "/assets/icons/opaline/refresh.png",
   },
   {
     id: "04",
     title: "Productos digitales a medida",
     body: "Asistentes conversacionales, sistemas internos y herramientas digitales que viven dentro de tus campañas y relaciones con audiencias.",
     how: "Cubrimos el ciclo completo: del diseño al monitoreo en producción.",
+    icon: "/assets/icons/opaline/code-brackets.png",
   },
   {
     id: "05",
     title: "Dashboards e inteligencia de datos",
     body: "Indicadores accionables: reputación, conversación social, performance editorial y eficiencia operativa, en un solo lugar.",
     how: "Cada indicador del dashboard apunta a una acción concreta del equipo.",
+    icon: "/assets/icons/opaline/pie-chart.png",
   },
 ];
 
@@ -155,9 +163,21 @@ function CardLi({
       transition={{ duration: 0.6, delay: index * 0.06 }}
       className="group relative flex h-[clamp(360px,55vh,520px)] w-[clamp(360px,46vw,520px)] flex-col rounded-2xl border border-white/8 bg-white/[0.03] p-8 backdrop-blur-sm transition-colors duration-300 hover:border-[#F540FF]/35 hover:bg-white/[0.05]"
     >
-      <span className="[font-family:var(--font-glitz-local)] text-7xl leading-none text-white/15 transition-colors duration-300 group-hover:text-[#F540FF]/55">
-        {service.id}
-      </span>
+      {/* Top row: numerical ID + opaline icon en el corner opuesto.
+          El icon es decoración (aria-hidden), el ID sigue siendo el
+          identificador semántico de la card. */}
+      <div className="flex items-start justify-between">
+        <span className="[font-family:var(--font-glitz-local)] text-7xl leading-none text-white/15 transition-colors duration-300 group-hover:text-[#F540FF]/55">
+          {service.id}
+        </span>
+        <Image
+          src={service.icon}
+          alt=""
+          width={44}
+          height={44}
+          className="h-11 w-11 shrink-0 object-contain opacity-80 transition-opacity duration-300 group-hover:opacity-100"
+        />
+      </div>
 
       <h3 className="mt-8 text-[26px] md:text-[28px] leading-[1.12] [font-family:var(--font-glitz-local)] text-white">
         {service.title}
@@ -210,9 +230,18 @@ function VerticalGrid() {
               transition={{ duration: 0.6, delay: idx * 0.08 }}
               className="group relative flex flex-col rounded-2xl border border-white/8 bg-white/[0.03] p-7 backdrop-blur-sm"
             >
-              <span className="[font-family:var(--font-glitz-local)] text-6xl leading-none text-white/15 group-hover:text-[#F540FF]/55 transition-colors duration-300">
-                {service.id}
-              </span>
+              <div className="flex items-start justify-between">
+                <span className="[font-family:var(--font-glitz-local)] text-6xl leading-none text-white/15 group-hover:text-[#F540FF]/55 transition-colors duration-300">
+                  {service.id}
+                </span>
+                <Image
+                  src={service.icon}
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 shrink-0 object-contain opacity-80"
+                />
+              </div>
               <h3 className="mt-6 text-[22px] leading-[1.12] [font-family:var(--font-glitz-local)] text-white">
                 {service.title}
               </h3>
