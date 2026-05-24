@@ -12,30 +12,36 @@ import {
 /**
  * Shift LAB hero — scroll-driven cinemático.
  *
+ * Layout: video FULL-WIDTH siempre. El texto va OVERLAY sobre el video
+ * (logo Shift Lab a la izquierda, headline + sub a la derecha). Nunca
+ * se divide el viewport en columnas.
+ *
  * Choreography:
- *   t=0    → video ocupa todo el viewport, breath sutil, scroll hint pulsando
- *   t=0→0.7 → al scrollear, el video se encoge desde la izquierda hacia el
- *             borde derecho (width 100% → 55%) Y simultáneamente avanza su
- *             currentTime sincronizado con el progress (frame-by-frame).
- *   t=0.4→0.8 → mientras tanto, el logo "Shift Lab" + tagline + texto
- *               aparecen desde la izquierda (fade + slide).
- *   t=1    → estado final estático: video a la derecha, texto a la izquierda.
+ *   t=0       → Video ocupa TODO el viewport (100vh × 100vw). Breath
+ *               sutil + scroll hint pulsando abajo-centro. No se ve nada
+ *               más, solo el video.
+ *   t=0→1     → A medida que scrolleás:
+ *               · El video AVANZA frame-by-frame (currentTime sync).
+ *               · La ALTURA del video se reduce de 100vh → 75vh,
+ *                 manteniendo 100% width. Se queda anclado al top.
+ *               · Logo izquierda + headline derecha aparecen overlay
+ *                 fade-in.
+ *   t=1       → Estado final: video como BANNER 75vh ocupando todo el
+ *               ancho, overlays visibles encima, debajo asoma el
+ *               siguiente section del page (Info).
  *
  * Mechanic:
- *   - Section tiene altura 250vh (runway de scroll).
- *   - Inner div sticky top-0 h-screen → mantiene el video pegado al viewport
- *     mientras el scroll del runway avanza.
- *   - useScroll mide el progress 0→1 sobre la section.
- *   - useMotionValueEvent sincroniza video.currentTime = progress * duration.
- *   - El video tiene TODOS los frames como keyframes (transcodeado con
- *     ffmpeg -g 1) — necesario para que el scrubbing sea suave en Chrome
- *     y Safari. Sin esto, el browser solo puede saltar a keyframes y se
- *     ve choppy.
+ *   - Section runway = 170vh (al scrollear los 170vh, la animación
+ *     completa de 0 a 1).
+ *   - Inner sticky div con height animado de 100vh a 75vh. Como el
+ *     sticky reduce su altura DURANTE el scroll, el contenido siguiente
+ *     (Info section) va asomando debajo a medida que el banner se hace
+ *     más chico.
+ *   - useMotionValueEvent sincroniza video.currentTime = progress
+ *     * duration → scrubbing real frame-by-frame.
  *
- * Reduced motion: si OS pide menos movimiento, mostramos el estado FINAL
- * estático (video en su tamaño final + texto visible) sin scroll-driven
- * playback. El video todavía corre en autoplay loop para no ser
- * completamente estático.
+ * Reduce-motion: video queda en su tamaño final (75vh banner) con
+ * autoplay loop. Overlays visibles desde el inicio.
  */
 
 const VIDEO_SRC = "/assets/videos/shift-lab/hero-scroll.mp4";
@@ -44,7 +50,7 @@ export default function ShiftLabHeroSection() {
   const reduce = useReducedMotion();
   const sectionRef = React.useRef<HTMLElement>(null);
   const videoRef = React.useRef<HTMLVideoElement>(null);
-  const [videoReady, setVideoReady] = React.useState(false);
+  const videoReadyRef = React.useRef(false);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -52,129 +58,172 @@ export default function ShiftLabHeroSection() {
   });
 
   // Sync video.currentTime → scroll progress (frame-by-frame scrubbing).
+  // VIDEO_SCROLL_RATIO = 0.45 → el video se reproduce COMPLETO cuando
+  // llegás al 45% del scroll del runway. El 55% restante del scroll lo
+  // usamos para terminar de mostrar overlays + el shrink final. Esto da
+  // la sensación de "video acelerado" — con poco scroll ya viste mucho
+  // del video, en vez de necesitar scrollear todo el runway para verlo
+  // entero.
+  const VIDEO_SCROLL_RATIO = 0.45;
   useMotionValueEvent(scrollYProgress, "change", (progress) => {
     const v = videoRef.current;
-    if (!v || !videoReady || reduce) return;
+    if (!v || !videoReadyRef.current || reduce) return;
     const duration = v.duration;
     if (!isFinite(duration) || duration === 0) return;
-    // Clamp progress 0..1
-    const t = Math.max(0, Math.min(1, progress)) * duration;
-    // Solo escribir si cambió notablemente para evitar thrash
-    if (Math.abs(v.currentTime - t) > 0.02) {
+    // Mapeo acelerado: progress 0 → 0; progress VIDEO_SCROLL_RATIO → 1
+    // (último frame). Después queda en el último frame mientras los
+    // overlays terminan de aparecer.
+    const videoProgress = Math.min(progress / VIDEO_SCROLL_RATIO, 1);
+    const t = videoProgress * duration;
+    if (Math.abs(v.currentTime - t) > 0.015) {
       v.currentTime = t;
     }
   });
 
   // ── Animaciones derivadas del scroll ────────────────────────────────
-  // Video: width 100% → 55% (anclado al borde derecho, se encoge desde
-  // la izquierda revelando espacio para el texto).
-  const videoWidth = useTransform(scrollYProgress, [0, 0.7], ["100%", "55%"]);
+  // Las animaciones de UI (shrink + overlays) corren en la SEGUNDA mitad
+  // del runway, mientras el video YA terminó de reproducirse (queda en
+  // último frame). Así el usuario primero ve el video entero (scroll 0
+  // → 0.45) y después aparece el branding/texto sobre el último frame
+  // (scroll 0.5 → 0.95).
 
-  // Texto/logo: aparecen a partir del 40% del scroll, completos al 75%.
-  const textOpacity = useTransform(scrollYProgress, [0.4, 0.75], [0, 1]);
-  const textX = useTransform(scrollYProgress, [0.4, 0.75], [-24, 0]);
+  // Altura del video: 100vh → 75vh. Empieza a encoger después de que el
+  // video terminó de reproducirse.
+  const videoHeight = useTransform(
+    scrollYProgress,
+    [0.5, 0.95],
+    ["100vh", "75vh"],
+  );
 
-  // Scroll hint: visible solo al inicio, desaparece al primer scroll.
-  const hintOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
+  // Overlays aparecen una vez que el video terminó.
+  const overlayOpacity = useTransform(scrollYProgress, [0.55, 0.9], [0, 1]);
+  const overlayY = useTransform(scrollYProgress, [0.55, 0.9], [16, 0]);
 
-  // Tint overlay sobre el video — más oscuro al inicio (para que el
-  // breath se sienta), se aclara mientras el video toma su posición final.
+  // Scroll hint: visible solo al arrancar.
+  const hintOpacity = useTransform(scrollYProgress, [0, 0.06], [1, 0]);
+
+  // Tint overlay sobre el video — más oscuro al inicio para que el hint
+  // y el breath se sientan; se aclara según avanza el scroll.
   const tintOpacity = useTransform(
     scrollYProgress,
     [0, 0.5, 1],
-    [0.25, 0.1, 0],
+    [0.25, 0.12, 0.05],
   );
 
   return (
     <section
       ref={sectionRef}
       className="relative bg-black"
-      style={{ height: "250vh" }}
+      style={{ height: "170vh" }}
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Video container — width animada, anclado al right edge */}
+      <motion.div
+        className="sticky top-0 w-full overflow-hidden"
+        style={{ height: reduce ? "75vh" : videoHeight }}
+      >
+        {/* Video full-width + full-height del container */}
+        <video
+          ref={videoRef}
+          src={VIDEO_SRC}
+          muted
+          playsInline
+          preload="auto"
+          autoPlay={reduce ? true : false}
+          loop={reduce ? true : false}
+          className="absolute inset-0 h-full w-full object-cover"
+          onLoadedMetadata={() => {
+            videoReadyRef.current = true;
+            if (videoRef.current && !reduce) {
+              videoRef.current.pause();
+              videoRef.current.currentTime = 0;
+            }
+          }}
+          aria-hidden
+        />
+
+        {/* Dark tint para legibilidad de overlays + lectura del breath inicial */}
         <motion.div
-          className="absolute top-0 right-0 h-full overflow-hidden"
-          style={{ width: reduce ? "55%" : videoWidth }}
-        >
-          <video
-            ref={videoRef}
-            src={VIDEO_SRC}
-            muted
-            playsInline
-            preload="auto"
-            // Si reduce-motion, hacer autoplay loop. Sino, queda quieto
-            // hasta que el scroll lo mueva.
-            autoPlay={reduce ? true : false}
-            loop={reduce ? true : false}
-            className="h-full w-full object-cover"
-            onLoadedMetadata={() => {
-              setVideoReady(true);
-              // Setea frame 0 explícitamente
-              if (videoRef.current && !reduce) {
-                videoRef.current.pause();
-                videoRef.current.currentTime = 0;
-              }
-            }}
-            aria-hidden
-          />
-          {/* Subtle dark tint overlay para legibility del hint inicial */}
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-black"
+          style={{ opacity: reduce ? 0.05 : tintOpacity }}
+        />
+
+        {/* Breath sutil sobre el container del video (solo visible al
+            inicio, se autocorrige cuando comienza el scroll). */}
+        {!reduce && (
           <motion.div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-black"
-            style={{ opacity: reduce ? 0 : tintOpacity }}
+            className="pointer-events-none absolute inset-0"
+            animate={{ scale: [1, 1.012, 1] }}
+            transition={{
+              duration: 3.4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
           />
-        </motion.div>
+        )}
 
-        {/* Breath del video al inicio — solo visible mientras está fullscreen.
-            Implementado como subtle scale sobre el container del video.
-            Pausa cuando el scroll arranca para no competir con el shrink. */}
-        {!reduce && <BreathBackground scrollProgress={scrollYProgress} />}
-
-        {/* Logo + tagline + texto — aparecen desde la izquierda */}
+        {/* ── OVERLAYS sobre el video ───────────────────────────── */}
         <motion.div
-          className="absolute inset-y-0 left-0 flex w-full flex-col justify-center px-6 md:w-[45%] md:px-12 lg:px-16"
+          aria-hidden={false}
+          className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-center px-6 md:px-12 lg:px-20"
           style={
             reduce
               ? { opacity: 1 }
-              : { opacity: textOpacity, x: textX }
+              : { opacity: overlayOpacity, y: overlayY }
           }
         >
-          {/* Shift Lab wordmark — color split (white "Shift" + magenta "LAB") */}
-          <div
-            role="img"
-            aria-label="Shift Lab"
-            className="block aspect-[476/124] w-[260px] md:w-[400px] lg:w-[480px]"
-            style={{
-              backgroundImage:
-                "linear-gradient(to right, #FFFFFF 0%, #FFFFFF 73%, #F540FF 73%, #F540FF 100%)",
-              maskImage: "url(/assets/images/shift-lab/shift-lab.svg)",
-              maskSize: "contain",
-              maskRepeat: "no-repeat",
-              maskPosition: "left center",
-              WebkitMaskImage: "url(/assets/images/shift-lab/shift-lab.svg)",
-              WebkitMaskSize: "contain",
-              WebkitMaskRepeat: "no-repeat",
-              WebkitMaskPosition: "left center",
-            }}
-          />
+          <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-8 lg:gap-16">
+            {/* IZQUIERDA — Logo Shift Lab grande */}
+            <div className="flex justify-start">
+              <div
+                role="img"
+                aria-label="Shift Lab"
+                className="block aspect-[476/124] w-[260px] md:w-[420px] lg:w-[520px]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, #FFFFFF 0%, #FFFFFF 73%, #F540FF 73%, #F540FF 100%)",
+                  maskImage:
+                    "url(/assets/images/shift-lab/shift-lab.svg)",
+                  maskSize: "contain",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "left center",
+                  WebkitMaskImage:
+                    "url(/assets/images/shift-lab/shift-lab.svg)",
+                  WebkitMaskSize: "contain",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskPosition: "left center",
+                }}
+              />
+            </div>
 
-          <h2 className="mt-8 max-w-2xl text-[28px] md:text-[40px] lg:text-[44px] font-semibold leading-[1.08] tracking-tight text-white [font-family:var(--font-figtree)]">
-            Innovación e Inteligencia Artificial{" "}
-            <span className="text-[#F540FF]">aplicada a comunicación.</span>
-          </h2>
-
-          <p className="mt-8 max-w-xl [font-family:var(--font-fira-mono)] text-[13px] md:text-[14.5px] leading-[1.75] text-white/65">
-            Diseñamos sistemas donde la inteligencia humana y la artificial
-            trabajan en flujo continuo. La tecnología trabaja al servicio de
-            la estrategia y del criterio del equipo.
-          </p>
+            {/* DERECHA — Headline + sub-text */}
+            <div className="md:justify-self-end md:text-left">
+              <h2 className="max-w-xl text-[22px] md:text-[30px] lg:text-[38px] font-semibold leading-[1.08] tracking-tight text-white [font-family:var(--font-figtree)]">
+                Innovación e Inteligencia Artificial{" "}
+                <span className="text-[#F540FF]">
+                  aplicada a comunicación.
+                </span>
+              </h2>
+              <p
+                className="mt-5 max-w-md text-[12px] md:text-[13px] leading-[1.7] text-white/80"
+                style={{
+                  fontFamily:
+                    "var(--font-fira-mono), ui-monospace, monospace",
+                }}
+              >
+                Diseñamos sistemas donde la inteligencia humana y la
+                artificial trabajan en flujo continuo. La tecnología
+                trabaja al servicio de la estrategia y del criterio del
+                equipo.
+              </p>
+            </div>
+          </div>
         </motion.div>
 
         {/* Scroll hint — visible solo al inicio */}
         {!reduce && (
           <motion.div
-            className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2"
+            className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 z-20"
             style={{ opacity: hintOpacity }}
           >
             <motion.div
@@ -187,7 +236,7 @@ export default function ShiftLabHeroSection() {
               className="flex flex-col items-center gap-2"
             >
               <span
-                className="text-[10.5px] uppercase tracking-[0.28em] text-white/70"
+                className="text-[10.5px] uppercase tracking-[0.28em] text-white/80"
                 style={{
                   fontFamily:
                     "var(--font-fira-mono), ui-monospace, monospace",
@@ -203,7 +252,7 @@ export default function ShiftLabHeroSection() {
                 strokeWidth="1.4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-5 w-5 text-white/70"
+                className="h-5 w-5 text-white/80"
               >
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <polyline points="6 13 12 19 18 13" />
@@ -211,31 +260,7 @@ export default function ShiftLabHeroSection() {
             </motion.div>
           </motion.div>
         )}
-      </div>
+      </motion.div>
     </section>
-  );
-}
-
-/**
- * BreathBackground — subtle scale breath sobre el container del video
- * mientras el visitante todavía no scrolleó. Da la lectura "estoy vivo,
- * tocame". Se apaga cuando el scroll arranca para no competir con el
- * shrink del video.
- */
-function BreathBackground({
-  scrollProgress,
-}: {
-  scrollProgress: ReturnType<typeof useScroll>["scrollYProgress"];
-}) {
-  // Breath solo activo cuando progress < 0.05 (apenas empezó a scrollear)
-  const breathScale = useTransform(scrollProgress, [0, 0.05], [1.015, 1]);
-  return (
-    <motion.div
-      aria-hidden
-      className="pointer-events-none absolute inset-0"
-      style={{ scale: breathScale, transformOrigin: "center" }}
-      animate={{ scale: [1, 1.012, 1] }}
-      transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
-    />
   );
 }
