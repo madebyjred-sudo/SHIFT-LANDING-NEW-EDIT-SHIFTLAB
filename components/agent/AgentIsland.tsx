@@ -70,6 +70,20 @@ const HINT_MESSAGES = [
 // reaparece (rotated, no spam — sessionStorage muere con la tab).
 const HINT_SEEN_KEY = "shifty:hint-seen";
 
+// ────────────────────────────────────────────────────────────────────
+// FEATURE FLAG — Clawd mascot
+// ────────────────────────────────────────────────────────────────────
+// Mientras esté en false, el mascot NO se renderea en ningún perch
+// (inside-hint, walk-out-of-bubble, on-pill, on-panel). El componente
+// Clawd.tsx + toda su lógica (idle animations, autonomous behaviors,
+// layoutId transitions) queda en el repo intacta para flip rápido.
+//
+// Toggle a true cuando el stakeholder apruebe el diseño.
+// Toda la maquinaria (typewriter, halo, tail, sessionStorage de hint,
+// chatEverOpened tracking) sigue activa — el hint y el pill funcionan
+// idénticos a antes, solo sin Clawd visible.
+const CLAWD_ENABLED = false;
+
 export default function AgentIsland({
   state,
   open,
@@ -152,13 +166,12 @@ export default function AgentIsland({
         {!open && showHint && <ShiftyHint onClick={handleOpen} />}
       </AnimatePresence>
 
-      {/* Clawd persistent perch — un solo Clawd que vive entre
-          on-pill y on-panel. Las dos posiciones comparten layoutId
-          ("clawd-perch") para que framer-motion anime la transición
-          geométrica cuando se abre/cierra el chat (en vez de fade
-          out / fade in se ve como un salto entre perches). */}
+      {/* Clawd perches (on-pill + on-panel) — gated por feature flag.
+          Cuando se active, vuelve la animación de salto entre perches
+          via layoutId compartido. */}
       <AnimatePresence>
-        {chatEverOpened &&
+        {CLAWD_ENABLED &&
+          chatEverOpened &&
           (open ? (
             <motion.div
               key="clawd-on-panel"
@@ -310,7 +323,7 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
   const [clawdOnTopOfHint, setClawdOnTopOfHint] = React.useState(false);
 
   React.useEffect(() => {
-    if (reduce) return;
+    if (!CLAWD_ENABLED || reduce) return;
     const trigger = () => {
       setClawdOnTopOfHint(true);
       window.setTimeout(() => setClawdOnTopOfHint(false), 3000);
@@ -423,28 +436,27 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
       >
         <SurfaceSheen />
         <span className="relative z-[1] flex items-center gap-2">
-          {/* Clawd — vive dentro del bubble por default. Cada ~15s sale a
-              caminar encima (clawdOnTopOfHint). Usamos layoutId para que
-              framer-motion anime la transición geométrica entre las dos
-              posiciones automáticamente. Cuando está afuera, un
-              placeholder mantiene la layout interna del bubble estable. */}
-          {clawdOnTopOfHint ? (
-            <span
-              aria-hidden
-              style={{
-                display: "inline-block",
-                width: 22,
-                height: 22,
-              }}
-            />
-          ) : (
-            <motion.span
-              layoutId="clawd-hint-pos"
-              className="inline-flex shrink-0"
-            >
-              <Clawd size={22} hovered={hovered} triggerWink={idx} />
-            </motion.span>
-          )}
+          {/* Clawd — disabled via feature flag. Cuando se activa,
+              Clawd vive aquí por default y cada ~15s salta al top via
+              layoutId. Mientras esté false, solo se ve el typewriter. */}
+          {CLAWD_ENABLED &&
+            (clawdOnTopOfHint ? (
+              <span
+                aria-hidden
+                style={{
+                  display: "inline-block",
+                  width: 22,
+                  height: 22,
+                }}
+              />
+            ) : (
+              <motion.span
+                layoutId="clawd-hint-pos"
+                className="inline-flex shrink-0"
+              >
+                <Clawd size={22} hovered={hovered} triggerWink={idx} />
+              </motion.span>
+            ))}
 
           {/* Typewriter container — minWidth fijo para que el bubble no
               cambie de ancho al escribir/borrar (longest message =
@@ -498,12 +510,9 @@ function ShiftyHint({ onClick }: { onClick: () => void }) {
         }}
       />
 
-      {/* Clawd caminando ENCIMA del bubble — visible cada ~15s por 3s.
-          Misma layoutId que el Clawd-inside, así que framer-motion anima
-          el "salto" entre la posición interior y la posición top
-          automáticamente. autonomous=true + walkRange grande para que
-          se mueva lateral sobre el techo. */}
-      {clawdOnTopOfHint && (
+      {/* Clawd caminando ENCIMA del bubble — gated por feature flag.
+          Visible cada ~15s por 3s cuando esté activo. */}
+      {CLAWD_ENABLED && clawdOnTopOfHint && (
         <motion.span
           layoutId="clawd-hint-pos"
           className="pointer-events-none absolute"
