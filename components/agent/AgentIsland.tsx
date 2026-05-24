@@ -182,7 +182,17 @@ export default function AgentIsland({
         onToggleVoice();
         if (typeof window !== "undefined") {
           window.alert(
-            "Necesito permiso de micrófono para dictar. Habilitalo en la configuración de tu navegador y volvé a probar.",
+            "El micrófono está bloqueado para este sitio.\n\n" +
+              "Para habilitarlo:\n" +
+              "Chrome / Edge → hacé click en el ícono del candado o cámara/mic al lado de la URL → Permitir micrófono → recargar página.\n" +
+              "Safari → menú Safari → Configuración para este sitio → Micrófono → Permitir.",
+          );
+        }
+      } else if (e === "no-device") {
+        onToggleVoice();
+        if (typeof window !== "undefined") {
+          window.alert(
+            "No se detectó micrófono en tu dispositivo. Conectá uno y volvé a probar.",
           );
         }
       } else if (e === "not-supported") {
