@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 /**
  * AgentComposer — editorial. Sin gradient send, sin "Powered by".
@@ -9,9 +9,10 @@ import { AnimatePresence, motion } from "framer-motion";
  * Input es un textarea hairline-bordered que crece hasta ~5 líneas. La
  * barra de send es un `↵` tipográfico en mono, no un blob magenta.
  *
- * Modo voz: cuando se activa, el textarea se reemplaza por un texto
- * "escuchando…" en mono con un dot magenta a la izquierda. No hay
- * waveform — la idea es callado, no espectáculo.
+ * Modo voz: el mic activa el Web Speech API del browser (es-419). El
+ * textarea sigue visible mientras se dicta — la transcripción aparece
+ * en vivo. El mic icon cambia a "stop" + halo magenta pulsante para
+ * indicar que está escuchando.
  */
 export default function AgentComposer({
   value,
@@ -44,73 +45,60 @@ export default function AgentComposer({
       <div
         className={`relative flex items-end gap-2 rounded-lg border bg-white/[0.025] px-2 py-1.5 transition-all duration-200 ${
           voice
-            ? "border-[#F540FF]/40 shadow-[0_0_0_3px_rgba(245,64,255,0.08)]"
+            ? "border-[#F540FF]/40 bg-white/[0.04] shadow-[0_0_0_3px_rgba(245,64,255,0.08)]"
             : "border-white/[0.08] focus-within:border-[#F540FF]/35 focus-within:bg-white/[0.04] focus-within:shadow-[0_0_0_3px_rgba(245,64,255,0.06)]"
         }`}
       >
-        <AnimatePresence mode="wait">
-          {voice ? (
-            <motion.div
-              key="voice"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="flex-1 px-2 py-2 flex items-center gap-2"
-            >
-              <span className="relative inline-flex h-[7px] w-[7px]">
-                <span
-                  className="absolute inset-0 animate-ping rounded-full"
-                  style={{ backgroundColor: "#F540FF", opacity: 0.55 }}
-                />
-                <span
-                  className="relative inline-block h-[7px] w-[7px] rounded-full"
-                  style={{ backgroundColor: "#F540FF" }}
-                />
-              </span>
-              <span
-                className="font-mono text-[11.5px] tracking-[0.04em] text-white/70"
-                style={{ fontFamily: "var(--font-fira-mono), ui-monospace, monospace" }}
-              >
-                escuchando…
-              </span>
-            </motion.div>
-          ) : (
-            <motion.textarea
-              key="text"
-              ref={textareaRef}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              rows={1}
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  if (canSend) onSend();
-                }
-              }}
-              placeholder={busy ? "trabajando…" : "pregunta algo…"}
-              disabled={busy}
-              autoFocus
-              className="flex-1 resize-none bg-transparent px-2 py-2 text-[16px] sm:text-[13.5px] text-white placeholder:text-white/30 outline-none disabled:opacity-60 caret-[#F540FF]"
-              style={{ minHeight: "32px", maxHeight: "132px" }}
-            />
-          )}
-        </AnimatePresence>
+        {/* Textarea siempre visible — la transcripción del voice
+            aparece en vivo acá mientras el usuario dicta. */}
+        <textarea
+          ref={textareaRef}
+          rows={1}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              if (canSend) onSend();
+            }
+          }}
+          placeholder={
+            busy
+              ? "trabajando…"
+              : voice
+                ? "escuchando… (decí algo)"
+                : "pregunta algo…"
+          }
+          disabled={busy}
+          autoFocus
+          className="flex-1 resize-none bg-transparent px-2 py-2 text-[16px] sm:text-[13.5px] text-white placeholder:text-white/30 outline-none disabled:opacity-60 caret-[#F540FF]"
+          style={{ minHeight: "32px", maxHeight: "132px" }}
+        />
 
         <button
           type="button"
-          aria-label={voice ? "Detener voz" : "Activar voz"}
+          aria-label={voice ? "Detener dictado" : "Dictar por voz"}
+          title={voice ? "Detener dictado" : "Dictar por voz"}
           onClick={onToggleVoice}
-          className={`grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/30 ${
+          className={`relative grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/30 ${
             voice
               ? "text-[#F540FF]"
               : "text-white/40 hover:text-white/80 hover:bg-white/[0.04]"
           }`}
         >
-          {voice ? <StopIcon /> : <MicIcon />}
+          {voice && (
+            <motion.span
+              aria-hidden
+              className="absolute inset-0 rounded-md"
+              style={{
+                background:
+                  "radial-gradient(closest-side, rgba(245,64,255,0.45), rgba(245,64,255,0) 75%)",
+              }}
+              animate={{ opacity: [0.45, 1, 0.45], scale: [1, 1.18, 1] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+            />
+          )}
+          <span className="relative">{voice ? <StopIcon /> : <MicIcon />}</span>
         </button>
 
         <button

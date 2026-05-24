@@ -4,6 +4,7 @@ import * as React from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import ShiftMark from "@/components/common/ShiftMark";
 import Clawd from "./Clawd";
+import { useSpeechRecognition } from "@/lib/useSpeechRecognition";
 import type { AgentState, Message } from "./agent-types";
 import AgentHeader from "./AgentHeader";
 import AgentMessages from "./AgentMessages";
@@ -157,6 +158,49 @@ export default function AgentIsland({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
+  // ── Voice / speech-to-text ─────────────────────────────────────
+  // Snapshot del input cuando voice se activa, para que los nuevos
+  // chunks dictados se agreguen al final del texto ya escrito en vez
+  // de reemplazarlo.
+  const [speechBase, setSpeechBase] = React.useState("");
+
+  const handleVoiceToggle = React.useCallback(() => {
+    if (!state.voice) {
+      // A punto de activar voice — capturar el input actual como base
+      setSpeechBase(input);
+    }
+    onToggleVoice();
+  }, [state.voice, input, onToggleVoice]);
+
+  useSpeechRecognition({
+    active: state.voice,
+    lang: "es-419",
+    initialBase: speechBase,
+    onTranscript: (text) => onInputChange(text),
+    onError: (e) => {
+      if (e === "not-allowed" || e === "service-not-allowed") {
+        onToggleVoice();
+        if (typeof window !== "undefined") {
+          window.alert(
+            "Necesito permiso de micrófono para dictar. Habilitalo en la configuración de tu navegador y volvé a probar.",
+          );
+        }
+      } else if (e === "not-supported") {
+        onToggleVoice();
+        if (typeof window !== "undefined") {
+          window.alert(
+            "Tu navegador no soporta dictado por voz. Probá con Chrome, Edge o Safari actualizado.",
+          );
+        }
+      } else if (e === "no-speech" || e === "aborted") {
+        // Silencio largo o usuario lo cerró — onend ya restartea, ignore.
+      } else {
+        // network / audio-capture / unknown — log y dejar que onend recupere.
+        console.warn("[shifty voice]", e);
+      }
+    },
+  });
+
   return (
     <div
       className="fixed z-[100] right-3 sm:right-6 bottom-3 sm:bottom-6 flex flex-col items-end gap-3"
@@ -246,8 +290,6 @@ export default function AgentIsland({
               <AgentHeader
                 status={state.status}
                 statusLabel={state.statusLabel}
-                voice={state.voice}
-                onToggleVoice={onToggleVoice}
                 onClose={onClose}
                 onClear={onClear}
               />
@@ -261,7 +303,7 @@ export default function AgentIsland({
                 onSend={() => onSend(input)}
                 busy={busy}
                 voice={state.voice}
-                onToggleVoice={onToggleVoice}
+                onToggleVoice={handleVoiceToggle}
               />
             </div>
           </motion.div>

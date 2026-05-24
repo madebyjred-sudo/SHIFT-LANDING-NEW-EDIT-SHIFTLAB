@@ -18,15 +18,11 @@ import type { AgentStatus } from "./agent-types";
 export default function AgentHeader({
   status,
   statusLabel,
-  voice,
-  onToggleVoice,
   onClose,
   onClear,
 }: {
   status: AgentStatus;
   statusLabel: string;
-  voice: boolean;
-  onToggleVoice: () => void;
   onClose: () => void;
   onClear: () => void;
 }) {
@@ -65,13 +61,6 @@ export default function AgentHeader({
         </div>
       </div>
 
-      <HeaderButton
-        ariaLabel={voice ? "Desactivar voz" : "Activar voz"}
-        active={voice}
-        onClick={onToggleVoice}
-      >
-        {voice ? <MicIcon /> : <MicOffIcon />}
-      </HeaderButton>
       <HeaderButton ariaLabel="Nueva conversación" onClick={onClear}>
         <RefreshIcon />
       </HeaderButton>
@@ -110,26 +99,6 @@ function HeaderButton({
   );
 }
 
-function MicIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
-      <rect x="9" y="3" width="6" height="11" rx="3" />
-      <path d="M5 11a7 7 0 0 0 14 0" />
-      <path d="M12 18v3" />
-    </svg>
-  );
-}
-function MicOffIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
-      <path d="M3 3l18 18" />
-      <path d="M15 9.34V5a3 3 0 0 0-5.94-.6" />
-      <path d="M9 9v3a3 3 0 0 0 5.12 2.12" />
-      <path d="M5 11a7 7 0 0 0 11.42 5.42M19 11a7 7 0 0 1-.3 2" />
-      <path d="M12 18v3" />
-    </svg>
-  );
-}
 function RefreshIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
