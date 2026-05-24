@@ -49,7 +49,7 @@ export default function ShiftLabHeroSection() {
             <div
               role="img"
               aria-label="Shift Lab"
-              className="block aspect-[476/124] w-[260px] md:w-[420px] lg:w-[520px]"
+              className="block aspect-[476/124] w-[200px] md:w-[320px] lg:w-[400px]"
               style={{
                 backgroundImage:
                   "linear-gradient(to right, #FFFFFF 0%, #FFFFFF 73%, #F540FF 73%, #F540FF 100%)",
