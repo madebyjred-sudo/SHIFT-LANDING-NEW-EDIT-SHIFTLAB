@@ -55,7 +55,7 @@ const SERVICIOS: Service[] = [
     ctaSubject: "Reputacion",
     posterSrc: "/assets/images/servicios/influencia.svg",
     videoSrc: "/assets/videos/services/PERFORMANCE%20(1).mp4",
-    iconSrc: "/assets/images/servicios/icons/reputation.svg",
+    iconSrc: "/assets/icons/opaline/brain.png",
     theme: {
       bg: "#FAFAFC",
       text: "#0E1745",
@@ -74,7 +74,7 @@ const SERVICIOS: Service[] = [
     ctaSubject: "Creatividad",
     posterSrc: "/assets/images/servicios/creatividad.svg",
     videoSrc: "/assets/videos/services/CREATIVIDAD.mp4",
-    iconSrc: "/assets/images/servicios/icons/search.svg",
+    iconSrc: "/assets/icons/opaline/lightning-bolt.png",
     theme: {
       bg: "#1534DC",
       text: "#FFFFFF",
@@ -93,7 +93,7 @@ const SERVICIOS: Service[] = [
     ctaSubject: "Media-Performance",
     posterSrc: "/assets/images/servicios/media-performance.svg",
     videoSrc: "/assets/videos/services/PERFORMANCE.mp4",
-    iconSrc: "/assets/images/servicios/icons/sms.svg",
+    iconSrc: "/assets/icons/opaline/bar-chart.png",
     theme: {
       bg: "#0E1745",
       text: "#FFFFFF",
@@ -112,7 +112,7 @@ const SERVICIOS: Service[] = [
     ctaSubject: "Crisis",
     posterSrc: "/assets/images/servicios/crisis.svg",
     videoSrc: "/assets/videos/services/GESTION%20DE%20RIESGO.mp4",
-    iconSrc: "/assets/images/servicios/icons/mail.svg",
+    iconSrc: "/assets/icons/opaline/warning.png",
     theme: {
       bg: "#F540FF",
       text: "#FFFFFF",
@@ -305,7 +305,10 @@ function ServiceCard({
               className="absolute inset-0"
             />
           )}
-          {/* Icon overlay */}
+          {/* Icon overlay — opaline 3D icon dentro de un disco con
+              backdrop-blur. El icon ocupa 65% del disco (era 50%) para
+              dar presencia al detalle 3D del opaline sin que el round
+              backdrop sea visualmente apretado. */}
           <div
             aria-hidden
             className="absolute right-5 top-5 hidden h-16 w-16 md:right-7 md:top-7 md:flex md:h-20 md:w-20 lg:h-24 lg:w-24 items-center justify-center rounded-full backdrop-blur-md"
@@ -314,9 +317,9 @@ function ServiceCard({
             <Image
               src={service.iconSrc}
               alt=""
-              width={48}
-              height={48}
-              className="h-1/2 w-1/2 object-contain"
+              width={64}
+              height={64}
+              className="h-[65%] w-[65%] object-contain"
             />
           </div>
         </div>
