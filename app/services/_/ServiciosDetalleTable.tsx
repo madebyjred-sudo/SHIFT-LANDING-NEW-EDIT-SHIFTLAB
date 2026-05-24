@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 /**
@@ -26,12 +27,23 @@ type Row = {
 
 // Color por capa — alineado con los acentos de los cards de
 // HomeServiciosSection (Reputación blue, Creatividad magenta,
-// Media+Data cyan, Crisis blanco).
+// Media+Data cyan, Crisis blanco). Se usa para el borde-izquierdo
+// del "Resultado" en mobile y como halo sutil debajo del icon.
 const CAPA_COLORS: Record<Capa, string> = {
   Estrategia: "#5BAEFF", // azul más legible sobre el navy del fondo
   Creatividad: "#F540FF",
   "Media+Data": "#5BE9FF",
   Crisis: "#FFFFFF",
+};
+
+// Iconos opaline 3D — uno por capa. Renderizados con un halo radial
+// sutil del color de la capa por debajo para reforzar el código de
+// color sin romper el lenguaje opaline (que es magenta/púrpura uniforme).
+const CAPA_ICONS: Record<Capa, string> = {
+  Estrategia: "/assets/icons/opaline/brain.png",
+  Creatividad: "/assets/icons/opaline/lightning-bolt.png",
+  "Media+Data": "/assets/icons/opaline/bar-chart.png",
+  Crisis: "/assets/icons/opaline/warning.png",
 };
 
 const ROWS: Row[] = [
@@ -143,14 +155,28 @@ export default function ServiciosDetalleTable() {
                 columnGap: "2rem",
               }}
             >
-              {/* Capa name with brand color bar */}
-              <div className="flex items-start gap-3">
+              {/* Capa name con opaline icon + color-coded halo
+                  detrás. El halo es lo que mantiene el código de
+                  color por capa (icon de por sí es magenta/púrpura
+                  uniforme y no diferencia capas). */}
+              <div className="flex items-start gap-4">
                 <span
                   aria-hidden
-                  className="mt-1.5 inline-block h-[14px] w-[3px] rounded-full"
-                  style={{ backgroundColor: CAPA_COLORS[r.capa] }}
-                />
-                <h3 className="[font-family:var(--font-figtree)] text-[17px] font-semibold leading-[1.25] text-white">
+                  className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center"
+                >
+                  <span
+                    className="absolute inset-0 rounded-full opacity-30 blur-[10px]"
+                    style={{ backgroundColor: CAPA_COLORS[r.capa] }}
+                  />
+                  <Image
+                    src={CAPA_ICONS[r.capa]}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="relative h-10 w-10 object-contain"
+                  />
+                </span>
+                <h3 className="mt-1 [font-family:var(--font-figtree)] text-[17px] font-semibold leading-[1.25] text-white">
                   {r.nombre}
                 </h3>
               </div>
@@ -196,10 +222,21 @@ export default function ServiciosDetalleTable() {
               <div className="flex items-start gap-3">
                 <span
                   aria-hidden
-                  className="mt-1.5 inline-block h-[14px] w-[3px] rounded-full"
-                  style={{ backgroundColor: CAPA_COLORS[r.capa] }}
-                />
-                <h3 className="[font-family:var(--font-figtree)] text-[18px] font-semibold leading-[1.25] text-white">
+                  className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center"
+                >
+                  <span
+                    className="absolute inset-0 rounded-full opacity-30 blur-[10px]"
+                    style={{ backgroundColor: CAPA_COLORS[r.capa] }}
+                  />
+                  <Image
+                    src={CAPA_ICONS[r.capa]}
+                    alt=""
+                    width={36}
+                    height={36}
+                    className="relative h-9 w-9 object-contain"
+                  />
+                </span>
+                <h3 className="mt-1 [font-family:var(--font-figtree)] text-[18px] font-semibold leading-[1.25] text-white">
                   {r.nombre}
                 </h3>
               </div>
