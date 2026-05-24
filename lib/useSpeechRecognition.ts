@@ -88,108 +88,67 @@ export function useSpeechRecognition({
     let stopped = false;
     let recognition: SpeechRecognitionInstance | null = null;
 
-    const init = async () => {
-      // ── Step 1: solicitar permiso explícitamente via getUserMedia ──
-      // SpeechRecognition.start() también solicita permiso pero en algunos
-      // browsers (especialmente Chrome con permission previa denied) no
-      // muestra el prompt — falla directo con `not-allowed`. getUserMedia
-      // siempre dispara el prompt nativo si está undetermined.
-      if (!navigator?.mediaDevices?.getUserMedia) {
-        onErrorRef.current?.("not-supported");
-        return;
+    // Permission check ya se hizo en el caller (handleVoiceToggle vía
+    // getUserMedia en user-gesture context). Acá asumimos permission
+    // granted y arrancamos SpeechRecognition directo.
+    const w = window as unknown as {
+      SpeechRecognition?: SpeechRecognitionCtor;
+      webkitSpeechRecognition?: SpeechRecognitionCtor;
+    };
+    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
+    if (!SR) {
+      onErrorRef.current?.("not-supported");
+      return;
+    }
+
+    recognition = new SR();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = lang;
+
+    recognition.onresult = (e) => {
+      let transcript = "";
+      for (let i = 0; i < e.results.length; i++) {
+        const result = e.results[i];
+        if (result && result[0]) {
+          transcript += result[0].transcript;
+        }
       }
+      transcript = transcript.trim();
 
-      let stream: MediaStream;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      } catch (err) {
-        if (cancelled) return;
-        const e = err as { name?: string };
-        const name = e?.name || "";
-        if (
-          name === "NotAllowedError" ||
-          name === "PermissionDeniedError" ||
-          name === "SecurityError"
-        ) {
-          onErrorRef.current?.("not-allowed");
-        } else if (name === "NotFoundError" || name === "OverconstrainedError") {
-          onErrorRef.current?.("no-device");
-        } else {
-          onErrorRef.current?.("audio-capture");
-        }
-        return;
+      const base = initialBaseRef.current;
+      let combined: string;
+      if (!base) {
+        combined = transcript;
+      } else if (base.endsWith(" ") || base.endsWith("\n") || !transcript) {
+        combined = base + transcript;
+      } else {
+        combined = base + " " + transcript;
       }
+      onTranscriptRef.current(combined);
+    };
 
-      // No necesitamos el stream — solo era para forzar el prompt. Lo
-      // cerramos inmediatamente. SpeechRecognition abrirá su propio
-      // pipeline interno.
-      stream.getTracks().forEach((t) => t.stop());
+    recognition.onerror = (e) => {
+      onErrorRef.current?.(e.error || "unknown");
+    };
 
-      if (cancelled) return;
-
-      // ── Step 2: instanciar SpeechRecognition ──
-      const w = window as unknown as {
-        SpeechRecognition?: SpeechRecognitionCtor;
-        webkitSpeechRecognition?: SpeechRecognitionCtor;
-      };
-      const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
-      if (!SR) {
-        onErrorRef.current?.("not-supported");
-        return;
-      }
-
-      recognition = new SR();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = lang;
-
-      recognition.onresult = (e) => {
-        // Concatenar todos los chunks (interim + final) de la sesión actual.
-        let transcript = "";
-        for (let i = 0; i < e.results.length; i++) {
-          const result = e.results[i];
-          if (result && result[0]) {
-            transcript += result[0].transcript;
-          }
+    recognition.onend = () => {
+      // Chrome cierra la sesión después de ~silencio largo. Si seguimos
+      // activos, restart para mantener el listening continuo.
+      if (!stopped && recognition) {
+        try {
+          recognition.start();
+        } catch {
+          // Puede fallar si ya está stopped — idempotente.
         }
-        transcript = transcript.trim();
-
-        const base = initialBaseRef.current;
-        let combined: string;
-        if (!base) {
-          combined = transcript;
-        } else if (base.endsWith(" ") || base.endsWith("\n") || !transcript) {
-          combined = base + transcript;
-        } else {
-          combined = base + " " + transcript;
-        }
-        onTranscriptRef.current(combined);
-      };
-
-      recognition.onerror = (e) => {
-        onErrorRef.current?.(e.error || "unknown");
-      };
-
-      recognition.onend = () => {
-        // Chrome cierra la sesión después de ~silencio largo. Si seguimos
-        // activos, restart para mantener el listening continuo.
-        if (!stopped && recognition) {
-          try {
-            recognition.start();
-          } catch {
-            // Puede fallar si ya está stopped — idempotente.
-          }
-        }
-      };
-
-      try {
-        recognition.start();
-      } catch (e) {
-        onErrorRef.current?.(String(e));
       }
     };
 
-    init();
+    try {
+      recognition.start();
+    } catch (e) {
+      onErrorRef.current?.(String(e));
+    }
 
     return () => {
       cancelled = true;
