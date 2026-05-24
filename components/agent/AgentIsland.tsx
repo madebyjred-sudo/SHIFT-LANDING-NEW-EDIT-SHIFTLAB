@@ -600,12 +600,9 @@ function CollapsedPill({
 }
 
 /**
- * BrandIndicator — el monograma de Shift como "indicator".
- *
- * Dos estados:
- *   - busy (active=true): halo magenta respira detrás indicando trabajo
- *   - idle (active=false): pequeño dot verde pulsa arriba-derecha como
- *     señal de "estoy vivo y listo"
+ * BrandIndicator — el monograma de Shift como "indicator". Cuando el
+ * bot está trabajando, un halo magenta respira detrás. En idle, solo
+ * el mark (sin ningún status extra — pill se mantiene limpio).
  */
 function BrandIndicator({ active, size = 22 }: { active: boolean; size?: number }) {
   return (
@@ -613,7 +610,7 @@ function BrandIndicator({ active, size = 22 }: { active: boolean; size?: number 
       className="relative inline-flex shrink-0 items-center justify-center"
       style={{ width: size, height: size }}
     >
-      {active ? (
+      {active && (
         <motion.span
           aria-hidden
           className="absolute rounded-full"
@@ -624,23 +621,6 @@ function BrandIndicator({ active, size = 22 }: { active: boolean; size?: number 
           }}
           animate={{ opacity: [0.45, 1, 0.45], scale: [1, 1.18, 1] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-        />
-      ) : (
-        // Online dot — cyan-green, subtle pulse. Señal pasiva de "live"
-        // cuando el bot no está trabajando. Posicionado top-right del mark.
-        <motion.span
-          aria-hidden
-          className="absolute rounded-full"
-          style={{
-            top: -1,
-            right: -2,
-            width: 5,
-            height: 5,
-            backgroundColor: "#5BFFAE",
-            boxShadow: "0 0 5px rgba(91,255,174,0.7)",
-          }}
-          animate={{ opacity: [0.7, 1, 0.7] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
         />
       )}
       <ShiftMark size={size} className="relative" />
