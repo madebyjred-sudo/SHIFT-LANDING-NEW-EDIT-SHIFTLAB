@@ -10,8 +10,8 @@ type LabService = {
   title: string;
   body: string;
   how?: string;
-  /** Opaline 3D icon — uno por servicio, accent visual sutil */
-  icon: string;
+  /** 3D opaline illustration — focal visual de la card (top-zone) */
+  illustration: string;
 };
 
 const SERVICES: LabService[] = [
@@ -20,35 +20,35 @@ const SERVICES: LabService[] = [
     title: "Auditoría de madurez en IA",
     body: "Mapeamos el estado real de tu organización: data, herramientas, criterio y cultura. Salimos con un plan con horizontes claros.",
     how: "Cruzamos benchmarks de agencias globales con tu realidad operativa para que el plan sea ejecutable la semana que entra.",
-    icon: "/assets/icons/opaline/eye.png",
+    illustration: "/assets/illustrations/shift-lab/01-auditoria.jpeg",
   },
   {
     id: "02",
     title: "IA integrada a tus flujos de trabajo",
     body: "Integramos modelos al ciclo de planeación, monitoreo de reputación y producción creativa. El flujo del equipo gana velocidad y consistencia.",
     how: "Empezamos por un proceso real. Si resiste el lunes, va al plan.",
-    icon: "/assets/icons/opaline/gear.png",
+    illustration: "/assets/illustrations/shift-lab/02-integracion.jpeg",
   },
   {
     id: "03",
     title: "Automatización de tareas repetitivas",
     body: "Orquestamos tareas repetitivas para que el tiempo del equipo se libere hacia decisiones de criterio.",
     how: "Distinguimos qué tareas consumen criterio por error y cuáles por necesidad. Automatizamos las primeras.",
-    icon: "/assets/icons/opaline/refresh.png",
+    illustration: "/assets/illustrations/shift-lab/03-automatizacion.jpeg",
   },
   {
     id: "04",
     title: "Productos digitales a medida",
     body: "Asistentes conversacionales, sistemas internos y herramientas digitales que viven dentro de tus campañas y relaciones con audiencias.",
     how: "Cubrimos el ciclo completo: del diseño al monitoreo en producción.",
-    icon: "/assets/icons/opaline/code-brackets.png",
+    illustration: "/assets/illustrations/shift-lab/04-productos.jpeg",
   },
   {
     id: "05",
     title: "Dashboards e inteligencia de datos",
     body: "Indicadores accionables: reputación, conversación social, performance editorial y eficiencia operativa, en un solo lugar.",
     how: "Cada indicador del dashboard apunta a una acción concreta del equipo.",
-    icon: "/assets/icons/opaline/pie-chart.png",
+    illustration: "/assets/illustrations/shift-lab/05-dashboards.jpeg",
   },
 ];
 
@@ -161,42 +161,57 @@ function CardLi({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.4 }}
       transition={{ duration: 0.6, delay: index * 0.06 }}
-      className="group relative flex h-[clamp(360px,55vh,520px)] w-[clamp(360px,46vw,520px)] flex-col rounded-2xl border border-white/8 bg-white/[0.03] p-8 backdrop-blur-sm transition-colors duration-300 hover:border-[#F540FF]/35 hover:bg-white/[0.05]"
+      className="group relative h-[clamp(480px,72vh,660px)] w-[clamp(360px,46vw,520px)] overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm transition-all duration-300 hover:border-[#F540FF]/40"
     >
-      {/* Top row: numerical ID + opaline icon en el corner opuesto.
-          El icon es decoración (aria-hidden), el ID sigue siendo el
-          identificador semántico de la card. */}
-      <div className="flex items-start justify-between">
-        <span className="[font-family:var(--font-glitz-local)] text-7xl leading-none text-white/15 transition-colors duration-300 group-hover:text-[#F540FF]/55">
-          {service.id}
-        </span>
-        <Image
-          src={service.icon}
-          alt=""
-          width={44}
-          height={44}
-          className="h-11 w-11 shrink-0 object-contain opacity-80 transition-opacity duration-300 group-hover:opacity-100"
-        />
-      </div>
+      {/* Ilustración full-bleed — ocupa toda la card. La imagen viene
+          con su propio bg lavender-to-white built-in. */}
+      <Image
+        src={service.illustration}
+        alt=""
+        fill
+        sizes="(min-width: 1024px) 520px, 100vw"
+        className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+      />
 
-      <h3 className="mt-8 text-[26px] md:text-[28px] leading-[1.12] [font-family:var(--font-glitz-local)] text-white">
-        {service.title}
-      </h3>
+      {/* Gradient overlay — transparente arriba (deja ver el 3D
+          subject) → dark navy abajo (hace legible el texto). Stops
+          fuera-de-Tailwind para granular control de la curva. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to top, rgba(10,14,39,1) 0%, rgba(10,14,39,1) 32%, rgba(10,14,39,0.85) 48%, rgba(10,14,39,0.4) 62%, rgba(10,14,39,0) 80%)",
+        }}
+      />
 
-      <p className="mt-5 [font-family:var(--font-fira-mono)] text-[13.5px] leading-[1.8] text-white/65">
-        {service.body}
-      </p>
+      {/* Numerical ID — corner top-right, brand identity */}
+      <span
+        aria-hidden
+        className="absolute right-4 top-3 z-10 [font-family:var(--font-glitz-local)] text-4xl leading-none text-black/30 transition-colors duration-300 group-hover:text-[#F540FF]/60"
+      >
+        {service.id}
+      </span>
 
-      {service.how && (
-        <div className="mt-auto pt-6">
-          <div className="rounded-xl border border-[#F540FF]/20 bg-[#F540FF]/[0.06] px-4 py-3">
-            <p className="[font-family:var(--font-fira-mono)] text-[12px] leading-[1.65] text-white/85">
+      {/* Text content — bottom anchored sobre el gradient dark */}
+      <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col p-7">
+        <h3 className="text-[24px] md:text-[26px] leading-[1.12] [font-family:var(--font-glitz-local)] text-white">
+          {service.title}
+        </h3>
+
+        <p className="mt-3 [font-family:var(--font-fira-mono)] text-[13px] leading-[1.65] text-white/75">
+          {service.body}
+        </p>
+
+        {service.how && (
+          <div className="mt-4 rounded-xl border border-[#F540FF]/25 bg-[#F540FF]/[0.08] px-4 py-2.5 backdrop-blur-sm">
+            <p className="[font-family:var(--font-fira-mono)] text-[11.5px] leading-[1.6] text-white/90">
               <span className="text-[#F540FF]">→ </span>
               {service.how}
             </p>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </motion.li>
   );
 }
@@ -228,34 +243,49 @@ function VerticalGrid() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, delay: idx * 0.08 }}
-              className="group relative flex flex-col rounded-2xl border border-white/8 bg-white/[0.03] p-7 backdrop-blur-sm"
+              className="group relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm"
             >
-              <div className="flex items-start justify-between">
-                <span className="[font-family:var(--font-glitz-local)] text-6xl leading-none text-white/15 group-hover:text-[#F540FF]/55 transition-colors duration-300">
-                  {service.id}
-                </span>
-                <Image
-                  src={service.icon}
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 shrink-0 object-contain opacity-80"
-                />
+              {/* Ilustración full-bleed */}
+              <Image
+                src={service.illustration}
+                alt=""
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover object-top"
+              />
+              {/* Gradient overlay para legibilidad del texto */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(to top, rgba(10,14,39,1) 0%, rgba(10,14,39,1) 34%, rgba(10,14,39,0.85) 50%, rgba(10,14,39,0.4) 64%, rgba(10,14,39,0) 80%)",
+                }}
+              />
+              {/* Numerical ID */}
+              <span
+                aria-hidden
+                className="absolute right-4 top-3 z-10 [font-family:var(--font-glitz-local)] text-3xl leading-none text-black/30"
+              >
+                {service.id}
+              </span>
+              {/* Text content bottom-anchored */}
+              <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col p-6">
+                <h3 className="text-[22px] leading-[1.12] [font-family:var(--font-glitz-local)] text-white">
+                  {service.title}
+                </h3>
+                <p className="mt-3 [font-family:var(--font-fira-mono)] text-[12.5px] leading-[1.7] text-white/75">
+                  {service.body}
+                </p>
+                {service.how && (
+                  <div className="mt-4 rounded-xl border border-[#F540FF]/25 bg-[#F540FF]/[0.08] px-3.5 py-2.5 backdrop-blur-sm">
+                    <p className="[font-family:var(--font-fira-mono)] text-[11.5px] leading-[1.6] text-white/90">
+                      <span className="text-[#F540FF]">→ </span>
+                      {service.how}
+                    </p>
+                  </div>
+                )}
               </div>
-              <h3 className="mt-6 text-[22px] leading-[1.12] [font-family:var(--font-glitz-local)] text-white">
-                {service.title}
-              </h3>
-              <p className="mt-4 [font-family:var(--font-fira-mono)] text-[13px] leading-[1.75] text-white/60">
-                {service.body}
-              </p>
-              {service.how && (
-                <div className="mt-5 rounded-xl border border-[#F540FF]/20 bg-[#F540FF]/[0.06] px-3.5 py-2.5">
-                  <p className="[font-family:var(--font-fira-mono)] text-[11.5px] leading-[1.6] text-white/85">
-                    <span className="text-[#F540FF]">→ </span>
-                    {service.how}
-                  </p>
-                </div>
-              )}
             </motion.article>
           ))}
         </div>
