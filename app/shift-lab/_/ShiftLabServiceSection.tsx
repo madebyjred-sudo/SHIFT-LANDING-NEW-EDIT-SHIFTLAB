@@ -170,21 +170,53 @@ function CardLi({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.4 }}
       transition={{ duration: 0.6, delay: index * 0.06 }}
-      className="group relative h-[clamp(480px,72vh,660px)] w-[clamp(360px,46vw,520px)] overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm transition-all duration-300 hover:border-[#F540FF]/40"
+      className="group relative h-[clamp(480px,72vh,660px)] w-[clamp(360px,46vw,520px)] overflow-hidden rounded-2xl backdrop-blur-sm transition-all duration-300"
       style={{ backgroundColor: service.bgColor }}
     >
-      {/* Image zone — solo top 55% del card. object-bottom empuja el
-          subject (que vive en mitad del image source) hacia ARRIBA del
-          zone visible, dejando ver el bottom-bg del image abajo. */}
+      {/* Image zone — solo top 55% del card. object-position 50% 75%
+          (entre center y bottom): empuja el subject hacia arriba sin
+          aplastarlo al tope. Deja un margen de bg image visible debajo
+          que blendea con el card bg lavender. */}
       <div className="relative h-[55%] w-full overflow-hidden">
         <Image
           src={service.illustration}
           alt=""
           fill
           sizes="(min-width: 1024px) 520px, 100vw"
-          className="object-cover object-bottom transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          className="object-cover [object-position:50%_75%] transition-transform duration-500 ease-out group-hover:scale-[1.04]"
         />
       </div>
+
+      {/* Border dinámico — gradient stroke vía mask trick que adapta el
+          color a las zonas del card: arriba dark-on-light (lavender bg),
+          medio magenta accent, abajo light-on-dark (gradient navy). En
+          hover el magenta intensifica. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-20 rounded-2xl transition-opacity duration-300"
+        style={{
+          padding: "1px",
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.04) 35%, rgba(245,64,255,0.18) 68%, rgba(255,255,255,0.12) 100%)",
+          WebkitMask:
+            "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+          WebkitMaskComposite: "xor",
+          maskComposite: "exclude",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-20 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        style={{
+          padding: "1px",
+          background:
+            "linear-gradient(180deg, rgba(245,64,255,0.15) 0%, rgba(245,64,255,0.25) 50%, rgba(245,64,255,0.50) 100%)",
+          WebkitMask:
+            "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+          WebkitMaskComposite: "xor",
+          maskComposite: "exclude",
+        }}
+      />
 
       {/* Bottom 45% del card: solid bgColor (matchea el bottom-edge del
           image) → blend seamless donde image termina y card bg empieza. */}
@@ -259,19 +291,36 @@ function VerticalGrid() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, delay: idx * 0.08 }}
-              className="group relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm"
+              className="group relative aspect-[3/4] overflow-hidden rounded-2xl backdrop-blur-sm"
               style={{ backgroundColor: service.bgColor }}
             >
-              {/* Image zone — top 52%, object-bottom empuja subject arriba */}
+              {/* Image zone — top 52%, object-position 50% 75% (entre
+                  center y bottom): empuja subject hacia arriba sin
+                  aplastarlo al tope */}
               <div className="relative h-[52%] w-full overflow-hidden">
                 <Image
                   src={service.illustration}
                   alt=""
                   fill
                   sizes="(min-width: 768px) 50vw, 100vw"
-                  className="object-cover object-bottom"
+                  className="object-cover [object-position:50%_75%]"
                 />
               </div>
+              {/* Border dinámico — gradient stroke que adapta a las
+                  zonas claras/oscuras del card */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 z-20 rounded-2xl"
+                style={{
+                  padding: "1px",
+                  background:
+                    "linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.04) 35%, rgba(245,64,255,0.18) 68%, rgba(255,255,255,0.12) 100%)",
+                  WebkitMask:
+                    "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+                  WebkitMaskComposite: "xor",
+                  maskComposite: "exclude",
+                }}
+              />
               {/* Bottom 48%: card bg lavender muestra naturalmente */}
               {/* Gradient overlay solo en bottom 50% del card */}
               <div
