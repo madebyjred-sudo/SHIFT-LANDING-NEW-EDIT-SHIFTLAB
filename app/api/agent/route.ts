@@ -22,6 +22,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { buildSystemBlocks } from "@/lib/agent/system-prompt";
 import { tryExtractLeadFromConversation } from "@/lib/hubspot/extract-lead";
 import { upsertContactWithNote } from "@/lib/hubspot/upsert-contact";
+import { extractLeadWithLLM } from "@/lib/agent/extract-lead-llm";
+import { notifyHotLead } from "@/lib/slack/notify-lead";
 import {
   logTurn,
   recordExtraction,
@@ -275,6 +277,87 @@ export async function POST(request: Request) {
         userAgent,
         pageOrigin,
       }).catch((e) => console.error("[shifty→db] logTurn failed:", e));
+
+      // ── LLM extraction (Phase 1) ──────────────────────────────
+      // Corre AFTER del stream porque ahora tenemos la respuesta
+      // del assistant en assistantContent → contexto completo del
+      // turno para que el extractor entienda intent + tier.
+      //
+      // SOLO corre si:
+      //   • Hay al menos 2 user turns (suficiente contexto)
+      //   • No corrió ya regex extraction este turno (evita doble
+      //     upsert; regex es path rápido cuando user da email explícito)
+      //
+      // Fire-and-forget — agregar latency post-stream no afecta UX.
+      const userTurnCount = messages.filter((m) => m.role === "user").length;
+      const shouldRunLLM = userTurnCount >= 2 && !lead;
+      if (shouldRunLLM) {
+        const messagesForExtraction = [
+          ...messages,
+          { role: "assistant" as const, content: assistantContent },
+        ];
+        (async () => {
+          try {
+            const extracted = await extractLeadWithLLM(messagesForExtraction);
+            if (!extracted) return;
+            const { result, rawResponse } = extracted;
+
+            const extractionId = await recordExtraction({
+              sessionId,
+              email: result.email,
+              firstName: result.first_name,
+              lastName: result.last_name,
+              company: result.company,
+              intent: result.intent,
+              tier: result.tier,
+              sentiment: result.sentiment,
+              country: result.country,
+              summary: result.summary,
+              extractor: "llm",
+              rawResponse,
+            });
+
+            // Si LLM encontró email → upsert a HubSpot (regex no
+            // disparó este turno, ver shouldRunLLM)
+            let hubspotContactId: string | null = null;
+            if (result.email) {
+              const summary =
+                result.summary ?? lastUserMessage.slice(0, 500);
+              const r = await upsertContactWithNote({
+                email: result.email,
+                firstname: result.first_name ?? undefined,
+                lastname: result.last_name ?? undefined,
+                company: result.company ?? undefined,
+                brief: summary,
+                country: result.country ?? "Internacional (via chat)",
+                source: "shifty-chat",
+                icpTier: result.tier ?? undefined,
+              });
+              await recordHubspotSync({
+                extractionId,
+                sessionId,
+                contactId: r.contactId,
+                noteId: r.noteCreated ? "created" : null,
+                success: r.ok,
+                errors: r.errors,
+              });
+              hubspotContactId = r.contactId;
+            }
+
+            // Slack notification para hot leads (Phase 2)
+            if (result.tier === "green") {
+              await notifyHotLead({
+                sessionId,
+                lead: result,
+                pageOrigin,
+                hubspotContactId,
+              });
+            }
+          } catch (e) {
+            console.error("[shifty→llm-extract] threw:", e);
+          }
+        })();
+      }
     },
   });
 
