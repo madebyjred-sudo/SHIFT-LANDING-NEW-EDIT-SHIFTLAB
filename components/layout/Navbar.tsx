@@ -165,15 +165,23 @@ export default function Navbar() {
           aria-label="Shift Latam — inicio"
           className="flex flex-shrink-0 items-center px-1 sm:px-2"
         >
+          {/* Logo bicolor — "Shift" cambia entre azul brand (light bg)
+              y blanco (dark bg) según la tone detección. "LATAM" siempre
+              magenta. Por eso swappeamos el src en vez del filter trick
+              que aplicaba antes (cuando el logo era monocromo). Sin
+              cross-fade visible porque ambos archivos tienen el mismo
+              viewBox y la misma silueta — solo cambia el color. */}
           <Image
-            src="/assets/svg/nav-logo.svg"
+            src={
+              tone === "dark"
+                ? "/assets/svg/nav-logo.svg"
+                : "/assets/svg/nav-logo-on-light.svg"
+            }
             alt="Shift Latam"
-            width={290}
-            height={118}
+            width={103}
+            height={55}
             priority
-            className={`h-7 w-auto sm:h-8 transition-[filter] duration-500 ease-out ${
-              tone === "dark" ? "[filter:brightness(0)_invert(1)]" : ""
-            }`}
+            className="h-9 w-auto sm:h-10"
           />
         </Link>
         <GlowMenu items={menuItems} pathname={pathname} tone={tone} />
