@@ -25,7 +25,7 @@ const SERVICES: LabService[] = [
     body: "Mapeamos el estado real de tu organización: data, herramientas, criterio y cultura. Salimos con un plan con horizontes claros.",
     how: "Cruzamos benchmarks de agencias globales con tu realidad operativa para que el plan sea ejecutable la semana que entra.",
     illustration: "/assets/illustrations/shift-lab/01-auditoria.jpeg",
-    bgColor: "#D9D5EE",
+    bgColor: "#E3E1EE",
   },
   {
     id: "02",
@@ -33,7 +33,7 @@ const SERVICES: LabService[] = [
     body: "Integramos modelos al ciclo de planeación, monitoreo de reputación y producción creativa. El flujo del equipo gana velocidad y consistencia.",
     how: "Empezamos por un proceso real. Si resiste el lunes, va al plan.",
     illustration: "/assets/illustrations/shift-lab/02-integracion.jpeg",
-    bgColor: "#E0DCEB",
+    bgColor: "#CDC3DE",
   },
   {
     id: "03",
@@ -41,7 +41,7 @@ const SERVICES: LabService[] = [
     body: "Orquestamos tareas repetitivas para que el tiempo del equipo se libere hacia decisiones de criterio.",
     how: "Distinguimos qué tareas consumen criterio por error y cuáles por necesidad. Automatizamos las primeras.",
     illustration: "/assets/illustrations/shift-lab/03-automatizacion.jpeg",
-    bgColor: "#D8D3E9",
+    bgColor: "#D4CFE6",
   },
   {
     id: "04",
@@ -49,7 +49,7 @@ const SERVICES: LabService[] = [
     body: "Asistentes conversacionales, sistemas internos y herramientas digitales que viven dentro de tus campañas y relaciones con audiencias.",
     how: "Cubrimos el ciclo completo: del diseño al monitoreo en producción.",
     illustration: "/assets/illustrations/shift-lab/04-productos.jpeg",
-    bgColor: "#D9D1E9",
+    bgColor: "#DCD9EE",
   },
   {
     id: "05",
@@ -57,7 +57,7 @@ const SERVICES: LabService[] = [
     body: "Indicadores accionables: reputación, conversación social, performance editorial y eficiencia operativa, en un solo lugar.",
     how: "Cada indicador del dashboard apunta a una acción concreta del equipo.",
     illustration: "/assets/illustrations/shift-lab/05-dashboards.jpeg",
-    bgColor: "#E7E5FB",
+    bgColor: "#E7E6F6",
   },
 ];
 
@@ -173,19 +173,18 @@ function CardLi({
       className="group relative h-[clamp(480px,72vh,660px)] w-[clamp(360px,46vw,520px)] overflow-hidden rounded-2xl backdrop-blur-sm transition-all duration-300"
       style={{ backgroundColor: service.bgColor }}
     >
-      {/* Image zone — solo top 55% del card. object-position 50% 75%
-          (entre center y bottom): empuja el subject hacia arriba sin
-          aplastarlo al tope. Deja un margen de bg image visible debajo
-          que blendea con el card bg lavender. */}
-      <div className="relative h-[55%] w-full overflow-hidden">
-        <Image
-          src={service.illustration}
-          alt=""
-          fill
-          sizes="(min-width: 1024px) 520px, 100vw"
-          className="object-cover [object-position:50%_50%] transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-        />
-      </div>
+      {/* Image full-bleed — composición upper-heavy + bottom whitespace
+          POR DISEÑO (4:5 source). Nudge up con -translate-y-6 (24px)
+          para subir el subject otro toque sin pelear con object-position
+          — el bottom liberado se llena con el card bg lavender que
+          matchea el image bg → seamless. */}
+      <Image
+        src={service.illustration}
+        alt=""
+        fill
+        sizes="(min-width: 1024px) 520px, 100vw"
+        className="-translate-y-6 object-cover transition-transform duration-500 ease-out group-hover:-translate-y-6 group-hover:scale-[1.04]"
+      />
 
       {/* Border dinámico — gradient stroke vía mask trick que adapta el
           color a las zonas del card: arriba dark-on-light (lavender bg),
@@ -291,21 +290,19 @@ function VerticalGrid() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, delay: idx * 0.08 }}
-              className="group relative aspect-[3/4] overflow-hidden rounded-2xl backdrop-blur-sm"
+              className="group relative aspect-[4/5] overflow-hidden rounded-2xl backdrop-blur-sm"
               style={{ backgroundColor: service.bgColor }}
             >
-              {/* Image zone — top 52%, object-position 50% 75% (entre
-                  center y bottom): empuja subject hacia arriba sin
-                  aplastarlo al tope */}
-              <div className="relative h-[52%] w-full overflow-hidden">
-                <Image
-                  src={service.illustration}
-                  alt=""
-                  fill
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                  className="object-cover [object-position:50%_50%]"
-                />
-              </div>
+              {/* Image full-bleed con nudge up (-translate-y-4 = 16px)
+                  para subir el subject. Bottom liberado se llena con
+                  card bg lavender seamless. */}
+              <Image
+                src={service.illustration}
+                alt=""
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="-translate-y-4 object-cover"
+              />
               {/* Border dinámico — gradient stroke que adapta a las
                   zonas claras/oscuras del card */}
               <div
