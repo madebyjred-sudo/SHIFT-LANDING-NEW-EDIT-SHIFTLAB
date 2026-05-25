@@ -12,6 +12,10 @@ type LabService = {
   how?: string;
   /** 3D opaline illustration — focal visual de la card (top-zone) */
   illustration: string;
+  /** Background color sampleado del bottom-edge de la illustration —
+      hace seamless el límite entre la imagen y la card bg cuando la
+      imagen ocupa solo top-portion del card. */
+  bgColor: string;
 };
 
 const SERVICES: LabService[] = [
@@ -21,6 +25,7 @@ const SERVICES: LabService[] = [
     body: "Mapeamos el estado real de tu organización: data, herramientas, criterio y cultura. Salimos con un plan con horizontes claros.",
     how: "Cruzamos benchmarks de agencias globales con tu realidad operativa para que el plan sea ejecutable la semana que entra.",
     illustration: "/assets/illustrations/shift-lab/01-auditoria.jpeg",
+    bgColor: "#D9D5EE",
   },
   {
     id: "02",
@@ -28,6 +33,7 @@ const SERVICES: LabService[] = [
     body: "Integramos modelos al ciclo de planeación, monitoreo de reputación y producción creativa. El flujo del equipo gana velocidad y consistencia.",
     how: "Empezamos por un proceso real. Si resiste el lunes, va al plan.",
     illustration: "/assets/illustrations/shift-lab/02-integracion.jpeg",
+    bgColor: "#E0DCEB",
   },
   {
     id: "03",
@@ -35,6 +41,7 @@ const SERVICES: LabService[] = [
     body: "Orquestamos tareas repetitivas para que el tiempo del equipo se libere hacia decisiones de criterio.",
     how: "Distinguimos qué tareas consumen criterio por error y cuáles por necesidad. Automatizamos las primeras.",
     illustration: "/assets/illustrations/shift-lab/03-automatizacion.jpeg",
+    bgColor: "#D8D3E9",
   },
   {
     id: "04",
@@ -42,6 +49,7 @@ const SERVICES: LabService[] = [
     body: "Asistentes conversacionales, sistemas internos y herramientas digitales que viven dentro de tus campañas y relaciones con audiencias.",
     how: "Cubrimos el ciclo completo: del diseño al monitoreo en producción.",
     illustration: "/assets/illustrations/shift-lab/04-productos.jpeg",
+    bgColor: "#D9D1E9",
   },
   {
     id: "05",
@@ -49,6 +57,7 @@ const SERVICES: LabService[] = [
     body: "Indicadores accionables: reputación, conversación social, performance editorial y eficiencia operativa, en un solo lugar.",
     how: "Cada indicador del dashboard apunta a una acción concreta del equipo.",
     illustration: "/assets/illustrations/shift-lab/05-dashboards.jpeg",
+    bgColor: "#E7E5FB",
   },
 ];
 
@@ -162,38 +171,45 @@ function CardLi({
       viewport={{ once: true, amount: 0.4 }}
       transition={{ duration: 0.6, delay: index * 0.06 }}
       className="group relative h-[clamp(480px,72vh,660px)] w-[clamp(360px,46vw,520px)] overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm transition-all duration-300 hover:border-[#F540FF]/40"
+      style={{ backgroundColor: service.bgColor }}
     >
-      {/* Ilustración full-bleed — ocupa toda la card. La imagen viene
-          con su propio bg lavender-to-white built-in. */}
-      <Image
-        src={service.illustration}
-        alt=""
-        fill
-        sizes="(min-width: 1024px) 520px, 100vw"
-        className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-      />
+      {/* Image zone — solo top 55% del card. object-bottom empuja el
+          subject (que vive en mitad del image source) hacia ARRIBA del
+          zone visible, dejando ver el bottom-bg del image abajo. */}
+      <div className="relative h-[55%] w-full overflow-hidden">
+        <Image
+          src={service.illustration}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 520px, 100vw"
+          className="object-cover object-bottom transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+        />
+      </div>
 
-      {/* Gradient overlay — transparente arriba (deja ver el 3D
-          subject) → dark navy abajo (hace legible el texto). Stops
-          fuera-de-Tailwind para granular control de la curva. */}
+      {/* Bottom 45% del card: solid bgColor (matchea el bottom-edge del
+          image) → blend seamless donde image termina y card bg empieza. */}
+
+      {/* Gradient overlay — vive SOLO en el bottom 48% del card. Empieza
+          transparente (deja ver el card bg lavender) y termina dark navy.
+          NO toca el image zone (top 55%) → el icono queda intocado. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[48%]"
         style={{
           background:
-            "linear-gradient(to top, rgba(10,14,39,1) 0%, rgba(10,14,39,1) 32%, rgba(10,14,39,0.85) 48%, rgba(10,14,39,0.4) 62%, rgba(10,14,39,0) 80%)",
+            "linear-gradient(to top, rgba(10,14,39,1) 0%, rgba(10,14,39,1) 55%, rgba(10,14,39,0.65) 75%, rgba(10,14,39,0) 100%)",
         }}
       />
 
-      {/* Numerical ID — corner top-right, brand identity */}
+      {/* Numerical ID — corner top-right del image zone */}
       <span
         aria-hidden
-        className="absolute right-4 top-3 z-10 [font-family:var(--font-glitz-local)] text-4xl leading-none text-black/30 transition-colors duration-300 group-hover:text-[#F540FF]/60"
+        className="absolute right-4 top-3 z-10 [font-family:var(--font-glitz-local)] text-4xl leading-none text-black/25 transition-colors duration-300 group-hover:text-[#F540FF]/60"
       >
         {service.id}
       </span>
 
-      {/* Text content — bottom anchored sobre el gradient dark */}
+      {/* Text content — bottom anchored sobre el dark zone */}
       <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col p-7">
         <h3 className="text-[24px] md:text-[26px] leading-[1.12] [font-family:var(--font-glitz-local)] text-white">
           {service.title}
@@ -244,28 +260,32 @@ function VerticalGrid() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, delay: idx * 0.08 }}
               className="group relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10 backdrop-blur-sm"
+              style={{ backgroundColor: service.bgColor }}
             >
-              {/* Ilustración full-bleed */}
-              <Image
-                src={service.illustration}
-                alt=""
-                fill
-                sizes="(min-width: 768px) 50vw, 100vw"
-                className="object-cover object-top"
-              />
-              {/* Gradient overlay para legibilidad del texto */}
+              {/* Image zone — top 52%, object-bottom empuja subject arriba */}
+              <div className="relative h-[52%] w-full overflow-hidden">
+                <Image
+                  src={service.illustration}
+                  alt=""
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-cover object-bottom"
+                />
+              </div>
+              {/* Bottom 48%: card bg lavender muestra naturalmente */}
+              {/* Gradient overlay solo en bottom 50% del card */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-0"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-[50%]"
                 style={{
                   background:
-                    "linear-gradient(to top, rgba(10,14,39,1) 0%, rgba(10,14,39,1) 34%, rgba(10,14,39,0.85) 50%, rgba(10,14,39,0.4) 64%, rgba(10,14,39,0) 80%)",
+                    "linear-gradient(to top, rgba(10,14,39,1) 0%, rgba(10,14,39,1) 55%, rgba(10,14,39,0.65) 75%, rgba(10,14,39,0) 100%)",
                 }}
               />
               {/* Numerical ID */}
               <span
                 aria-hidden
-                className="absolute right-4 top-3 z-10 [font-family:var(--font-glitz-local)] text-3xl leading-none text-black/30"
+                className="absolute right-4 top-3 z-10 [font-family:var(--font-glitz-local)] text-3xl leading-none text-black/25"
               >
                 {service.id}
               </span>
