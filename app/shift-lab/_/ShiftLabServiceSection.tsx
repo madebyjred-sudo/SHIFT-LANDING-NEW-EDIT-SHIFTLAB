@@ -183,7 +183,7 @@ function CardLi({
         alt=""
         fill
         sizes="(min-width: 1024px) 520px, 100vw"
-        className="-translate-y-10 object-cover transition-transform duration-500 ease-out group-hover:-translate-y-10 group-hover:scale-[1.04]"
+        className="-translate-y-16 object-cover transition-transform duration-500 ease-out group-hover:-translate-y-16 group-hover:scale-[1.04]"
       />
 
       {/* Border dinámico — gradient stroke vía mask trick que adapta el
@@ -301,7 +301,7 @@ function VerticalGrid() {
                 alt=""
                 fill
                 sizes="(min-width: 768px) 50vw, 100vw"
-                className="-translate-y-7 object-cover"
+                className="-translate-y-12 object-cover"
               />
               {/* Border dinámico — gradient stroke que adapta a las
                   zonas claras/oscuras del card */}
