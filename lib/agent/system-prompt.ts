@@ -109,13 +109,20 @@ Si la pregunta no necesita link, no lo fuerces. Máximo 1 link por respuesta, sa
 
 /**
  * Construye el array `system_blocks` que va al adapter OAI compat de
- * Cerebro. Dos bloques separados:
- *   1) Guardrails (estable, ~3KB)
- *   2) KB YAML (estable, ~30KB)
- * Ambos con cache_control:"ephemeral" para aprovechar prompt caching
- * (Anthropic/Gemini ambos lo soportan).
+ * Cerebro. Hasta 3 bloques separados:
+ *   1) Guardrails (estable, ~3KB) — cached
+ *   2) KB YAML (estable, ~30KB) — cached
+ *   3) Visitor context (per-request, ~200B) — NO cached
+ * Los primeros 2 con cache_control:"ephemeral" para prompt caching
+ * (Anthropic/Gemini lo soportan). El 3ro varía por visitor → no cache.
+ *
+ * @param visitorContext  Texto markdown opcional con info del contacto
+ *   recuperada de HubSpot (cuando el visitor se identifica). Permite
+ *   que Shifty personalice respuestas referenciando relación previa.
  */
-export function buildSystemBlocks(): Array<{
+export function buildSystemBlocks(
+  visitorContext?: string | null,
+): Array<{
   type: "text";
   text: string;
   cache_control?: { type: "ephemeral" };
@@ -142,6 +149,14 @@ export function buildSystemBlocks(): Array<{
         kb +
         "\n```",
       cache_control: { type: "ephemeral" },
+    });
+  }
+  if (visitorContext) {
+    // Visitor context — NO cache (varía por request) pero compacto
+    // (~200B) así que no afecta material el cost.
+    blocks.push({
+      type: "text",
+      text: visitorContext,
     });
   }
   return blocks;

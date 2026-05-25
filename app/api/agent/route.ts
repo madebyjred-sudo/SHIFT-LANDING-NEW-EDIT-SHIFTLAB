@@ -23,6 +23,7 @@ import { buildSystemBlocks } from "@/lib/agent/system-prompt";
 import { tryExtractLeadFromConversation } from "@/lib/hubspot/extract-lead";
 import { upsertContactWithNote } from "@/lib/hubspot/upsert-contact";
 import { extractLeadWithLLM } from "@/lib/agent/extract-lead-llm";
+import { getVisitorContextForSession } from "@/lib/agent/contact-context-cache";
 import { notifyHotLead } from "@/lib/slack/notify-lead";
 import {
   logTurn,
@@ -188,6 +189,23 @@ export async function POST(request: Request) {
     })();
   }
 
+  // ── Phase 3 context enrichment ────────────────────────────────────
+  // Si el visitor ya compartió email en algún momento de esta sesión,
+  // buscamos en HubSpot si ya existe el contacto. Si existe, le pasamos
+  // info safe (nombre, empresa, lifecycle stage) a Cerebro como bloque
+  // extra de system para que Shifty personalice. Cacheado per-session
+  // 5min → solo paga el lookup una vez por sesión.
+  //
+  // Critical path: timeout 3s en getContactByEmail; si HubSpot está
+  // lento o no responde, mandamos sin contexto en vez de hacer al user
+  // esperar. Degradación graceful.
+  let visitorContext: string | null = null;
+  try {
+    visitorContext = await getVisitorContextForSession(sessionId, messages);
+  } catch (e) {
+    console.warn("[shifty→context] lookup failed:", e);
+  }
+
   // Build Cerebro request. system_blocks goes server-side (no leak via
   // network from client). Bearer key likewise stays on the server.
   const cerebroBody = {
@@ -201,7 +219,7 @@ export async function POST(request: Request) {
     // Cost por turno: ~$0.013 max (gemini-3.5-flash a $9/M).
     max_tokens: 1500,
     messages: messages.map((m) => ({ role: m.role, content: m.content })),
-    system_blocks: buildSystemBlocks(),
+    system_blocks: buildSystemBlocks(visitorContext),
     tenant: "shift-pn",
     app_id_hint: "shift-pn-landing",
     trace_label: "shifty-landing",
