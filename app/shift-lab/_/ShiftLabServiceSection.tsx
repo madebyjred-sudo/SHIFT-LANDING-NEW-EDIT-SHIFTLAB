@@ -183,7 +183,7 @@ function CardLi({
           alt=""
           fill
           sizes="(min-width: 1024px) 520px, 100vw"
-          className="object-cover [object-position:50%_75%] transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          className="object-cover [object-position:50%_65%] transition-transform duration-500 ease-out group-hover:scale-[1.04]"
         />
       </div>
 
@@ -303,7 +303,7 @@ function VerticalGrid() {
                   alt=""
                   fill
                   sizes="(min-width: 768px) 50vw, 100vw"
-                  className="object-cover [object-position:50%_75%]"
+                  className="object-cover [object-position:50%_65%]"
                 />
               </div>
               {/* Border dinámico — gradient stroke que adapta a las
