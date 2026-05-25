@@ -22,6 +22,11 @@ import { rateLimit } from "@/lib/rate-limit";
 import { buildSystemBlocks } from "@/lib/agent/system-prompt";
 import { tryExtractLeadFromConversation } from "@/lib/hubspot/extract-lead";
 import { upsertContactWithNote } from "@/lib/hubspot/upsert-contact";
+import {
+  logTurn,
+  recordExtraction,
+  recordHubspotSync,
+} from "@/lib/db/conversations";
 
 export const runtime = "nodejs"; // needs fs to read KB
 export const dynamic = "force-dynamic"; // never cache responses
@@ -39,6 +44,14 @@ type IncomingMessage = { role: "user" | "assistant"; content: string };
 
 type IncomingPayload = {
   messages?: IncomingMessage[];
+  /** UUID generado client-side, persistido en sessionStorage. Permite
+   *  agrupar turnos del mismo visitante para attach transcript completo
+   *  a HubSpot. Si no viene, generamos uno server-side (worse: no
+   *  podemos correlacionar turns futuros del mismo visitor). */
+  sessionId?: string;
+  /** URL de la page desde donde Shifty fue abierto. Útil para entender
+   *  contexto del lead (ej. "vino desde /shift-lab"). */
+  pageOrigin?: string;
 };
 
 function getClientIp(request: Request): string {
@@ -116,26 +129,61 @@ export async function POST(request: Request) {
     return jsonError("Mensajes inválidos.", 400, "invalid_messages");
   }
 
+  // ── Session ID — generamos si no vino del cliente ─────────────────
+  const sessionId =
+    payload.sessionId ??
+    `sess_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+  const pageOrigin = payload.pageOrigin ?? request.headers.get("referer") ?? undefined;
+  const userAgent = request.headers.get("user-agent") ?? undefined;
+  const lastUserMessage = messages[messages.length - 1].content;
+
   // ── HubSpot capture (fire-and-forget) ─────────────────────────────
   // Si en el último mensaje del usuario detectamos email + nombre (post
   // handoff de Shifty), pusheamos un Contact al CRM en background.
   // NO bloqueamos el SSE — la latencia se mantiene < primer byte de
   // Cerebro. Si falla HubSpot, log y seguimos. Si el email ya existe,
   // HubSpot dedupe automático.
+  //
+  // ADEMÁS: registramos la extraction + outcome del sync en DB para
+  // auditing/analytics. Todo async, no afecta latency del chat.
   const lead = tryExtractLeadFromConversation(messages);
   if (lead) {
-    upsertContactWithNote(lead)
-      .then((r) =>
-        r.ok
-          ? console.log(
-              "[shifty→hubspot] OK contactId:",
-              r.contactId,
-              "note:",
-              r.noteCreated,
-            )
-          : console.warn("[shifty→hubspot] partial:", r.errors.join(" | ")),
-      )
-      .catch((e) => console.error("[shifty→hubspot] threw:", e));
+    (async () => {
+      try {
+        const extractionId = await recordExtraction({
+          sessionId,
+          email: lead.email,
+          firstName: lead.firstname,
+          lastName: lead.lastname,
+          summary: lead.brief,
+          country: lead.country,
+          extractor: "regex",
+        });
+        const r = await upsertContactWithNote(lead);
+        await recordHubspotSync({
+          extractionId,
+          sessionId,
+          contactId: r.contactId,
+          noteId: r.noteCreated ? "created" : null,
+          success: r.ok,
+          errors: r.errors,
+        });
+        if (r.ok) {
+          console.log(
+            "[shifty→hubspot] OK contactId:",
+            r.contactId,
+            "note:",
+            r.noteCreated,
+            "session:",
+            sessionId,
+          );
+        } else {
+          console.warn("[shifty→hubspot] partial:", r.errors.join(" | "));
+        }
+      } catch (e) {
+        console.error("[shifty→hubspot] threw:", e);
+      }
+    })();
   }
 
   // Build Cerebro request. system_blocks goes server-side (no leak via
@@ -193,17 +241,86 @@ export async function POST(request: Request) {
     return jsonError("Respuesta vacía del servicio.", 502, "empty_upstream");
   }
 
-  // Pass-through SSE. We don't transform here — the client parses OAI
-  // delta chunks and translates them into TurnEvent. This keeps the
-  // route thin and lets us swap models/providers later without touching
-  // either side of the chunk shape.
-  return new Response(upstream.body, {
+  // Tee SSE — chunks pasan al cliente Y se acumulan para logging.
+  // Después del [DONE] event, parseamos la respuesta acumulada del
+  // assistant y la persistimos junto con el user msg en una sola
+  // transaction (logTurn).
+  //
+  // Importante: el tee se hace en TransformStream, no leyendo el
+  // body 2 veces. Esto preserva el streaming real al cliente — los
+  // chunks llegan vivos, no esperan a que termine para mostrar.
+  let assistantBuffer = "";
+  const decoder = new TextDecoder();
+  const transform = new TransformStream<Uint8Array, Uint8Array>({
+    transform(chunk, controller) {
+      // Pass-through al cliente
+      controller.enqueue(chunk);
+      // Acumular para parsing post-stream
+      assistantBuffer += decoder.decode(chunk, { stream: true });
+    },
+    flush() {
+      // Stream terminó — parsear los deltas acumulados y extraer el
+      // content total del assistant message. Después loggear el turno.
+      assistantBuffer += decoder.decode();
+      const assistantContent = parseAssistantContentFromSSE(assistantBuffer);
+
+      // Fire-and-forget el log (no bloquea el response que ya
+      // terminó). Si DB falla, log error pero no romper nada — el
+      // usuario ya recibió su respuesta.
+      logTurn({
+        sessionId,
+        userMessage: lastUserMessage,
+        assistantMessage: assistantContent,
+        ip,
+        userAgent,
+        pageOrigin,
+      }).catch((e) => console.error("[shifty→db] logTurn failed:", e));
+    },
+  });
+
+  return new Response(upstream.body!.pipeThrough(transform), {
     status: 200,
     headers: {
       "Content-Type": "text/event-stream; charset=utf-8",
       "Cache-Control": "no-store, no-transform",
       Connection: "keep-alive",
       "X-Accel-Buffering": "no",
+      // Echo session id al cliente para que pueda persistirlo si
+      // el server generó uno nuevo (caso primer request del visitor).
+      "X-Session-Id": sessionId,
     },
   });
+}
+
+/**
+ * Parsea el buffer SSE acumulado de Cerebro/OpenRouter y reconstruye
+ * el content total del assistant message. Cada chunk es:
+ *
+ *   data: {"choices":[{"delta":{"content":"Hola"}}]}\n\n
+ *   data: {"choices":[{"delta":{"content":" mundo"}}]}\n\n
+ *   data: [DONE]\n\n
+ *
+ * Iteramos sobre cada line, parseamos el JSON delta, concatenamos
+ * `delta.content`. Ignoramos non-content events (reasoning, role, etc).
+ */
+function parseAssistantContentFromSSE(sseBuffer: string): string {
+  const lines = sseBuffer.split("\n");
+  const parts: string[] = [];
+  for (const line of lines) {
+    if (!line.startsWith("data:")) continue;
+    const payload = line.slice(5).trim();
+    if (!payload || payload === "[DONE]") continue;
+    try {
+      const json = JSON.parse(payload) as {
+        choices?: Array<{ delta?: { content?: unknown } }>;
+      };
+      const content = json.choices?.[0]?.delta?.content;
+      if (typeof content === "string" && content.length > 0) {
+        parts.push(content);
+      }
+    } catch {
+      // chunk parcial — se completará en el siguiente decode
+    }
+  }
+  return parts.join("");
 }

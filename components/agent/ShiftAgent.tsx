@@ -26,6 +26,23 @@ export default function ShiftAgent() {
   });
   const [input, setInput] = React.useState("");
 
+  // Session ID — UUID persistido en sessionStorage. Agrupa todos los
+  // turnos del visitor en una conversación coherente del lado server,
+  // permitiendo attach transcript completo a HubSpot CRM. Sobrevive
+  // refresh de page mientras la tab esté abierta. Nueva tab = nueva
+  // session = nuevo lead potencial.
+  const sessionIdRef = React.useRef<string>("");
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const KEY = "shifty-session-id";
+    let id = sessionStorage.getItem(KEY);
+    if (!id) {
+      id = `sess_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+      sessionStorage.setItem(KEY, id);
+    }
+    sessionIdRef.current = id;
+  }, []);
+
   // ESC cierra cuando el island está expandido.
   React.useEffect(() => {
     if (!state.open) return;
@@ -104,7 +121,8 @@ export default function ShiftAgent() {
       setStatus("thinking", "pensando…");
 
       try {
-        for await (const evt of runAgentTurn(turnMessages, text)) {
+        const pageOrigin = typeof window !== "undefined" ? window.location.href : undefined;
+        for await (const evt of runAgentTurn(turnMessages, text, sessionIdRef.current, pageOrigin)) {
           switch (evt.type) {
             case "thinking-start": {
               const steps: ThinkingStep[] = evt.steps;

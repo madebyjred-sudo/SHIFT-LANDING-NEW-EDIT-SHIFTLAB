@@ -172,10 +172,16 @@ function startStepReveal(steps: ThinkingStep[]): StepController {
  * Argumentos:
  *   - messages: historial completo (incluyendo el último user message)
  *   - lastUserInput: el texto del último user message, para intent matching
+ *   - sessionId: UUID generado por ShiftAgent, persistido en sessionStorage.
+ *                Enviado a /api/agent para agrupar turnos del mismo visitor
+ *                en DB y attach transcript completo a HubSpot.
+ *   - pageOrigin: window.location.href (optional). Útil para tracking.
  */
 export async function* runAgentTurn(
   messages: ChatMessage[],
   lastUserInput: string,
+  sessionId?: string,
+  pageOrigin?: string,
 ): AsyncGenerator<TurnEvent> {
   const intent = matchScript(lastUserInput);
   // SIEMPRE usamos DEFAULT_THINKING (genérico) — los pasos específicos
@@ -209,7 +215,7 @@ export async function* runAgentTurn(
       const res = await fetch("/api/agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages }),
+        body: JSON.stringify({ messages, sessionId, pageOrigin }),
       });
       if (!res.ok) {
         const errBody = await res.text().catch(() => "");
