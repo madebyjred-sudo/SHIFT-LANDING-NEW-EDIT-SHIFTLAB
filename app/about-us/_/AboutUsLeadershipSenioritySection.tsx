@@ -221,35 +221,53 @@ export default function HomeIntroSection() {
               Nuestro equipo senior combina experiencia en consultoría estratégica, reputación corporativa, crisis, innovación y transformación digital.
             </p>
 
-            {/* Desktop (lg+): interactive 3D sphere with hover-reveal names */}
+            {/* Tablet + Desktop (md+): interactive 3D sphere con map
+                de Latam de fondo. El sphere component soporta touch
+                (drag con momentum) → funciona bien en tablets. En
+                anteriores versiones era lg-only; ahora bajamos a md
+                porque el tablet portrait (768px) tiene espacio
+                suficiente y la experiencia visual es la misma. */}
             <LeadershipSphereDesktop />
 
-            {/* Mobile / tablet: keep original grid */}
-            <div className="mt-[100px] grid gap-4 min-[450px]:gap-10 sm:gap-6 gap-y-[80px] grid-cols-2 sm:grid-cols-4 max-w-[400px] sm:max-w-full mx-auto sm:mx-0 lg:hidden">
-              {ABOUTUS.map((aboutus, index) => (
-                <div key={index} className="flex flex-col gap-4">
-                  <div className="overflow-hidden ">
-                    <Image
-                      src={aboutus.imageSrc}
-                      alt={aboutus.title}
-                      width={234}
-                      height={235}
-                      className="h-auto w-full object-cover rounded-[32px] sm:max-w-[234px] sm:max-h-[235px]"
-                    />
+            {/* Mobile (<md): grid simple con map de Latam como
+                watermark de fondo (mismo asset que el sphere) — da
+                continuidad visual al treatment regional sin pelearse
+                con touch UX limitado en 375px. */}
+            <div className="relative mt-[60px] md:hidden">
+              {/* Map watermark — sutil detrás del grid */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 opacity-30 mix-blend-multiply"
+                style={{
+                  backgroundImage: "url(/assets/images/regional/map.svg)",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center top",
+                  backgroundSize: "120%",
+                }}
+              />
+              <div className="relative grid gap-6 gap-y-[60px] grid-cols-2 max-w-[400px] mx-auto">
+                {ABOUTUS.map((aboutus, index) => (
+                  <div key={index} className="flex flex-col gap-3">
+                    <div className="overflow-hidden">
+                      <Image
+                        src={aboutus.imageSrc}
+                        alt={aboutus.title}
+                        width={234}
+                        height={235}
+                        className="h-auto w-full object-cover rounded-[24px]"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <span className="text-[#0E1745] text-[18px] font-bold leading-[1.2] tracking-[-0.02em] [font-family:var(--font-figtree)]">
+                        {aboutus.title}
+                      </span>
+                      <p className="text-[#F540FF] text-[13px] font-normal leading-[1.15] [font-family:var(--font-figtree)]">
+                        {aboutus.description.replace(/\\n/g, " ")}
+                      </p>
+                    </div>
                   </div>
-
-                  <div className="flex flex-col gap-2 ">
-                    <span className="text-[#0E1745] text-[28px] font-bold leading-[140%] tracking-[-0.03em] [font-family:var(--font-figtree)]">
-                      {aboutus.title}
-                    </span>
-                    <p
-                      className="xl:whitespace-pre-line text-[#F540FF] text-[16px] font-normal [font-style:normal] leading-[106%] tracking-[0%] [font-family:var(--font-figtree)] [leading-trim:none]"
-                    >
-                      {aboutus.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
           </div>
@@ -277,12 +295,17 @@ function LeadershipSphereDesktop() {
     []
   );
 
-  // Track viewport width so we can scale the sphere container responsively.
+  // Track viewport width — sphere escala según el ancho disponible.
+  // Min 480 para que sea usable en tablet portrait (768px - 40 padding
+  // = 728 cap natural), max 980 para no reventar monitors grandes.
   const [width, setWidth] = useState<number>(0);
   useEffect(() => {
     const update = () => {
+      // Padding más conservador en tablet (40 each side, 80 total),
+      // pero la pantalla mínima sigue siendo md (768px) → siempre
+      // tenemos al menos ~688px disponibles.
       const w = Math.min(window.innerWidth - 80, 980);
-      setWidth(Math.max(560, w));
+      setWidth(Math.max(480, w));
     };
     update();
     window.addEventListener("resize", update);
@@ -290,11 +313,11 @@ function LeadershipSphereDesktop() {
   }, []);
 
   if (!width) {
-    return <div className="hidden lg:block mt-[100px] h-[700px]" aria-hidden />;
+    return <div className="hidden md:block mt-[100px] h-[600px]" aria-hidden />;
   }
 
   return (
-    <div className="hidden lg:flex mt-[60px] xl:mt-[80px] w-full justify-center">
+    <div className="hidden md:flex mt-[60px] xl:mt-[80px] w-full justify-center">
       <div
         className="relative"
         style={{ width: `${width}px`, height: `${width}px` }}
