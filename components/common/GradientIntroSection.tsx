@@ -111,7 +111,11 @@ export default function GradientIntroSection({ variant }: GradientIntroSectionPr
           >
             {isHome && (
               <Image
-                src="/assets/svg/nav-logo.svg"
+                /* GradientIntroSection vive sobre bg CLARO (white/pale
+                   lavender) → usamos la variante on-light que tiene
+                   "Shift" en azul brand. Si usáramos el nav-logo.svg
+                   default (Shift white) sería invisible sobre el bg. */
+                src="/assets/svg/nav-logo-on-light.svg"
                 alt="Logotipo Shift Latam — agencia regional de comunicación"
                 width={103}
                 height={55}
