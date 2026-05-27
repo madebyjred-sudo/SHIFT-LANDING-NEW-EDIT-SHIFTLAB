@@ -1,14 +1,14 @@
 # content/knowledge/about-shift-pn.yaml
-# Knowledge base para Shifty — chatbot público de la landing de SHIFT LATAM Porter Novelli.
+# Knowledge base para Shifty — chatbot público de la landing de Shift Latam Afiliado a Omnicom PR.
 # Todo dato no obvio incluye fuente entre paréntesis en el comentario al lado.
 # Fecha de research: 2026-05-21. Verifique con Federico antes de publicar.
 
 identity:
-  nombre_oficial: "SHIFT LATAM Porter Novelli"
+  nombre_oficial: "Shift Latam Afiliado a Omnicom PR"
   nombre_corto: "Shift Latam"
-  legacy: "Antes Porter Novelli Costa Rica / CAC Porter Novelli (CAC = Costa Rica, América Central y Caribe)"  # telediario.cr 2022-12-09
-  red_global: "Porter Novelli (red global), parte de Omnicom Public Relations Group (OPRG) junto con FleishmanHillard, Ketchum y MMC"  # elfinancierocr.com brandvoice
-  estructura_corporativa: "Afiliado de Porter Novelli en Latinoamérica; pertenece a Grupo Garnier"  # provokemedia.com
+  legacy: "Antes CAC (CAC = Costa Rica, América Central y Caribe)"  # telediario.cr 2022-12-09
+  red_global: "Shift Latam Afiliado a Omnicom PR (red global), parte de Omnicom Public Relations Group (OPRG) junto con FleishmanHillard, Ketchum y MMC"  # elfinancierocr.com brandvoice
+  estructura_corporativa: "Shift Latam Afiliado a Omnicom PR en Latinoamérica; pertenece a Grupo Garnier"  # provokemedia.com
   hub_principal: "Costa Rica — San José"
   presencia_regional:
     - Costa Rica   # hub principal
@@ -23,12 +23,12 @@ identity:
     - República Dominicana
     # Miami (Shift US) — oficina afiliada para mercado hispano US (lanzada 2025) # prweek.com 2024
   presencia_total: "10 hubs + 1 oficina en Miami (Shift US)"
-  trayectoria: "Más de 40 años de experiencia regional en Centroamérica (la historia continúa con la red Porter Novelli, fundada hace más de 50 años)"  # telediario.cr
+  trayectoria: "Más de 40 años de experiencia regional en Centroamérica"  # telediario.cr
   headcount_aprox: "~200 colaboradores en Centroamérica, Caribe y Ecuador"  # telediario.cr; elfinancierocr
-  rebranding: "El cambio de Porter Novelli → SHIFT Porter Novelli ocurrió el 9 de diciembre de 2022"  # telediario.cr
+  rebranding: "El cambio a SHIFT ocurrió el 9 de diciembre de 2022"  # telediario.cr
   tagline: "Agencia de Comunicación Estratégica en Latinoamérica"  # landing /HomeIntroSection
   manifiesto_visible: |
-    En SHIFT LATAM Porter Novelli somos una agencia de comunicación estratégica,
+    En Shift Latam Afiliado a Omnicom PR somos una agencia de comunicación estratégica,
     reputación corporativa y creatividad cultural con presencia regional. Diseñamos
     estrategias que conectan reputación, cultura y crecimiento en mercados complejos
     de Latinoamérica.
@@ -273,7 +273,7 @@ hubs:
     rol: "Oficina afiliada para mercado hispano US"
     telefono: "+1 786 973 6648"
     contacto_email: "# TBD — pendiente email corporativo"
-    contacto_nombre: "Karla Cobreiro (Office Director Miami); Daniela Biffi (GM Miami legacy)"
+    contacto_nombre: "Karla Cobreiro (Office Director Miami)"
 
 equipo_publico:
   liderazgo_regional:
@@ -308,9 +308,6 @@ equipo_publico:
       rol: "General Director"
     - nombre: "Rosario Montenegro"
       pais: "Nicaragua"
-      rol: "General Manager"
-    - nombre: "Daniela Biffi"
-      pais: "Miami (Shift US)"
       rol: "General Manager"
   liderazgo_costa_rica:
     - nombre: "Sarah Beirute"
@@ -468,7 +465,7 @@ awards_publicos:
     - nombre: "Clio Awards"
       notas: "Mencionado en landing /awards"
     - nombre: "PRovoke Media LatAm Agency of the Year"
-      notas: "Porter Novelli LATAM (red) ha sido reconocida; verificar si Shift CR figura específicamente"  # provokemedia.com
+      notas: "Shift Latam Afiliado a Omnicom PR (red) ha sido reconocida; verificar si Shift CR figura específicamente"  # provokemedia.com
   festivales_donde_compite_regularmente:
     - "Effie Awards Latin America"
     - "SABRE Awards Latin America"
@@ -550,9 +547,9 @@ faqs:
   - pregunta: "¿Cuál es su sede principal?"
     respuesta: "Costa Rica. Estamos en el Centro Empresarial Vía Lindora, 3er Piso, en San José. Es el hub regional desde donde coordinamos toda la operación latam."
     keywords: ["sede", "headquarters", "dónde están", "oficina principal", "costa rica"]
-  - pregunta: "¿Son parte de Porter Novelli global?"
-    respuesta: "Sí. SHIFT LATAM es afiliado de Porter Novelli, la red global de comunicación que forma parte de Omnicom Public Relations Group (junto con FleishmanHillard, Ketchum y MMC). Eso nos da metodologías y clientes globales con ejecución local en cada uno de nuestros 10 mercados."
-    keywords: ["porter novelli", "omnicom", "red global", "afiliado", "global"]
+  - pregunta: "¿Están afiliados a nivel global?"
+    respuesta: "Sí. Somos Shift Latam Afiliado a Omnicom PR, la red global de comunicación que forma parte de Omnicom Public Relations Group (junto con FleishmanHillard, Ketchum y MMC). Eso nos da metodologías y clientes globales con ejecución local en cada uno de nuestros 10 mercados."
+    keywords: ["omnicom", "red global", "afiliado", "global"]
   - pregunta: "¿Qué es Shift LAB?"
     respuesta: "Es nuestra unidad de innovación e inteligencia artificial aplicada a comunicación. No usamos IA como tendencia: la integramos como flujo operativo para mejorar análisis, acelerar decisiones y potenciar el criterio humano. Cinco capas: auditoría de madurez digital, implementación en flujos estratégicos, automatización, productos comunicacionales y dashboards de data intelligence."
     keywords: ["shift lab", "shiftlab", "ia", "ai", "inteligencia artificial", "innovación", "tecnología"]
@@ -560,7 +557,7 @@ faqs:
     respuesta: "Es nuestro modelo propietario. Conecta cultura, reputación y negocio en un solo sistema: detecta tensiones culturales relevantes, traduce datos en narrativas estratégicas y convierte conversaciones en influencia sostenible. No es un marco conceptual — es metodología aplicada en cada cuenta."
     keywords: ["shifting culture", "modelo", "metodología", "propietario", "cultura"]
   - pregunta: "¿Cuántos años tienen?"
-    respuesta: "Más de 40 años de trayectoria regional en Centroamérica (heredando una historia más larga dentro de la red Porter Novelli, que pasa los 50). Hicimos rebranding de Porter Novelli a SHIFT Porter Novelli en diciembre de 2022."
+    respuesta: "Más de 40 años de trayectoria regional en Centroamérica. Hicimos rebranding a SHIFT en diciembre de 2022."
     keywords: ["años", "historia", "trayectoria", "antigüedad", "fundación", "cuándo nacieron"]
   - pregunta: "¿Cuántas personas trabajan en Shift?"
     respuesta: "Alrededor de 200 colaboradores entre Centroamérica, Caribe y Ecuador, distribuidos en los 10 hubs."
@@ -585,7 +582,7 @@ faqs:
     keywords: ["industria", "casos", "experiencia", "sector", "vertical", "ejemplos"]
   - pregunta: "¿Qué los diferencia de Edelman o LLYC?"
     respuesta: "Tres cosas: 1) Operamos los cuatro lados (PR + creatividad + data + IA) bajo un mismo modelo (Shifting Culture®), no como verticales separados. 2) Tenemos un Lab de IA propietaria (IA Shifter, Brand Influence Index) — somos la primera agencia de la región con un agente de IA propio para consultoría. 3) Cobertura nativa en 10 mercados latam con un solo P&L regional: gobernanza única, ejecución local. Y +120 premios internacionales, incluido Campaign of the Year en PRWeek Global 2024."
-    keywords: ["edelman", "llyc", "burson", "competencia", "diferencia", "competidores", "porter novelli vs"]
+    keywords: ["edelman", "llyc", "burson", "competencia", "diferencia", "competidores", "omnicom pr vs"]
   - pregunta: "¿Qué premios tienen?"
     respuesta: "Más de 120 premios internacionales. Los más recientes incluyen 5 oros en PRWeek Global Awards 2024 por 'Cambiemos la Regla' (incluyendo Campaign of the Year), Cannes Lions 2024 (Bronce Glass + Plata PR), múltiples SABRE Awards LATAM y Global, Effie Index, FIAP y Clio. Te puedo pasar más detalle si querés."
     keywords: ["premios", "awards", "reconocimientos", "trofeos", "cannes", "effie", "sabre"]
@@ -608,7 +605,7 @@ faqs:
     respuesta: "Es un índice que mide influencia real de marcas en Costa Rica usando data de comportamiento (no encuestas de percepción): consumo de contenido, conversación pública y signos de confianza. Lo lanzamos en alianza con El Financiero. Sale en el segundo semestre de 2026."
     keywords: ["brand influence index", "índice", "medición", "el financiero"]
   - pregunta: "¿Tienen redes sociales?"
-    respuesta: "Sí — estamos en LinkedIn como SHIFT LATAM Porter Novelli, Instagram como @shiftlatampn y Facebook como SHIFT Porter Novelli. Te dejo los links en la página de contacto."
+    respuesta: "Sí — estamos en LinkedIn como Shift Latam Afiliado a Omnicom PR, Instagram como @shiftlatampn y Facebook como Shift Latam Afiliado a Omnicom PR. Te dejo los links en la página de contacto."
     keywords: ["redes sociales", "instagram", "linkedin", "facebook", "twitter", "rrss"]
   - pregunta: "¿Tienen blog o newsroom?"
     respuesta: "Tenemos un newsroom con noticias, perspectivas y estudios sectoriales (salud y life sciences, finanzas, gobierno y asuntos públicos). Lo encontrás en /newsroom."
@@ -635,7 +632,7 @@ temas_sensibles:
     redirect: "Los honorarios dependen del scope. Te paso rangos honestos: USD 30-80K para proyectos puntuales, USD 8-25K/mes para acompañamientos. Lo correcto es 30 min de discovery."
   - tema: "Información financiera de Shift, accionistas o estructura interna"
     razon: "Shift es parte de Omnicom (NYSE: OMC) pero no se reportan métricas individuales de la afiliada LATAM. Especular daña reputación."
-    redirect: "No tengo información financiera pública de Shift Latam específica. Si querés saber sobre estructura corporativa: somos afiliado de Porter Novelli dentro de Omnicom Public Relations Group."
+    redirect: "No tengo información financiera pública de Shift Latam específica. Si querés saber sobre estructura corporativa: somos Shift Latam Afiliado a Omnicom PR."
   - tema: "Comparación negativa con competidores específicos"
     razon: "Hablar mal de LLYC, Edelman, Burson, etc. es no profesional y no es la voz de Shift."
     redirect: "Prefiero contarte qué hacemos bien nosotros y dejar que el mercado compare. ¿Te paso 3 casos puntuales en tu industria?"

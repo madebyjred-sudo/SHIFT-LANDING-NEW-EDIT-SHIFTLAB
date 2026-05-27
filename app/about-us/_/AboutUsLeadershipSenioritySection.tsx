@@ -62,11 +62,6 @@ const ABOUTUS = [
     description: "Business Development \n Director Shift Latam",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-12.jpg",
-    title: "Daniela Biffi",
-    description: "General Manager Miami",
-  },
-  {
     imageSrc: "/assets/images/aboutus/persona-13.jpg",
     title: "Ana Fonseca",
     description: "Operations Lead Shift \n Costa Rica",

@@ -4,9 +4,9 @@
 # OpenRouter permita prompts más grandes).
 
 identity:
-  nombre: SHIFT LATAM Porter Novelli
-  red: Afiliado a Porter Novelli (Omnicom Public Relations Group)
-  fundacion_rebranding: Diciembre 2022 (antes Porter Novelli CAC)
+  nombre: Shift Latam Afiliado a Omnicom PR
+  red: Shift Latam Afiliado a Omnicom PR (Omnicom Public Relations Group)
+  fundacion_rebranding: Diciembre 2022 (antes CAC)
   trayectoria: +40 años regional
   headcount: ~200 colaboradores
   hub_principal: Costa Rica
@@ -14,7 +14,7 @@ identity:
   premios_total: +120 internacionales
   sitio: https://shiftpn.com
   contacto: holahola@shiftpn.com (new business) / holaholahola@shiftpn.com (general)
-  redes: LinkedIn @SHIFT-LATAM-Porter-Novelli, IG @shiftlatampn, FB @cacporternovelli
+  redes: LinkedIn @Shift-Latam-Afiliado-Omnicom-PR, IG @shiftlatampn, FB @cacporternovelli
 
 servicios:
   - Estrategia corporativa y reputación (asuntos públicos, ESG, CEO branding, comms interna)
@@ -202,14 +202,14 @@ faqs_principales:
     a: "10 hubs latam: CR (hub), GT, SV, HN, NI, PA, CO, EC, VE, RD. Más Miami (Shift US)."
   - q: "¿Sede?"
     a: "Costa Rica — Centro Empresarial Vía Lindora, 3er Piso, San José."
-  - q: "¿Porter Novelli?"
-    a: "Sí, afiliado de la red global Porter Novelli (Omnicom Public Relations Group: con FleishmanHillard, Ketchum, MMC)."
+  - q: "¿Afiliación?"
+    a: "Sí, Shift Latam Afiliado a Omnicom PR (Omnicom Public Relations Group: con FleishmanHillard, Ketchum, MMC)."
   - q: "¿Shift LAB?"
     a: "Unidad de tecnología e IA aplicada a comunicación. Construimos donde vive la IA y se vuelve útil para briefs de comunicación. 5 servicios: auditoría de madurez en IA, IA integrada a flujos de trabajo, automatización de tareas repetitivas, productos digitales a medida, y dashboards e inteligencia de datos."
   - q: "¿Shifting Culture®?"
     a: "Modelo propietario que conecta cultura, reputación y negocio. Detecta tensiones, traduce datos en narrativas, convierte conversaciones en influencia."
   - q: "¿Años?"
-    a: "+40 años regional (Porter Novelli CAC desde antes; rebranding a SHIFT en dic-2022)."
+    a: "+40 años regional (CAC desde antes; rebranding a SHIFT en dic-2022)."
   - q: "¿Cuántos son?"
     a: "~200 colaboradores entre Centroamérica, Caribe y Ecuador."
   - q: "¿CEO?"
@@ -233,7 +233,7 @@ temas_sensibles:
   - "Política partidaria → no tomamos posición; redirigir a Estrategia corporativa+reputación si interesa asuntos públicos."
   - "Crisis activa de cliente → no comentar por NDA; redirigir a holahola@shiftpn.com asunto 'crisis'."
   - "Honorarios específicos → dar rangos, no números cerrados; agendar discovery."
-  - "Financiera/accionistas → 'soy afiliado de Porter Novelli dentro de Omnicom PR Group; no tengo data financiera específica de Shift Latam'."
+  - "Financiera/accionistas → 'soy Shift Latam Afiliado a Omnicom PR; no tengo data financiera específica'."
   - "Comparación negativa con competidores → 'prefiero contarte qué hacemos bien; el mercado compara'."
   - "Industrias controversiales (tabaco/azar/armas) → 'requiere conversación de scope; escribinos a holahola@shiftpn.com'."
   - "Inventar casos/premios → NUNCA. Si no está en este KB, no existe."

@@ -80,7 +80,7 @@ export default function HomeIntroSection() {
             </h2>
 
             <p className="mt-8 sm:mt-10 max-w-[770px] sm:max-w-[535px] text-sm sm:text-lg leading-tight text-[#111A31] [font-family:var(--font-fira-sans)]">
-              SHIFT LATAM Porter Novelli es una agencia de comunicación estratégica y relaciones públicas con más de 40 años de experiencia regional. Operamos como una red integrada que combina consultoría, creatividad, data e innovación para construir reputaciones sólidas en mercados complejos.
+              Shift Latam Afiliado a Omnicom PR es una agencia de comunicación estratégica y relaciones públicas con más de 40 años de experiencia regional. Operamos como una red integrada que combina consultoría, creatividad, data e innovación para construir reputaciones sólidas en mercados complejos.
             </p>
           </div>
         </div>
