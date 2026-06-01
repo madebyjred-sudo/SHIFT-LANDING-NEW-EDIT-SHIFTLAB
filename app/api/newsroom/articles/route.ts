@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthorByUserId, isAdmin } from "@/lib/auth";
 
+import { randomUUID } from "crypto";
+
 const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || "http://2.25.128.2:8055";
 const DIRECTUS_TOKEN = process.env.DIRECTUS_STATIC_TOKEN;
 
@@ -90,6 +92,7 @@ export async function POST(request: NextRequest) {
     }
 
     const articlePayload = {
+      id: randomUUID(),
       title,
       slug,
       excerpt,
