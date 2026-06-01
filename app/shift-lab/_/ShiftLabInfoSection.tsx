@@ -22,7 +22,7 @@ export default function ShiftLabInfoSection() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.7 }}
           >
-            <h2 className="max-w-3xl text-[40px] md:text-[64px] lg:text-[76px] leading-[1.02] [font-family:var(--font-glitz-local)] text-white">
+            <h2 className="max-w-3xl text-[40px] md:text-[64px] lg:text-[76px] leading-[1.02] [font-family:var(--font-zilla-slab)] font-bold text-white">
               La unidad de
               <br />
               <span className="text-[#5BE9FF]">innovación</span> +{" "}

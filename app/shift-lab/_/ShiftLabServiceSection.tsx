@@ -112,7 +112,7 @@ function PinnedHorizontal() {
         {/* Heading */}
         <div className="relative z-10 mx-auto w-full max-w-[1380px] flex-shrink-0 px-6 md:px-12 lg:px-16 pt-32 pb-8">
           <div className="grid items-end gap-8 md:grid-cols-[1.4fr_1fr]">
-            <h2 className="text-[44px] md:text-[64px] lg:text-[76px] leading-[1.02] [font-family:var(--font-glitz-local)] text-white">
+            <h2 className="text-[44px] md:text-[64px] lg:text-[76px] leading-[1.02] [font-family:var(--font-zilla-slab)] font-bold text-white">
               Servicios de{" "}
               <span className="text-[#5BE9FF]">innovación.</span>
             </h2>
@@ -242,7 +242,7 @@ function CardLi({
 
       {/* Text content — bottom anchored sobre el dark zone */}
       <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col p-7">
-        <h3 className="text-[24px] md:text-[26px] leading-[1.12] [font-family:var(--font-glitz-local)] text-white">
+        <h3 className="text-[24px] md:text-[26px] leading-[1.12] [font-family:var(--font-zilla-slab)] font-bold text-white">
           {service.title}
         </h3>
 
@@ -272,7 +272,7 @@ function VerticalGrid() {
       <LabDotGrid opacity={0.3} />
       <div className="relative z-10 mx-auto w-full max-w-[1380px] px-6 md:px-12">
         <div className="mb-14 max-w-3xl">
-          <h2 className="text-[40px] md:text-[60px] leading-[1.02] [font-family:var(--font-glitz-local)] text-white">
+          <h2 className="text-[40px] md:text-[60px] leading-[1.02] [font-family:var(--font-zilla-slab)] font-bold text-white">
             Servicios de{" "}
             <span className="text-[#5BE9FF]">innovación.</span>
           </h2>
@@ -337,7 +337,7 @@ function VerticalGrid() {
               </span>
               {/* Text content bottom-anchored */}
               <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col p-6">
-                <h3 className="text-[22px] leading-[1.12] [font-family:var(--font-glitz-local)] text-white">
+                <h3 className="text-[22px] leading-[1.12] [font-family:var(--font-zilla-slab)] font-bold text-white">
                   {service.title}
                 </h3>
                 <p className="mt-3 [font-family:var(--font-fira-mono)] text-[12.5px] leading-[1.7] text-white/75">

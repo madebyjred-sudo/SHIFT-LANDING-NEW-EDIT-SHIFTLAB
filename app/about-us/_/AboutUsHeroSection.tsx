@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import Image from "next/image";
 import GradientText from "@/components/ui/GradientText";
 
 function subscribePrefersReducedMotion(onChange: () => void) {
@@ -79,9 +80,18 @@ export default function HomeIntroSection() {
               <GradientText text="en Latinoamérica" />
             </h2>
 
-            <p className="mt-8 sm:mt-10 max-w-[770px] sm:max-w-[535px] text-sm sm:text-lg leading-tight text-[#111A31] [font-family:var(--font-fira-sans)]">
-              Shift Latam Afiliado a Omnicom PR es una agencia de comunicación estratégica y relaciones públicas con más de 40 años de experiencia regional. Operamos como una red integrada que combina consultoría, creatividad, data e innovación para construir reputaciones sólidas en mercados complejos.
-            </p>
+            <div className="flex flex-col items-start">
+              <p className="mt-8 sm:mt-10 max-w-[770px] sm:max-w-[535px] text-sm sm:text-lg leading-tight text-[#111A31] [font-family:var(--font-fira-sans)]">
+                Shift Latam Afiliado a Omnicom PR es una agencia de comunicación estratégica y relaciones públicas con más de 40 años de experiencia regional. Operamos como una red integrada que combina consultoría, creatividad, data e innovación para construir reputaciones sólidas en mercados complejos.
+              </p>
+              <Image
+                src="/assets/svg/aliado-omnicom-sign-dark.svg"
+                alt="Un afiliado Omnicom Public Relations"
+                width={220}
+                height={26}
+                className="mt-6 sm:mt-8 h-auto w-[140px] sm:w-[170px] opacity-25"
+              />
+            </div>
           </div>
         </div>
       </div>

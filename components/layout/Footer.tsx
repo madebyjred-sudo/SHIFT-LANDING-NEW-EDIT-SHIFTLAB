@@ -192,8 +192,15 @@ export default function Footer() {
               priority={false}
             />
           </div>
+          <Image
+            src="/assets/svg/aliado-omnicom-sign.svg"
+            alt="Un afiliado Omnicom Public Relations"
+            width={220}
+            height={26}
+            className="h-auto w-[160px] sm:w-[200px] opacity-45"
+          />
           <p className="m-0 text-sm text-white/45 [font-family:var(--font-figtree,inherit)]">
-            © {new Date().getFullYear()} Shift LATAM · Porter Novelli. All rights reserved.
+            © {new Date().getFullYear()} Shift Latam · Afiliado a Omnicom PR. All rights reserved.
           </p>
         </AnimatedContainer>
 

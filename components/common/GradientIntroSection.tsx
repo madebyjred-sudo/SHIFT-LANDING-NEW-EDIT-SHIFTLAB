@@ -149,7 +149,7 @@ export default function GradientIntroSection({ variant }: GradientIntroSectionPr
             {isHome ? (
               <>
                 <p className="mt-8 sm:mt-10 sm:max-w-[80%] text-sm sm:text-lg leading-tight text-[#111A31] [font-family:var(--font-fira-sans)]">
-                  En SHIFT LATAM Porter Novelli somos una agencia de comunicación estratégica,
+                  En Shift Latam Afiliado a Omnicom PR somos una agencia de comunicación estratégica,
                   reputación corporativa y creatividad cultural con presencia regional. Diseñamos
                   estrategias que conectan reputación, cultura y crecimiento en mercados complejos
                   de Latinoamérica.
@@ -157,6 +157,13 @@ export default function GradientIntroSection({ variant }: GradientIntroSectionPr
                 <div className="mt-8 sm:mt-12">
                   <OutlineArrowButton label="Conocé más" href="/services" />
                 </div>
+                <Image
+                  src="/assets/svg/aliado-omnicom-sign-dark.svg"
+                  alt="Un afiliado Omnicom Public Relations"
+                  width={220}
+                  height={26}
+                  className="mt-8 sm:mt-10 h-auto w-[140px] sm:w-[180px] opacity-30"
+                />
               </>
             ) : (
               <>

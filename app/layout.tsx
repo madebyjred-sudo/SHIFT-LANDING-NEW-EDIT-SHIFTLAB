@@ -29,6 +29,13 @@ const figtree = Figtree({
   weight: ["600"],
 });
 
+// Mozilla Text Bold — used as headline font on the /shift-lab page.
+const mozillaText = localFont({
+  src: [{ path: "./fonts/MozillaText-Bold.ttf", weight: "700", style: "normal" }],
+  variable: "--font-zilla-slab",
+  display: "swap",
+});
+
 const glitz = localFont({
   src: [
     { path: "./fonts/glitz.otf", weight: "400", style: "normal" },
@@ -85,7 +92,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${firaSans.variable} ${firaMono.variable} ${figtree.variable} ${glitz.variable} h-full antialiased`}
+      className={`${firaSans.variable} ${firaMono.variable} ${figtree.variable} ${glitz.variable} ${mozillaText.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <LenisProvider>

@@ -45,7 +45,7 @@ export default function ShiftLabAIPhilosophySection() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.7 }}
           >
-            <h2 className="max-w-[18ch] text-[44px] md:text-[76px] lg:text-[96px] leading-[0.98] [font-family:var(--font-glitz-local)] text-white">
+            <h2 className="max-w-[18ch] text-[44px] md:text-[76px] lg:text-[96px] leading-[0.98] [font-family:var(--font-zilla-slab)] font-bold text-white">
               Construimos
               <br />
               donde vive la IA

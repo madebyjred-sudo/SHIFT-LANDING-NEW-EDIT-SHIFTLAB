@@ -127,9 +127,14 @@ const ABOUTUS = [
     description: "Director Shift Venezuela",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-26.jpg",
+    imageSrc: "/assets/images/aboutus/persona-26-andrea.jpg",
     title: "Andrea Ramírez",
     description: "General Manager Shift \n Caribe",
+  },
+  {
+    imageSrc: "/assets/images/aboutus/persona-28.jpg",
+    title: "María Marta Calvo",
+    description: "General Manager Shift \n Honduras",
   },
   {
     imageSrc: "/assets/images/aboutus/persona-27.jpg",

@@ -34,7 +34,7 @@ export default function ProblemWeSolveSection() {
             El problema que resolvemos
           </p>
 
-          <h2 className="mt-6 text-[44px] md:text-[72px] lg:text-[92px] leading-[0.98] [font-family:var(--font-glitz-local)] text-white">
+          <h2 className="mt-6 text-[44px] md:text-[72px] lg:text-[92px] leading-[0.98] [font-family:var(--font-zilla-slab)] font-bold text-white">
             Convertimos la
             <br />
             <span className="text-[#F540FF]">tecnología</span> en{" "}
