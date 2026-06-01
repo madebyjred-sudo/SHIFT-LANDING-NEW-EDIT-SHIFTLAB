@@ -1,10 +1,12 @@
-const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || "http://2.25.128.2:8055";
-const DIRECTUS_TOKEN = process.env.DIRECTUS_STATIC_TOKEN;
+import { getDirectusToken } from "./directus-auth";
 
-function getHeaders() {
+const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || "http://2.25.128.2:8055";
+
+async function getHeaders() {
   const headers: Record<string, string> = {};
-  if (DIRECTUS_TOKEN) {
-    headers["Authorization"] = `Bearer ${DIRECTUS_TOKEN}`;
+  const token = await getDirectusToken();
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
   }
   return headers;
 }
@@ -22,7 +24,7 @@ export async function getAuthorByUserId(userId: string): Promise<AuthorWithRole 
   try {
     const res = await fetch(
       `${DIRECTUS_URL}/items/authors?filter[user_id][_eq]=${userId}&limit=1&fields=id,user_id,name,role`,
-      { headers: getHeaders(), cache: "no-store" }
+      { headers: await getHeaders(), cache: "no-store" }
     );
     const data = await res.json().catch(() => ({ data: [] }));
     const author = data.data?.[0];

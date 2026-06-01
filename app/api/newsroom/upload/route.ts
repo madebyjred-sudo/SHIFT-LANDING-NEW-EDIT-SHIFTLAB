@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getDirectusToken } from "@/lib/directus-auth";
 
 const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || "http://2.25.128.2:8055";
-const DIRECTUS_TOKEN = process.env.DIRECTUS_STATIC_TOKEN;
+
+async function getHeaders(): Promise<Record<string, string>> {
+  const headers: Record<string, string> = {};
+  const token = await getDirectusToken();
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,23 +21,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Validate file size (2MB max)
     if (file.size > 2 * 1024 * 1024) {
       return NextResponse.json({ error: "File exceeds 2MB limit" }, { status: 400 });
     }
 
-    // Forward to Directus
     const directusForm = new FormData();
     directusForm.append("file", file);
 
-    const headers: Record<string, string> = {};
-    if (DIRECTUS_TOKEN) {
-      headers["Authorization"] = `Bearer ${DIRECTUS_TOKEN}`;
-    }
-
     const res = await fetch(`${DIRECTUS_URL}/files`, {
       method: "POST",
-      headers,
+      headers: await getHeaders(),
       body: directusForm,
     });
 

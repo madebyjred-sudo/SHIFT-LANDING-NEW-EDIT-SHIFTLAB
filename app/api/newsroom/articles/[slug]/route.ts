@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthorByUserId, isAdmin } from "@/lib/auth";
+import { getDirectusToken } from "@/lib/directus-auth";
 
 const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || "http://2.25.128.2:8055";
-const DIRECTUS_TOKEN = process.env.DIRECTUS_STATIC_TOKEN;
 
-function getHeaders() {
+async function getHeaders() {
   const headers: Record<string, string> = {};
-  if (DIRECTUS_TOKEN) {
-    headers["Authorization"] = `Bearer ${DIRECTUS_TOKEN}`;
+  const token = await getDirectusToken();
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
   }
   return headers;
 }
@@ -31,13 +32,12 @@ export async function GET(
       return NextResponse.json({ error: "Author not found" }, { status: 404 });
     }
 
-    // Build query: admin sees any, author sees only theirs
     let queryUrl = `${DIRECTUS_URL}/items/news_articles?filter[slug][_eq]=${slug}&fields=*&limit=1`;
     if (!admin && author) {
       queryUrl += `&filter[author_id][_eq]=${author.id}`;
     }
 
-    const articleRes = await fetch(queryUrl, { headers: getHeaders() });
+    const articleRes = await fetch(queryUrl, { headers: await getHeaders() });
     const articleData = await articleRes.json().catch(() => ({ data: [] }));
     if (!articleData.data?.[0]) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 });
@@ -77,24 +77,22 @@ export async function PATCH(
       return NextResponse.json({ error: "Author not found" }, { status: 404 });
     }
 
-    // Resolve category
     let categoryId = category;
     const catRes = await fetch(
       `${DIRECTUS_URL}/items/news_categories?filter[slug][_eq]=${category}&limit=1`,
-      { headers: getHeaders() }
+      { headers: await getHeaders() }
     );
     const catData = await catRes.json().catch(() => ({ data: [] }));
     if (catData.data?.[0]?.id) {
       categoryId = catData.data[0].id;
     }
 
-    // Find article ID (with author filter for non-admins)
     let findUrl = `${DIRECTUS_URL}/items/news_articles?filter[slug][_eq]=${slug}&fields=id,author_id&limit=1`;
     if (!admin && author) {
       findUrl += `&filter[author_id][_eq]=${author.id}`;
     }
 
-    const findRes = await fetch(findUrl, { headers: getHeaders() });
+    const findRes = await fetch(findUrl, { headers: await getHeaders() });
     const findData = await findRes.json().catch(() => ({ data: [] }));
     if (!findData.data?.[0]?.id) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 });
@@ -121,7 +119,7 @@ export async function PATCH(
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        ...getHeaders(),
+        ...(await getHeaders()),
       },
       body: JSON.stringify(payload),
     });
@@ -159,10 +157,9 @@ export async function DELETE(
       return NextResponse.json({ error: "Forbidden: admin only" }, { status: 403 });
     }
 
-    // Find article ID
     const findRes = await fetch(
       `${DIRECTUS_URL}/items/news_articles?filter[slug][_eq]=${slug}&fields=id&limit=1`,
-      { headers: getHeaders() }
+      { headers: await getHeaders() }
     );
     const findData = await findRes.json().catch(() => ({ data: [] }));
     if (!findData.data?.[0]?.id) {
@@ -173,7 +170,7 @@ export async function DELETE(
 
     const res = await fetch(`${DIRECTUS_URL}/items/news_articles/${articleId}`, {
       method: "DELETE",
-      headers: getHeaders(),
+      headers: await getHeaders(),
     });
 
     if (!res.ok) {

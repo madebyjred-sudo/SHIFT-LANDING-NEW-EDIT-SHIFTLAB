@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getDirectusToken } from "@/lib/directus-auth";
 
 const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || "http://2.25.128.2:8055";
-const DIRECTUS_TOKEN = process.env.DIRECTUS_STATIC_TOKEN;
+
+async function getHeaders() {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const token = await getDirectusToken();
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,17 +21,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing user_id or name" }, { status: 400 });
     }
 
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
-    if (DIRECTUS_TOKEN) {
-      headers["Authorization"] = `Bearer ${DIRECTUS_TOKEN}`;
-    }
-
-    // Check if author already exists
     const existingRes = await fetch(
       `${DIRECTUS_URL}/items/authors?filter[user_id][_eq]=${user_id}&limit=1&fields=id,name,slug,user_id,role,bio,avatar`,
-      { headers }
+      { headers: await getHeaders() }
     );
     const existing = await existingRes.json().catch(() => ({ data: [] }));
 
@@ -30,7 +31,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ author: existing.data[0], created: false });
     }
 
-    // Create new author
     const slug = name
       .toLowerCase()
       .normalize("NFD")
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     const createRes = await fetch(`${DIRECTUS_URL}/items/authors`, {
       method: "POST",
-      headers,
+      headers: await getHeaders(),
       body: JSON.stringify({
         name,
         slug,

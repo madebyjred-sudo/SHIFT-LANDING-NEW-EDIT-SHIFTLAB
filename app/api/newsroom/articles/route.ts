@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthorByUserId, isAdmin } from "@/lib/auth";
+import { randomUUID } from "crypto";
+import { getDirectusToken } from "@/lib/directus-auth";
 
 import { randomUUID } from "crypto";
 
 const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || "http://2.25.128.2:8055";
-const DIRECTUS_TOKEN = process.env.DIRECTUS_STATIC_TOKEN;
 
-function getHeaders() {
+async function getHeaders() {
   const headers: Record<string, string> = {};
-  if (DIRECTUS_TOKEN) {
-    headers["Authorization"] = `Bearer ${DIRECTUS_TOKEN}`;
+  const token = await getDirectusToken();
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
   }
   return headers;
 }
@@ -25,13 +27,12 @@ export async function GET(request: NextRequest) {
     const author = await getAuthorByUserId(userId);
     const admin = author ? isAdmin(author.role) : false;
 
-    // Build query: admin sees all, author sees only theirs
     let queryUrl = `${DIRECTUS_URL}/items/news_articles?fields=*,category.name&sort=-date_created`;
     if (!admin && author) {
       queryUrl += `&filter[author_id][_eq]=${author.id}`;
     }
 
-    const articlesRes = await fetch(queryUrl, { headers: getHeaders() });
+    const articlesRes = await fetch(queryUrl, { headers: await getHeaders() });
     const articlesData = await articlesRes.json().catch(() => ({ data: [] }));
     return NextResponse.json({ articles: articlesData.data || [] });
   } catch (error) {
@@ -65,14 +66,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Cover image is required" }, { status: 400 });
     }
 
-    // Find author by user_id
     const uid = user_id || request.headers.get("x-user-id");
     let authorId = "1";
 
     if (uid) {
       const authorRes = await fetch(
         `${DIRECTUS_URL}/items/authors?filter[user_id][_eq]=${uid}&limit=1`,
-        { headers: getHeaders() }
+        { headers: await getHeaders() }
       );
       const authorData = await authorRes.json().catch(() => ({ data: [] }));
       if (authorData.data?.[0]?.id) {
@@ -80,11 +80,10 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Resolve category slug to ID
     let categoryId = category;
     const catRes = await fetch(
       `${DIRECTUS_URL}/items/news_categories?filter[slug][_eq]=${category}&limit=1`,
-      { headers: getHeaders() }
+      { headers: await getHeaders() }
     );
     const catData = await catRes.json().catch(() => ({ data: [] }));
     if (catData.data?.[0]?.id) {
@@ -110,7 +109,7 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...getHeaders(),
+        ...(await getHeaders()),
       },
       body: JSON.stringify(articlePayload),
     });
