@@ -34,7 +34,7 @@ export async function submitHubSpotContactForm(
     { name: "form-info-dos", value: fields.forminfodos },
     { name: "form-info-tres", value: fields.forminfotres },
     { name: "form-info-cuatro", value: fields.forminfocuatro },
-    { name: "form-info-cinco", value: fields.forminfocinco }
+    { name: "form-info-cinco", value: fields.forminfocinco },
   ].map((field) => ({
     objectTypeId: "0-1",
     name: field.name,

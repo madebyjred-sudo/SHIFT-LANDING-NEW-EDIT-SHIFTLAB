@@ -102,7 +102,7 @@ export default function EscritorioPage() {
 
   return (
     <main className="min-h-screen bg-white pb-32">
-      <header className="border-b border-[#111A31]/8">
+      <header className="border-b border-[#111A31]/8 pt-20">
         <div className="max-w-[1400px] mx-auto px-6 py-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-[#111A31] [font-family:var(--font-figtree)]">

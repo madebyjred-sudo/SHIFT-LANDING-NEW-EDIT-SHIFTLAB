@@ -3,7 +3,6 @@ import { getAuthorByUserId, isAdmin } from "@/lib/auth";
 import { randomUUID } from "crypto";
 import { getDirectusToken } from "@/lib/directus-auth";
 
-import { randomUUID } from "crypto";
 
 const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || "http://2.25.128.2:8055";
 

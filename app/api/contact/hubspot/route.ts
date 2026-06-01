@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { submitHubSpotContactForm } from "@/lib/hubspot";
+import { submitHubSpotContactForm } from "@/lib/hubspot/submit-form";
 import { rateLimit } from "@/lib/rate-limit";
 
 type HubSpotContactPayload = {
