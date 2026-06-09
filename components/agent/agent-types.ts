@@ -44,6 +44,8 @@ export type Message =
       citations?: Citation[];
       /** Quick chip suggestions for the user to send next */
       suggestions?: string[];
+      feedback?: 1 | -1;
+      feedbackReason?: string;
       ts: number;
     };
 

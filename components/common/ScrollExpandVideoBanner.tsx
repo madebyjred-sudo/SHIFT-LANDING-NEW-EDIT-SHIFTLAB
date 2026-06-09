@@ -29,8 +29,9 @@ import AutoplayLoopVideo from "@/components/common/AutoplayLoopVideo";
 
 export type ScrollExpandVideoBannerProps = {
   src: string;
-  mimeType?: string;
   poster?: string;
+  mimeType?: string;
+  showPlayerControls?: boolean;
   /** Meaningful label for assistive tech. When omitted, video is decorative. */
   ariaLabel?: string;
   /** Force aspect ratio (e.g. "16 / 9"). Otherwise inferred from metadata. */
@@ -55,6 +56,7 @@ export default function ScrollExpandVideoBanner({
   src,
   mimeType = "video/mp4",
   poster,
+  showPlayerControls = false,
   ariaLabel,
   aspectRatio: aspectRatioProp,
   sectionClassName = "",
@@ -115,6 +117,7 @@ export default function ScrollExpandVideoBanner({
           ariaLabel={ariaLabel}
           onLoadedMetadata={onLoadedMetadata}
           audioEnabled={audioEnabled}
+          showPlayerControls={showPlayerControls}
         />
       </section>
     );
@@ -142,6 +145,7 @@ export default function ScrollExpandVideoBanner({
           ariaLabel={ariaLabel}
           onLoadedMetadata={onLoadedMetadata}
           audioEnabled={audioEnabled}
+          showPlayerControls={showPlayerControls}
         />
         {/* Subtle vignette while card is small — fades out as it expands */}
         <motion.div

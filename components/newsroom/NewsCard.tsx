@@ -39,7 +39,7 @@ function TravelArticleCard({
   priority = false,
   index = 0,
 }: NewsCardProps) {
-  const href = article.isMock ? "#" : `/newsroom/${article.slug}`;
+  const href = `/newsroom/${article.slug}`;
 
   // Aspect ratio & sizing per variant
   const containerClasses = {
@@ -81,10 +81,9 @@ function TravelArticleCard({
         {/* Gradient Overlay for Text Readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-        {/* Category Badge (top-left, always visible) */}
         <div className="absolute top-5 left-5 md:top-6 md:left-6 z-10">
           {article.category_name && (
-            <span className="inline-block px-3 py-1.5 rounded-full bg-white/15 border border-white/25 backdrop-blur-sm text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)]">
+            <span className="inline-block px-3 py-1.5 rounded-full bg-white/15 border border-white/25 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)]">
               {article.category_name}
             </span>
           )}
@@ -142,7 +141,7 @@ function TravelArticleCard({
 
 /* ── Panoramic variant: horizontal layout with image left, text right ── */
 function PanoramicCard({ article, index = 0 }: NewsCardProps) {
-  const href = article.isMock ? "#" : `/newsroom/${article.slug}`;
+  const href = `/newsroom/${article.slug}`;
 
   return (
     <Link
@@ -170,7 +169,7 @@ function PanoramicCard({ article, index = 0 }: NewsCardProps) {
         <div className="absolute inset-0 bg-gradient-to-br from-[#1534DC]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
         {article.category_name && (
-          <span className="inline-block self-start px-3 py-1 rounded-full bg-[#1534DC]/30 border border-[#1534DC]/50 text-[#7B9CFF] text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)] mb-5">
+          <span className="inline-block self-start px-3 py-1 rounded-full bg-[#1534DC]/30 border border-[#1534DC]/50 text-white text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)] mb-5">
             {article.category_name}
           </span>
         )}
@@ -209,7 +208,7 @@ function PanoramicCard({ article, index = 0 }: NewsCardProps) {
 
 /* ── Compact variant: text-only card for side stack ── */
 function CompactCard({ article, index = 0 }: NewsCardProps) {
-  const href = article.isMock ? "#" : `/newsroom/${article.slug}`;
+  const href = `/newsroom/${article.slug}`;
 
   return (
     <Link
@@ -220,7 +219,7 @@ function CompactCard({ article, index = 0 }: NewsCardProps) {
       <div className="absolute inset-0 bg-gradient-to-br from-[#1534DC]/10 to-[#F540FF]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
       {article.category_name && (
-        <span className="inline-block self-start px-2.5 py-1 rounded-full bg-[#1534DC]/20 border border-[#1534DC]/40 text-[#7B9CFF] text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)] mb-4">
+        <span className="inline-block self-start px-2.5 py-1 rounded-full bg-[#1534DC]/20 border border-[#1534DC]/40 text-white text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)] mb-4">
           {article.category_name}
         </span>
       )}

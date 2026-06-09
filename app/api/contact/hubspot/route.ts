@@ -89,6 +89,7 @@ export async function POST(request: Request) {
       {
         pageUri: referer,
         pageName: "Contact details",
+        ipAddress: ip,
       },
     );
 

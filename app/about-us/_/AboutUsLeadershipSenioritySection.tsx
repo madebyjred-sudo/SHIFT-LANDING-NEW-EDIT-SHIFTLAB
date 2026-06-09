@@ -132,9 +132,9 @@ const ABOUTUS = [
     description: "General Manager Shift \n Caribe",
   },
   {
-    imageSrc: "/assets/images/aboutus/persona-28.jpg",
-    title: "María Marta Calvo",
-    description: "General Manager Shift \n Honduras",
+    imageSrc: "/assets/images/aboutus/persona-28-melissa.jpeg",
+    title: "Melissa Carrasco",
+    description: "General Director Shift \n Honduras",
   },
   {
     imageSrc: "/assets/images/aboutus/persona-27.jpg",

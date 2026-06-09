@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  zep:
+    image: ghcr.io/getzep/zep:latest
+    container_name: zep_server
+    restart: always
+    ports:
+      - "8180:8000"
+    volumes:
+      - ./zep-config.yaml:/app/config.yaml
+    environment:
+      - ZEP_OPENAI_API_KEY=96459f491708586f68bf531e06491678d0b0a6d0fe5a65947e2c6836cbbef22e
+      - ZEP_OPENAI_BASE_URL=https://openrouter.ai/api/v1
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: pgvector/pgvector:pg15
+    container_name: zep_postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=zep_user
+      - POSTGRES_PASSWORD=zep_password
+      - POSTGRES_DB=zep
+    volumes:
+      - zep_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zep_user -d zep"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  zep_pgdata:

@@ -308,19 +308,19 @@ export default function ContactDetailsSection() {
               <div>
                 <p className="text-md sm:text-2xl leading-none text-[#1534DC]">Consultas</p>
                 <Link
-                  href="mailto:holaholahola@shiftpn.com"
+                  href="mailto:fmartinez@shiftpn.co.cr"
                   className="mt-3 font-glitz font-normal block text-lg sm:text-[32px] leading-none text-[#1534DC]"
                 >
-                  holaholahola@shiftpn.com
+                  fmartinez@shiftpn.co.cr
                 </Link>
               </div>
               <div className="lg:pb-10">
                 <p className="text-md sm:text-2xl leading-none text-[#1534DC]">New Business</p>
                 <Link
-                  href="mailto:holahola@shiftpn.com"
+                  href="mailto:rcastro@shiftpn.co.cr"
                   className="mt-3 font-glitz font-normal block text-lg sm:text-[32px]  leading-none text-[#1534DC]"
                 >
-                  holahola@shiftpn.com
+                  rcastro@shiftpn.co.cr
                 </Link>
               </div>
             </div>

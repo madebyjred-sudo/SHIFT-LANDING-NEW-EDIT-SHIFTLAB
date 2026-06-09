@@ -35,7 +35,6 @@ export default function AwardsVideoManifesto() {
       src="/assets/videos/awards/awards-banner.mp4"
       sectionClassName="bg-white pt-16 md:pt-12"
       ariaLabel="Banner visual de la sección Premios de Shift Latam"
-      audioEnabled
       overlay={(progress) => (
         <ScrollLayeredText
           lines={awardsManifestoLines}

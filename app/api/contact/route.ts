@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 import { HUB_OPTIONS, type HubOption } from "@/app/contact/hubs";
 import { rateLimit } from "@/lib/rate-limit";
 import { HUB_EMAILS } from "@/lib/contact-routing";
-import { upsertContactWithNote } from "@/lib/hubspot/upsert-contact";
+import { submitHubSpotPrimaryForm } from "@/lib/hubspot/submit-form";
 
 type ContactPayload = {
   hub?: string;
@@ -220,12 +220,19 @@ export async function POST(request: Request) {
       html: buildContactEmailHtml(hub, email, idea),
     });
 
-    const hubspotPromise = upsertContactWithNote({
-      email,
-      brief: idea,
-      country: hub,
-      source: "contact-form",
-    });
+    const referer = request.headers.get("referer") ?? undefined;
+    const hubspotPromise = submitHubSpotPrimaryForm(
+      {
+        email,
+        query: idea,
+        selectedcountry: hub,
+      },
+      {
+        pageUri: referer,
+        pageName: "Contact primary",
+        ipAddress: ip,
+      }
+    );
 
     const [emailRes, hubspotRes] = await Promise.allSettled([
       emailPromise,
@@ -239,10 +246,7 @@ export async function POST(request: Request) {
       // HubSpot puede o no haber pasado — logueamos su estado igual
       // para que quede registro del lead aunque sea en CRM.
       if (hubspotRes.status === "fulfilled" && hubspotRes.value.ok) {
-        console.error(
-          "[api/contact] email failed PERO HubSpot OK — contactId:",
-          hubspotRes.value.contactId,
-        );
+        console.error("[api/contact] email failed PERO HubSpot OK");
       }
       return NextResponse.json(
         { ok: false, message: "No se pudo enviar el mensaje. Inténtalo de nuevo." },
@@ -254,18 +258,13 @@ export async function POST(request: Request) {
     // error al usuario si falló — el GM ya recibió el lead.
     if (hubspotRes.status === "rejected") {
       console.error("[api/contact] HubSpot threw:", hubspotRes.reason);
-    } else if (!hubspotRes.value.ok || hubspotRes.value.errors.length > 0) {
+    } else if (!hubspotRes.value.ok) {
       console.warn(
-        "[api/contact] HubSpot partial/failed:",
-        hubspotRes.value.errors.join(" | "),
+        "[api/contact] HubSpot failed:",
+        hubspotRes.value.message,
       );
     } else {
-      console.log(
-        "[api/contact] HubSpot OK — contactId:",
-        hubspotRes.value.contactId,
-        "note:",
-        hubspotRes.value.noteCreated,
-      );
+      console.log("[api/contact] HubSpot OK");
     }
 
     return NextResponse.json({ ok: true, message: "Mensaje enviado con éxito." });

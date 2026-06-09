@@ -43,10 +43,11 @@ export default function ShiftingCulturePage() {
           imageAlt="Banner de la metodología Shifting Culture de Shift Latam"
         /> */}
         <PageFullWidthVideoBanner
-          src="/assets/videos/shifting/DESKTOP.mp4"
+          src="/assets/videos/shifting/VIDEO_SHIFT_FINAL.mp4"
           sectionClassName="relative z-0 bg-white"
           ariaLabel="Banner visual de la sección Premios de Shift Latam"
           audioEnabled
+          showPlayerControls
         />
         <ShiftingCultureModelSection />
         <CultureProcessSection />

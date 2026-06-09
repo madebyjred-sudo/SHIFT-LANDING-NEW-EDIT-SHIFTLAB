@@ -1,0 +1,43 @@
+version: '3.8'
+
+# -----------------------------------------------------------------------------
+# Zep Open Source (Self-Hosted)
+# Para levantar en el VPS: docker-compose -f docker-compose.zep.yml up -d
+# -----------------------------------------------------------------------------
+
+services:
+  zep:
+    image: ghcr.io/getzep/zep:latest
+    container_name: zep_server
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - ZEP_STORE_POSTGRES_DSN=postgres://zep_user:zep_password@postgres:5432/zep?sslmode=disable
+      # Cambiar OpenAI por Anthropic u otro si se desea para los embeddings internos de Zep
+      - ZEP_OPENAI_API_KEY=${OPENAI_API_KEY:-""}
+      - ZEP_ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-""}
+      - ZEP_AUTH_REQUIRED=true
+      - ZEP_AUTH_KEY=${ZEP_API_KEY:-"shift_latam_vector_secret_key_2026"}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:15
+    container_name: zep_postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=zep_user
+      - POSTGRES_PASSWORD=zep_password
+      - POSTGRES_DB=zep
+    volumes:
+      - zep_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zep_user -d zep"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  zep_pgdata:

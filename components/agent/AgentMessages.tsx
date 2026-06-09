@@ -14,9 +14,11 @@ import AgentMessage from "./AgentMessage";
 export default function AgentMessages({
   messages,
   onQuickChip,
+  onFeedback,
 }: {
   messages: Message[];
   onQuickChip: (text: string) => void;
+  onFeedback?: (messageId: string, rating: 1 | -1, reason?: string) => void;
 }) {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const stuckToBottomRef = React.useRef(true);
@@ -56,6 +58,7 @@ export default function AgentMessages({
             message={m}
             isLast={i === messages.length - 1}
             onQuickChip={onQuickChip}
+            onFeedback={onFeedback}
           />
         ))}
       </div>

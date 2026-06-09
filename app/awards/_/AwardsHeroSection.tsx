@@ -85,7 +85,7 @@ export default function AwardsHeroSection() {
         </h1>
     </>
 
-    const subText = <p className="relative z-10 w-full max-w-[90%] md:max-w-full lg:max-w-[500px] lg:ml-auto pt-4 md:pt-1 text-[18px] tracking-normal leading-[20px] text-[#111A31] [font-family:var(--font-fira-sans)]">
+    const subText = <p className="relative z-10 w-full max-w-[90%] md:max-w-full lg:max-w-[500px] lg:ml-auto pt-4 md:mt-[120px] text-[18px] tracking-normal leading-[20px] text-[#111A31] [font-family:var(--font-fira-sans)]">
         <span>
             Con más de 120 premios internacionales, SHIFT LATAM se posiciona entre las agencias más reconocidas de la región en creatividad, efectividad y relaciones públicas.
         </span>

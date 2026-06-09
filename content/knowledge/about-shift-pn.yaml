@@ -44,8 +44,8 @@ identity:
     instagram: "https://www.instagram.com/shiftlatampn/"
     linkedin: "https://cr.linkedin.com/company/shiftlatamporternovelli"
   contactos_centrales:
-    consultas_generales: "holaholahola@shiftpn.com"      # landing /contact
-    new_business: "holahola@shiftpn.com"                  # landing /contact
+    consultas_generales: "fmartinez@shiftpn.co.cr"      # landing /contact
+    new_business: "rcastro@shiftpn.co.cr"                  # landing /contact
     ejecutivo_referencia: "fmartinez@shiftpn.co.cr (Federico Martinez)"  # provisto por el cliente, no verificado en sitio público
   telefono_hub: "+506 4110-6000"  # crunchbase + telediario.cr
 
@@ -241,9 +241,9 @@ hubs:
   - pais: "Honduras"
     ciudad: "Tegucigalpa"
     direccion: "Bulevar Suyapa, Torre Metropolis II, Piso 23"
-    telefono: "+504 9453-8228"
-    contacto_email: "maria.calvo@shift-pn.hn"
-    contacto_nombre: "María Calvo"
+    telefono: "+504 9897-0961"
+    contacto_email: "melissa.carrasco@shift-pn.hn"
+    contacto_nombre: "Melissa Carrasco"
   - pais: "Nicaragua"
     ciudad: "Managua"
     direccion: "Ofiplaza El Retiro, Edificio 6, Piso 1, Suite 614"
@@ -569,7 +569,7 @@ faqs:
     respuesta: "Rodrigo Castro es el CEO de Shift Latam. Junto a Gabriela Piedra (Senior VP) y Oscar Solano (VP - CCO & CSO), lidera la estrategia regional."
     keywords: ["ceo", "director general", "rodrigo castro", "fundador", "líder", "presidente"]
   - pregunta: "¿Cómo agendo una reunión?"
-    respuesta: "Armamos el handoff acá mismo: contame tu nombre, email y un mini-brief (1-2 líneas) de qué te interesa. Te devolvemos contacto en menos de 24h con la persona del hub que aplica. O escribinos directo a holahola@shiftpn.com (new business)."
+    respuesta: "Armamos el handoff acá mismo: contame tu nombre, email y un mini-brief (1-2 líneas) de qué te interesa. Te devolvemos contacto en menos de 24h con la persona del hub que aplica. O escribinos directo a rcastro@shiftpn.co.cr (new business)."
     keywords: ["agendar", "reunión", "hablamos", "contacto", "meeting", "llamada", "consulta"]
   - pregunta: "¿Cuánto cuesta una campaña?"
     respuesta: "Honestamente, depende del scope. Un proyecto puntual de reputación + lanzamiento regional puede arrancar en USD 30-80K. Un acompañamiento estratégico continuo de 12 meses suele estar entre 8-25K/mes. Lo más útil es una llamada de 30 minutos donde mapeamos tu caso y te paso un rango realista — sin obligación."
@@ -587,7 +587,7 @@ faqs:
     respuesta: "Más de 120 premios internacionales. Los más recientes incluyen 5 oros en PRWeek Global Awards 2024 por 'Cambiemos la Regla' (incluyendo Campaign of the Year), Cannes Lions 2024 (Bronce Glass + Plata PR), múltiples SABRE Awards LATAM y Global, Effie Index, FIAP y Clio. Te puedo pasar más detalle si querés."
     keywords: ["premios", "awards", "reconocimientos", "trofeos", "cannes", "effie", "sabre"]
   - pregunta: "¿Manejan crisis de reputación?"
-    respuesta: "Es una de nuestras 4 capas principales. Acompañamos antes, durante y después de eventos sensibles — riesgo regulatorio, conflictos laborales, crisis digitales, recalls, cambios de liderazgo bajo escrutinio. Si estás en una crisis activa, lo más rápido es escribirnos a holahola@shiftpn.com con el asunto 'crisis' y conectamos con el equipo en horas."
+    respuesta: "Es una de nuestras 4 capas principales. Acompañamos antes, durante y después de eventos sensibles — riesgo regulatorio, conflictos laborales, crisis digitales, recalls, cambios de liderazgo bajo escrutinio. Si estás en una crisis activa, lo más rápido es escribirnos a rcastro@shiftpn.co.cr con el asunto 'crisis' y conectamos con el equipo en horas."
     keywords: ["crisis", "issue", "riesgo", "emergencia", "controversia", "problema"]
   - pregunta: "¿Hacen asuntos públicos / lobby?"
     respuesta: "Sí, manejamos asuntos públicos y narrativa institucional como parte de Estrategia corporativa y reputación. Trabajamos con organizaciones que necesitan gestionar agenda pública, relación con reguladores y vocería frente a stakeholders políticos. Nuestro enfoque es comunicación estratégica, no influence-peddling."
@@ -614,7 +614,7 @@ faqs:
     respuesta: "Sí — uno de los trabajos más reconocidos del equipo es 'Cambiemos la Regla' con Nosotras Women Connecting, que llevó a la aprobación de una ley en Costa Rica para garantizar acceso a productos de higiene menstrual. También trabajamos con Grupo de Familias Sobreviviendo a Feminicidio en 'Justice By Her Type'. La causa social es parte de cómo entendemos comunicación con impacto."
     keywords: ["ongs", "causa social", "tercer sector", "impacto", "advocacy", "social", "nonprofit"]
   - pregunta: "¿Cómo funciona el contacto inicial?"
-    respuesta: "Lo más simple: contame qué te interesa (servicios, una industria, un problema específico), tu email y país, y te conectamos con la persona indicada del hub regional. Si preferís escribir directo: holaholahola@shiftpn.com para consultas generales o holahola@shiftpn.com para new business."
+    respuesta: "Lo más simple: contame qué te interesa (servicios, una industria, un problema específico), tu email y país, y te conectamos con la persona indicada del hub regional. Si preferís escribir directo: fmartinez@shiftpn.co.cr para consultas generales o rcastro@shiftpn.co.cr para new business."
     keywords: ["primer contacto", "cómo empezar", "proceso", "qué necesito", "inicio"]
   - pregunta: "¿Quién es Shifty?"
     respuesta: "Soy el asistente del sitio de SHIFT LATAM. Puedo explicarte servicios, mostrarte casos, contarte sobre Shift LAB, o conectarte con la persona del equipo que aplica. No sustituyo una conversación con un consultor — la facilito."
@@ -626,7 +626,7 @@ temas_sensibles:
     redirect: "Si te interesa cómo manejamos asuntos públicos, te cuento sobre nuestra capa de Estrategia corporativa y reputación. ¿Querés un caso?"
   - tema: "Crisis activa de un cliente"
     razon: "Por NDA y por respeto al cliente, Shifty no comenta crisis específicas en curso ni confirma si Shift está manejando un caso público."
-    redirect: "No puedo confirmar trabajos en curso por NDA. Si necesitás manejar una crisis, escribinos directo a holahola@shiftpn.com con el asunto 'crisis' y conectamos en horas."
+    redirect: "No puedo confirmar trabajos en curso por NDA. Si necesitás manejar una crisis, escribinos directo a rcastro@shiftpn.co.cr con el asunto 'crisis' y conectamos en horas."
   - tema: "Honorarios específicos por cliente"
     razon: "Los fees varían por scope, mercado y duración. Dar números sin discovery induce a expectativa irreal."
     redirect: "Los honorarios dependen del scope. Te paso rangos honestos: USD 30-80K para proyectos puntuales, USD 8-25K/mes para acompañamientos. Lo correcto es 30 min de discovery."
@@ -638,7 +638,7 @@ temas_sensibles:
     redirect: "Prefiero contarte qué hacemos bien nosotros y dejar que el mercado compare. ¿Te paso 3 casos puntuales en tu industria?"
   - tema: "Industrias controversiales (tabaco, juegos de azar, armas)"
     razon: "Shift no tiene posición pública declarada sobre estas industrias. Comprometerse sin alineación interna es un riesgo."
-    redirect: "Para industrias reguladas con sensibilidades altas, lo correcto es una conversación de scope con el equipo de New Business. Escribinos a holahola@shiftpn.com."
+    redirect: "Para industrias reguladas con sensibilidades altas, lo correcto es una conversación de scope con el equipo de New Business. Escribinos a rcastro@shiftpn.co.cr."
   - tema: "Datos personales del equipo más allá de lo público"
     razon: "Privacidad de colaboradores."
     redirect: "Solo comparto roles y direcciones de correo profesionales publicadas en el sitio. Para contacto directo te conecto con la persona indicada."
@@ -664,7 +664,7 @@ derivar_a_humano:
     Entiendo — esto necesita conversación con alguien del equipo, no un bot.
     Escribime tu email y un par de líneas de contexto, y armo el handoff
     para que te contacten en horas. Si es urgente, escribí directo a
-    holahola@shiftpn.com con el asunto que corresponda.
+    rcastro@shiftpn.co.cr con el asunto que corresponda.
 
 links_internos_canonicos:
   inicio: "/"
@@ -705,7 +705,7 @@ metadata:
     # `hubs_y_oficinas`, `app/contact/hubs.ts`, `lib/contact-routing.ts`,
     # mapas y Footer.)
     - "Verificar bio de Fabiana Martínez y rol de JJ Altmann en Panamá"
-    - "Decidir si el bot debe revelar el contacto de Federico en respuestas o solo derivar a holahola@shiftpn.com"
+    - "Decidir si el bot debe revelar el contacto de Federico en respuestas o solo derivar a rcastro@shiftpn.co.cr"
     - "Confirmar si Brand Influence Index ya tiene fecha exacta de lanzamiento (segundo semestre 2026)"
     - "Aprobar los rangos de precios (USD 30-80K proyecto, 8-25K/mes acompañamiento) — están sacados del agent-types.ts del repo, no del sitio público"
     - "Verificar lista completa de premios FIAP, Clio y El Ojo de Iberoamérica con años específicos"

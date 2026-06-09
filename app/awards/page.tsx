@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import AwardsHeroSection from "@/app/awards/_/AwardsHeroSection";
 import AwardsLogoStrip from "@/app/awards/_/AwardsLogoStrip";
-import AwardsPersonMarquee from "@/app/awards/_/AwardsPersonMarquee";
+import AwardsCarouselSection from "@/app/awards/_/AwardsCarouselSection";
 import AwardsVideoManifesto from "@/app/awards/_/AwardsVideoManifesto";
 import ContactPrimaryFormSection from "../contact/_/ContactPrimaryFormSection";
 import { createPageMetadata, createWebPageSchema } from "@/app/seo";
@@ -36,7 +36,7 @@ export default function AwardsPage() {
         <AwardsLogoStrip />
         <div className="h-10 md:h-14 lg:hidden"></div>
         <AwardsVideoManifesto />
-        <AwardsPersonMarquee />
+        <AwardsCarouselSection />
         <ContactPrimaryFormSection />
       </main>
     </>

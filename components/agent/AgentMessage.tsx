@@ -25,13 +25,15 @@ export default function AgentMessage({
   message,
   isLast,
   onQuickChip,
+  onFeedback,
 }: {
   message: Message;
   isLast: boolean;
   onQuickChip?: (text: string) => void;
+  onFeedback?: (messageId: string, rating: 1 | -1, reason?: string) => void;
 }) {
   if (message.role === "user") return <UserMessage message={message} />;
-  return <AgentReply message={message} isLast={isLast} onQuickChip={onQuickChip} />;
+  return <AgentReply message={message} isLast={isLast} onQuickChip={onQuickChip} onFeedback={onFeedback} />;
 }
 
 function UserMessage({ message }: { message: Extract<Message, { role: "user" }> }) {
@@ -60,13 +62,16 @@ function AgentReply({
   message,
   isLast,
   onQuickChip,
+  onFeedback,
 }: {
   message: Extract<Message, { role: "agent" }>;
   isLast: boolean;
   onQuickChip?: (text: string) => void;
+  onFeedback?: (messageId: string, rating: 1 | -1, reason?: string) => void;
 }) {
   const hasThinking = (message.thinking?.length ?? 0) > 0;
   const done = !message.streaming;
+  const [showReasons, setShowReasons] = React.useState(false);
 
   return (
     <motion.div
@@ -129,6 +134,60 @@ function AgentReply({
               {s}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Feedback UI */}
+      {done && message.content && !message.feedback && (
+        <div className="mt-2 flex items-center gap-2">
+          {!showReasons ? (
+            <>
+              <button
+                type="button"
+                onClick={() => onFeedback?.(message.id, 1)}
+                className="opacity-40 hover:opacity-100 transition-opacity text-white flex items-center justify-center"
+                title="Buena respuesta"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z"/></svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowReasons(true)}
+                className="opacity-40 hover:opacity-100 transition-opacity text-white flex items-center justify-center"
+                title="Mala respuesta"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-280q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z"/></svg>
+              </button>
+            </>
+          ) : (
+            <div className="flex flex-wrap gap-1.5 animate-in fade-in slide-in-from-left-2 duration-200">
+              <span className="text-[11px] text-white/50 mr-1 self-center">¿Qué falló?</span>
+              {["Inexacto", "Irrelevante", "Tono", "Otro"].map((r) => (
+                <button
+                  key={r}
+                  onClick={() => {
+                    setShowReasons(false);
+                    onFeedback?.(message.id, -1, r);
+                  }}
+                  className="rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[10.5px] text-red-200 hover:bg-red-500/20 transition-colors"
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      {message.feedback === 1 && (
+        <div className="mt-2 text-[11px] text-white/30 animate-in fade-in flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="currentColor"><path d="M720-120H320v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h218q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-480 0v-520h160v520H240Z"/></svg>
+          Gracias por tu feedback
+        </div>
+      )}
+      {message.feedback === -1 && (
+        <div className="mt-2 text-[11px] text-red-400/50 animate-in fade-in flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="currentColor"><path d="M240-840h400v520L360-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-280q9-20 30-34t44-14Zm480 0v520H560v-520h160Z"/></svg>
+          Feedback registrado ({message.feedbackReason || 'Otro'})
         </div>
       )}
     </motion.div>

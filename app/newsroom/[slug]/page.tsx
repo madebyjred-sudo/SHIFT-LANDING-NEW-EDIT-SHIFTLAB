@@ -116,7 +116,7 @@ function ArticleFooter({ authorName, authorAvatar, authorBio, authorRole, catego
   return (
     <>
       <div className="flex flex-wrap gap-2 py-8 border-t border-[#111A31]/8">
-        {category && <span className="px-3 py-1.5 rounded-full bg-[#1534DC]/8 border border-[#1534DC]/15 text-[#1534DC] text-[11px] font-bold uppercase tracking-[0.1em] [font-family:var(--font-figtree)]">{category.name}</span>}
+        {category && <span className="px-3 py-1.5 rounded-full bg-[#1534DC]/8 border border-[#1534DC]/15 text-white text-[11px] font-bold uppercase tracking-[0.1em] [font-family:var(--font-figtree)]">{category.name}</span>}
         {tags?.map((tag) => <span key={tag} className="px-3 py-1.5 rounded-full bg-[#111A31]/5 border border-[#111A31]/10 text-[#111A31]/50 text-[11px] font-bold uppercase tracking-[0.1em] [font-family:var(--font-figtree)]">{tag}</span>)}
       </div>
       <div className="py-10 border-t border-[#111A31]/8">
@@ -195,7 +195,7 @@ function EditorialLayout({ article, coverUrl, category, authorName, authorAvatar
               <Link href="/newsroom" className="text-[#111A31]/40 hover:text-[#111A31]/70 transition-colors">Newsroom</Link>
               {category && <><span className="text-[#111A31]/20">/</span><span className="text-[#1534DC]">{category.name}</span></>}
             </nav>
-            {category && <span className="inline-block px-3 py-1 rounded-full bg-[#1534DC]/8 border border-[#1534DC]/15 text-[#1534DC] text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)] mb-5">{category.name}</span>}
+            {category && <span className="inline-block px-3 py-1 rounded-full bg-[#1534DC]/8 border border-[#1534DC]/15 text-white text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)] mb-5">{category.name}</span>}
             <h1 className="text-4xl md:text-5xl lg:text-[56px] font-bold leading-[1.05] text-[#111A31] [font-family:var(--font-figtree)] tracking-tight mb-6">{article.title}</h1>
             {article.excerpt && <p className="text-lg md:text-xl text-[#1F2A44] [font-family:var(--font-fira-sans)] font-light leading-relaxed mb-8">{article.excerpt}</p>}
             <AuthorCard name={authorName} avatarUrl={authorAvatar} bio={authorBio} role={authorRole} date={publishedDate} readTime={article.read_time} />
@@ -236,7 +236,7 @@ function MagazineLayout({ article, coverUrl, category, authorName, authorAvatar,
             <Link href="/newsroom" className="text-[#111A31]/40 hover:text-[#111A31]/70 transition-colors">Newsroom</Link>
             {category && <><span className="text-[#111A31]/20">/</span><span className="text-[#1534DC]">{category.name}</span></>}
           </nav>
-          {category && <span className="inline-block px-3 py-1 rounded-full bg-[#1534DC]/8 border border-[#1534DC]/15 text-[#1534DC] text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)] mb-5">{category.name}</span>}
+          {category && <span className="inline-block px-3 py-1 rounded-full bg-[#1534DC]/8 border border-[#1534DC]/15 text-white text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)] mb-5">{category.name}</span>}
           <h1 className="text-4xl md:text-6xl lg:text-[80px] font-bold leading-[0.95] text-[#111A31] [font-family:var(--font-glitz-local)] tracking-tight mb-6">{article.title}</h1>
           {article.excerpt && <p className="text-lg md:text-xl text-[#1F2A44] [font-family:var(--font-fira-sans)] font-light leading-relaxed max-w-2xl mx-auto">{article.excerpt}</p>}
         </div>
@@ -286,7 +286,7 @@ function HeroSplitLayout({ article, coverUrl, category, authorName, authorAvatar
               <Link href="/newsroom" className="text-[#111A31]/40 hover:text-[#111A31]/70 transition-colors">Newsroom</Link>
               {category && <><span className="text-[#111A31]/20">/</span><span className="text-[#1534DC]">{category.name}</span></>}
             </nav>
-            {category && <span className="inline-block px-3 py-1 rounded-full bg-[#1534DC]/8 border border-[#1534DC]/15 text-[#1534DC] text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)] mb-5">{category.name}</span>}
+            {category && <span className="inline-block px-3 py-1 rounded-full bg-[#1534DC]/8 border border-[#1534DC]/15 text-white text-[10px] font-bold uppercase tracking-[0.15em] [font-family:var(--font-figtree)] mb-5">{category.name}</span>}
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.08] text-[#111A31] [font-family:var(--font-figtree)] tracking-tight mb-6">{article.title}</h1>
             {article.excerpt && <p className="text-lg text-[#1F2A44] [font-family:var(--font-fira-sans)] font-light leading-relaxed mb-8">{article.excerpt}</p>}
             <div className="flex flex-col sm:flex-row sm:items-center gap-6">

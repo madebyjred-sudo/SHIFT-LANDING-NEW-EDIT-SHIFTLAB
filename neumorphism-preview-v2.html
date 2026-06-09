@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shift Latam — Neumorphism v2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #EBECF0;
+      --bg-dark: #1a1d29;
+      --text: #111A31;
+      --text-light: #4A5568;
+      --primary: #1534DC;
+      --primary-light: #3d5af1;
+      --accent: #F540FF;
+      --shadow-light: #FFFFFF;
+      --shadow-dark: #BABECC;
+      --shadow-dark-dk: #0f111a;
+      --shadow-light-dk: #252a3d;
+    }
+
+    * { font-family: 'Inter', sans-serif; }
+
+    /* ── CORE SHADOWS ── */
+    .neu-raised {
+      background: var(--bg);
+      border-radius: 16px;
+      box-shadow:
+        -8px -8px 16px var(--shadow-light),
+         8px  8px 16px var(--shadow-dark);
+    }
+    .neu-raised-sm {
+      background: var(--bg);
+      border-radius: 12px;
+      box-shadow:
+        -4px -4px 8px var(--shadow-light),
+         4px  4px 8px var(--shadow-dark);
+    }
+    .neu-inset {
+      background: var(--bg);
+      border-radius: 16px;
+      box-shadow:
+        inset -4px -4px 8px var(--shadow-light),
+        inset  4px  4px 8px var(--shadow-dark);
+    }
+    .neu-inset-sm {
+      background: var(--bg);
+      border-radius: 12px;
+      box-shadow:
+        inset -2px -2px 4px var(--shadow-light),
+        inset  2px  2px 4px var(--shadow-dark);
+    }
+
+    /* ── DARK MODE SHADOWS ── */
+    .dark .neu-raised {
+      background: var(--bg-dark);
+      box-shadow:
+        -8px -8px 16px var(--shadow-light-dk),
+         8px  8px 16px var(--shadow-dark-dk);
+    }
+    .dark .neu-raised-sm {
+      background: var(--bg-dark);
+      box-shadow:
+        -4px -4px 8px var(--shadow-light-dk),
+         4px  4px 8px var(--shadow-dark-dk);
+    }
+    .dark .neu-inset {
+      background: var(--bg-dark);
+      box-shadow:
+        inset -4px -4px 8px var(--shadow-light-dk),
+        inset  4px  4px 8px var(--shadow-dark-dk);
+    }
+    .dark .neu-inset-sm {
+      background: var(--bg-dark);
+      box-shadow:
+        inset -2px -2px 4px var(--shadow-light-dk),
+        inset  2px  2px 4px var(--shadow-dark-dk);
+    }
+
+    /* ── BUTTON ── */
+    .neu-btn {
+      position: relative;
+      background: linear-gradient(145deg, #f0f1f5, #d0d1d5);
+      color: var(--text);
+      border: none;
+      border-radius: 50px;
+      padding: 14px 36px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow:
+        -6px -6px 14px rgba(255,255,255,0.8),
+         6px  6px 14px rgba(174,174,192,0.4);
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      overflow: hidden;
+    }
+    .neu-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50px;
+      padding: 2px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(174,174,192,0.2));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .neu-btn:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        -8px -8px 20px rgba(255,255,255,0.9),
+         8px  8px 20px rgba(174,174,192,0.5);
+    }
+    .neu-btn:active {
+      transform: translateY(0);
+      box-shadow:
+        inset -4px -4px 8px rgba(255,255,255,0.8),
+        inset  4px  4px 8px rgba(174,174,192,0.4);
+    }
+
+    /* Primary */
+    .neu-btn-primary {
+      background: linear-gradient(145deg, #1738f2, #1330c6);
+      color: white;
+      box-shadow:
+        -6px -6px 14px rgba(255,255,255,0.6),
+         6px  6px 14px rgba(21,52,220,0.35);
+    }
+    .neu-btn-primary::before {
+      background: linear-gradient(145deg, rgba(61,90,241,0.6), rgba(15,36,160,0.3));
+    }
+    .neu-btn-primary:hover {
+      box-shadow:
+        -8px -8px 20px rgba(255,255,255,0.7),
+         8px  8px 20px rgba(21,52,220,0.45);
+    }
+    .neu-btn-primary:active {
+      box-shadow:
+        inset -4px -4px 8px rgba(15,36,160,0.5),
+        inset  4px  4px 8px rgba(61,90,241,0.3);
+    }
+
+    /* ── TOGGLE ── */
+    .neu-toggle {
+      position: relative;
+      width: 56px;
+      height: 30px;
+      border-radius: 15px;
+      cursor: pointer;
+      box-shadow:
+        inset 3px 3px 6px var(--shadow-dark),
+        inset -3px -3px 6px var(--shadow-light);
+    }
+    .neu-toggle input { display: none; }
+    .neu-toggle-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #f0f1f5, #d0d1d5);
+      box-shadow:
+        -3px -3px 6px rgba(255,255,255,0.9),
+         3px  3px 6px rgba(174,174,192,0.4);
+      transition: transform 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    .neu-toggle input:checked + .neu-toggle-thumb {
+      transform: translateX(26px);
+      background: linear-gradient(145deg, #1738f2, #1330c6);
+      box-shadow:
+        -2px -2px 4px rgba(61,90,241,0.5),
+         2px  2px 4px rgba(15,36,160,0.5);
+    }
+
+    /* ── NAV ── */
+    .neu-nav {
+      background: rgba(235,236,240,0.82);
+      backdrop-filter: blur(24px) saturate(1.4);
+      border-bottom: 1px solid rgba(255,255,255,0.6);
+    }
+    .dark .neu-nav {
+      background: rgba(26,29,41,0.85);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* ── INPUT ── */
+    .neu-input {
+      width: 100%;
+      padding: 14px 20px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 15px;
+    }
+    .neu-input::placeholder { color: #9CA3AF; }
+
+    /* ── CARD ICON ── */
+    .neu-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── LOGO ── */
+    .logo { font-weight: 800; font-size: 22px; letter-spacing: -0.03em; }
+    .logo span { color: var(--primary); }
+
+    /* ── SMOOTH SCROLL + SECTION ── */
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="antialiased">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  LIGHT MODE                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<section style="background: var(--bg);">
+
+  <!-- NAV -->
+  <nav class="neu-nav fixed top-0 inset-x-0 z-50">
+    <div class="max-w-[1280px] mx-auto px-6 h-[72px] flex items-center justify-between">
+      <div class="logo" style="color: var(--text);">Shift<span>Latam</span></div>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#" class="text-sm font-medium" style="color: var(--primary);">Home</a>
+        <a href="#" class="text-sm font-medium hover:text-blue-700 transition-colors" style="color: var(--text-light);">Servicios</a>
+        <a href="#" class="text-sm font-medium hover:text-blue-700 transition-colors" style="color: var(--text-light);">Nosotros</a>
+        <a href="#" class="text-sm font-medium hover:text-blue-700 transition-colors" style="color: var(--text-light);">Newsroom</a>
+        <a href="#" class="text-sm font-medium hover:text-blue-700 transition-colors" style="color: var(--text-light);">Contacto</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="neu-btn text-sm py-2.5 px-5">Log in</button>
+        <button class="neu-btn neu-btn-primary text-sm py-2.5 px-5">Empezar</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="pt-[120px] pb-20 max-w-[1280px] mx-auto px-6 space-y-12">
+
+    <!-- HERO TEXT -->
+    <div class="text-center mb-16">
+      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-4" style="color: var(--text);">
+        Neumorphism <span style="color: var(--primary);">v2</span>
+      </h1>
+      <p class="text-lg max-w-xl mx-auto" style="color: var(--text-light);">
+        Sombras suaves, relieve orgánico, colores de marca Shift Latam.
+      </p>
+    </div>
+
+    <!-- BUTTONS ROW -->
+    <div class="neu-raised p-8 md:p-10">
+      <h3 class="text-sm font-bold uppercase tracking-widest mb-6" style="color: var(--text-light);">Botones</h3>
+      <div class="flex flex-wrap items-center gap-4">
+        <button class="neu-btn">Secundario</button>
+        <button class="neu-btn neu-btn-primary">Primario</button>
+        <button class="neu-btn text-sm py-2.5 px-5">Small</button>
+        <button class="neu-btn neu-btn-primary text-sm py-2.5 px-5">CTA Small</button>
+        <button class="neu-btn" style="border-radius: 12px;">Radius 12</button>
+      </div>
+    </div>
+
+    <!-- TOGGLES + INPUTS -->
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="neu-raised p-8 md:p-10">
+        <h3 class="text-sm font-bold uppercase tracking-widest mb-6" style="color: var(--text-light);">Toggle Switch</h3>
+        <div class="flex items-center gap-6">
+          <label class="neu-toggle">
+            <input type="checkbox">
+            <div class="neu-toggle-thumb"></div>
+          </label>
+          <label class="neu-toggle">
+            <input type="checkbox" checked>
+            <div class="neu-toggle-thumb"></div>
+          </label>
+          <span class="text-sm font-medium" style="color: var(--text-light);">Activo / Inactivo</span>
+        </div>
+      </div>
+
+      <div class="neu-raised p-8 md:p-10">
+        <h3 class="text-sm font-bold uppercase tracking-widest mb-6" style="color: var(--text-light);">Inputs</h3>
+        <div class="neu-inset-sm p-1 mb-4">
+          <input type="email" placeholder="tu@email.com" class="neu-input">
+        </div>
+        <div class="neu-inset-sm p-1 mb-4">
+          <input type="password" placeholder="Contraseña" class="neu-input">
+        </div>
+        <button class="neu-btn neu-btn-primary w-full">Ingresar</button>
+      </div>
+    </div>
+
+    <!-- CARDS -->
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="neu-raised p-8">
+        <div class="neu-raised-sm neu-icon mb-5" style="color: var(--primary);">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h4 class="font-bold text-lg mb-2" style="color: var(--text);">Velocidad</h4>
+        <p class="text-sm leading-relaxed" style="color: var(--text-light);">Respuesta inmediata con modelos de IA de última generación.</p>
+      </div>
+
+      <div class="neu-raised p-8">
+        <div class="neu-raised-sm neu-icon mb-5" style="color: var(--accent);">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <h4 class="font-bold text-lg mb-2" style="color: var(--text);">Seguridad</h4>
+        <p class="text-sm leading-relaxed" style="color: var(--text-light);">Encriptación de nivel empresarial en todos los puntos de contacto.</p>
+      </div>
+
+      <div class="neu-inset p-8">
+        <h4 class="font-bold text-lg mb-2" style="color: var(--text);">Inset State</h4>
+        <p class="text-sm leading-relaxed mb-4" style="color: var(--text-light);">Perfecto para formularios, selects y estados de reposo.</p>
+        <div class="neu-inset-sm p-1">
+          <input type="text" placeholder="Buscar..." class="neu-input">
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="neu-raised p-2 flex items-center gap-3 max-w-2xl mx-auto">
+      <div class="neu-inset-sm p-1 flex-1 flex items-center">
+        <svg class="ml-4 mr-3 flex-shrink-0" width="20" height="20" fill="none" stroke="#9CA3AF" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Buscar artículos, servicios..." class="neu-input py-3">
+      </div>
+      <button class="neu-btn neu-btn-primary py-3 px-6 text-sm">Buscar</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  DARK MODE                                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="dark" style="background: var(--bg-dark);">
+
+  <nav class="neu-nav fixed top-0 inset-x-0 z-50" style="position:relative;">
+    <div class="max-w-[1280px] mx-auto px-6 h-[72px] flex items-center justify-between">
+      <div class="logo" style="color: #E2E8F0;">Shift<span style="color:#5b7fff;">Latam</span></div>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#" class="text-sm font-medium" style="color:#5b7fff;">Home</a>
+        <a href="#" class="text-sm font-medium hover:text-blue-400 transition-colors" style="color:#94A3B8;">Servicios</a>
+        <a href="#" class="text-sm font-medium hover:text-blue-400 transition-colors" style="color:#94A3B8;">Nosotros</a>
+        <a href="#" class="text-sm font-medium hover:text-blue-400 transition-colors" style="color:#94A3B8;">Newsroom</a>
+        <a href="#" class="text-sm font-medium hover:text-blue-400 transition-colors" style="color:#94A3B8;">Contacto</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="neu-btn text-sm py-2.5 px-5" style="color:#E2E8F0;">Log in</button>
+        <button class="neu-btn neu-btn-primary text-sm py-2.5 px-5">Empezar</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="pt-16 pb-20 max-w-[1280px] mx-auto px-6 space-y-12">
+
+    <div class="text-center mb-16">
+      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-4" style="color:#E2E8F0;">
+        Dark <span style="color:#5b7fff;">Mode</span>
+      </h1>
+      <p class="text-lg max-w-xl mx-auto" style="color:#94A3B8;">Mismo sistema de sombras, fondo navy adaptado.</p>
+    </div>
+
+    <div class="neu-raised p-8 md:p-10">
+      <h3 class="text-sm font-bold uppercase tracking-widest mb-6" style="color:#94A3B8;">Botones Dark</h3>
+      <div class="flex flex-wrap items-center gap-4">
+        <button class="neu-btn" style="color:#E2E8F0;">Secundario</button>
+        <button class="neu-btn neu-btn-primary">Primario</button>
+        <button class="neu-btn text-sm py-2.5 px-5" style="color:#E2E8F0;">Small</button>
+        <button class="neu-btn neu-btn-primary text-sm py-2.5 px-5">CTA</button>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="neu-raised p-8 md:p-10">
+        <h3 class="text-sm font-bold uppercase tracking-widest mb-6" style="color:#94A3B8;">Toggle</h3>
+        <div class="flex items-center gap-6">
+          <label class="neu-toggle">
+            <input type="checkbox">
+            <div class="neu-toggle-thumb"></div>
+          </label>
+          <label class="neu-toggle">
+            <input type="checkbox" checked>
+            <div class="neu-toggle-thumb"></div>
+          </label>
+          <span class="text-sm font-medium" style="color:#94A3B8;">Activo / Inactivo</span>
+        </div>
+      </div>
+      <div class="neu-raised p-8 md:p-10">
+        <h3 class="text-sm font-bold uppercase tracking-widest mb-6" style="color:#94A3B8;">Inputs</h3>
+        <div class="neu-inset-sm p-1 mb-4">
+          <input type="email" placeholder="tu@email.com" class="neu-input" style="color:#E2E8F0;">
+        </div>
+        <button class="neu-btn neu-btn-primary w-full">Ingresar</button>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="neu-raised p-8">
+        <div class="neu-raised-sm neu-icon mb-5" style="color:#5b7fff;">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h4 class="font-bold text-lg mb-2" style="color:#E2E8F0;">Velocidad</h4>
+        <p class="text-sm leading-relaxed" style="color:#94A3B8;">Respuesta inmediata con IA de última generación.</p>
+      </div>
+      <div class="neu-raised p-8">
+        <div class="neu-raised-sm neu-icon mb-5" style="color: var(--accent);">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <h4 class="font-bold text-lg mb-2" style="color:#E2E8F0;">Seguridad</h4>
+        <p class="text-sm leading-relaxed" style="color:#94A3B8;">Encriptación de nivel empresarial.</p>
+      </div>
+      <div class="neu-inset p-8">
+        <h4 class="font-bold text-lg mb-2" style="color:#E2E8F0;">Inset</h4>
+        <p class="text-sm leading-relaxed mb-4" style="color:#94A3B8;">Estado hundido para formularios.</p>
+        <div class="neu-inset-sm p-1">
+          <input type="text" placeholder="Buscar..." class="neu-input" style="color:#E2E8F0;">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>

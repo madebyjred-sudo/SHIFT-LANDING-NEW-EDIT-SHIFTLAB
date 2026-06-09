@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  openclaw:
+    image: ghcr.io/openclaw/openclaw:latest
+    container_name: shifter_openclaw
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config:/app/config
+      - ./skills:/app/skills
+      # Mount the actual source of truth for the ICM
+      - /var/www/shiftlatam-web/lib/avatar-factory/avatars/shifter:/app/icm_knowledge
+    environment:
+      - OPENCLAW_ENV=production
+      - CRON_SCHEDULE=0 8 * * 0,3 # Sunday and Wednesday at 8:00 AM
+      - ZEP_API_URL=http://172.17.0.1:8180
+      - ZEP_API_KEY=shift_latam_shifter_key_2026
+      - DIRECTUS_URL=http://shift_directus:8055
+      # We will add DIRECTUS_TOKEN when we create the user in Directus
+      - MODEL_PROVIDER=anthropic
+      - MODEL_NAME=claude-3-5-sonnet-20240620
+      - ANTHROPIC_API_KEY=""

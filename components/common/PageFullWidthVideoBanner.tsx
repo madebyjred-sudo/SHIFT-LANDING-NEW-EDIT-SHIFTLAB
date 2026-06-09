@@ -7,6 +7,7 @@ export type PageFullWidthVideoBannerProps = {
   src: string;
   mimeType?: string;
   poster?: string;
+  showPlayerControls?: boolean;
   sectionClassName?: string;
   /**
    * When set, used as CSS aspect-ratio immediately (avoids shift before metadata).
@@ -31,6 +32,7 @@ export default function PageFullWidthVideoBanner({
   src,
   mimeType = "video/mp4",
   poster,
+  showPlayerControls = false,
   sectionClassName = "",
   aspectRatio: aspectRatioProp,
   ariaLabel,
@@ -66,6 +68,7 @@ export default function PageFullWidthVideoBanner({
         ariaLabel={decorative ? undefined : ariaLabel}
         onLoadedMetadata={onLoadedMetadata}
         audioEnabled={audioEnabled}
+        showPlayerControls={showPlayerControls}
       />
     </section>
   );

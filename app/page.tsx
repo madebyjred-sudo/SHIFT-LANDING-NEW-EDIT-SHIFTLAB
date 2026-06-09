@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import HomeHeroSection from "@/app/_/HomeHeroSection";
 import HomeIntroSection from "@/app/_/HomeIntroSection";
+import PartnershipMarquee from "@/components/common/PartnershipMarquee";
 import HomeInfluenceSection from "@/app/_/HomeInfluenceSection";
 import HomeServiciosSection from "@/app/_/HomeServiciosSection";
 import HomeShiftingCultureSection from "@/app/_/HomeShiftingCultureSection";
@@ -37,6 +38,7 @@ export default function Home() {
       <div className="home-page">
         <HomeHeroSection />
         <HomeIntroSection />
+        <PartnershipMarquee />
         <HomeInfluenceSection />
         <HomeServiciosSection />
         <HomeShiftingCultureSection />

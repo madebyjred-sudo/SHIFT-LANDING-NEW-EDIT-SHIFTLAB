@@ -54,8 +54,8 @@ const regionalOffices = [
     title: "Honduras",
     description: "Tegucigalpa",
     location: "Blvd. Suyapa, Torre Metropolis II, piso 23",
-    phone: "+504 9453-8228",
-    email: "maria.calvo@shift-pn.hn",
+    phone: "+504 9897-0961",
+    email: "melissa.carrasco@shift-pn.hn",
     mapSrc: "/assets/images/aboutus/Honduras.svg",
   },
   {
@@ -91,7 +91,7 @@ const regionalOffices = [
     description: "Caracas",
     location: "Dirección por confirmar",
     phone: "+34 663 20 83 20",
-    email: "holahola@shiftpn.com",
+    email: "rcastro@shiftpn.co.cr",
     mapSrc: "/assets/images/aboutus/Costa Rica.svg",
   },
   {
@@ -100,7 +100,7 @@ const regionalOffices = [
     description: "Coral Gables, Florida",
     location: "Oficina afiliada para mercado hispano US",
     phone: "+1 786 973 6648",
-    email: "holahola@shiftpn.com",
+    email: "rcastro@shiftpn.co.cr",
     mapSrc: "/assets/images/aboutus/Costa Rica.svg",
   },
 ];

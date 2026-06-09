@@ -3,6 +3,8 @@ import directus, { readItems, getDirectusImageUrl, type NewsArticle, type NewsCa
 import NewsroomGrid from "@/components/newsroom/NewsroomGrid";
 import type { NewsCardArticle } from "@/components/newsroom/NewsCard";
 
+import CurrentMonth from "@/components/newsroom/CurrentMonth";
+
 export const metadata: Metadata = {
   title: "Newsroom | Shift Latam",
   description:
@@ -240,9 +242,24 @@ export default async function NewsroomPage() {
     <main className="min-h-screen bg-white overflow-hidden selection:bg-[#F540FF] selection:text-white">
       {/* ── Editorial Header ── */}
       <section className="relative pt-[160px] pb-6 md:pt-[220px] md:pb-10 px-6">
+        {/* Background Video (Space) */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute top-0 left-0 w-full h-full object-cover opacity-[0.15]"
+          >
+            <source src="/assets/videos/newsroom-space.mp4" type="video/mp4" />
+          </video>
+          {/* Gradient to fade into the white background below */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white" />
+        </div>
+
         {/* Ambient glows — subtle brand colors on light bg */}
-        <div className="absolute top-[-15%] left-[-5%] w-[600px] h-[600px] bg-[#1534DC] opacity-[0.06] blur-[150px] rounded-full pointer-events-none" />
-        <div className="absolute top-[10%] right-[-10%] w-[400px] h-[400px] bg-[#F540FF] opacity-[0.04] blur-[150px] rounded-full pointer-events-none" />
+        <div className="absolute z-0 top-[-15%] left-[-5%] w-[600px] h-[600px] bg-[#1534DC] opacity-[0.06] blur-[150px] rounded-full pointer-events-none" />
+        <div className="absolute z-0 top-[10%] right-[-10%] w-[400px] h-[400px] bg-[#F540FF] opacity-[0.04] blur-[150px] rounded-full pointer-events-none" />
 
         <div className="relative z-10 max-w-[1400px] mx-auto">
           {/* Top bar */}
@@ -251,20 +268,17 @@ export default async function NewsroomPage() {
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal [font-family:var(--font-glitz-local)] leading-[0.9] tracking-tight text-[#111A31]">
                 News<span className="text-[#1534DC]">room</span>
               </h1>
-              <p className="mt-4 max-w-xl text-base md:text-lg text-[#1F2A44] [font-family:var(--font-fira-sans)] font-light leading-relaxed">
-                El pulso de Shift Latam. Últimas noticias, insights estratégicos y disrupción editorial.
-              </p>
             </div>
 
-            <div className="flex items-center gap-4 [font-family:var(--font-figtree)] text-[11px] font-bold tracking-[0.15em] uppercase">
-              {isMock && (
-                <span className="bg-[#F540FF]/10 text-[#F540FF] px-3 py-1.5 rounded-full border border-[#F540FF]/20">
-                  Vista Preview
+            <div className="flex flex-col md:items-end gap-3 text-left md:text-right">
+              <p className="max-w-md text-base md:text-lg text-[#1F2A44] [font-family:var(--font-fira-sans)] font-light leading-relaxed">
+                El pulso de Shift Latam. Últimas noticias, insights estratégicos y disrupción editorial.
+              </p>
+              <div className="flex items-center md:justify-end gap-4 [font-family:var(--font-figtree)] text-[11px] font-bold tracking-[0.15em] uppercase">
+                <span className="text-[#111A31]/50">
+                  <CurrentMonth />
                 </span>
-              )}
-              <span className="text-[#111A31]/30">
-                {new Date().toLocaleDateString("es-ES", { month: "long", year: "numeric" })}
-              </span>
+              </div>
             </div>
           </div>
 

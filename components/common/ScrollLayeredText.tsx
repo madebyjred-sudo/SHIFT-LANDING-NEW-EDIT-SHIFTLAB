@@ -199,6 +199,17 @@ export default function ScrollLayeredText({
         ["--shift-layered-fs-md" as string]: fontSizeMd,
       }}
     >
+      <style>{`
+        @media (max-width: 767px) {
+          .shift-layered-root {
+            font-size: var(--shift-layered-fs-md) !important;
+          }
+          .shift-layered-line {
+            height: var(--li-h-md) !important;
+            transform: translateX(var(--li-tx-md)) var(--li-skew-md) !important;
+          }
+        }
+      `}</style>
       <ul className="list-none p-0 m-0 flex flex-col items-center">
         {lines.map((line, i) => (
           <LayeredLine

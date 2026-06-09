@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shift Latam — Neumorphism Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      --shift-navy: #111A31;
+      --shift-blue: #1534DC;
+      --shift-pink: #F540FF;
+      --shift-slate: #1F2A44;
+      --bg-light: #E8ECF1;
+      --bg-dark: #161F2E;
+      --text-light: #111A31;
+      --text-dark: #E8ECF1;
+    }
+
+    body { font-family: 'Inter', sans-serif; }
+
+    /* ── Light Mode Neumorphism ── */
+    .neo-light {
+      background: var(--bg-light);
+    }
+    .neo-light .neo-btn {
+      background: var(--bg-light);
+      color: var(--shift-navy);
+      border: none;
+      border-radius: 16px;
+      box-shadow:
+        8px 8px 16px #c5c9ce,
+        -8px -8px 16px #ffffff;
+      transition: all 0.2s ease;
+    }
+    .neo-light .neo-btn:hover {
+      box-shadow:
+        12px 12px 24px #c5c9ce,
+        -12px -12px 24px #ffffff;
+      transform: translateY(-1px);
+    }
+    .neo-light .neo-btn:active {
+      box-shadow:
+        inset 6px 6px 12px #c5c9ce,
+        inset -6px -6px 12px #ffffff;
+      transform: translateY(0);
+    }
+    .neo-light .neo-btn-primary {
+      background: linear-gradient(145deg, #1330c6, #1738f2);
+      color: white;
+      box-shadow:
+        8px 8px 16px rgba(21, 52, 220, 0.25),
+        -8px -8px 16px rgba(255,255,255,0.8);
+    }
+    .neo-light .neo-btn-primary:hover {
+      box-shadow:
+        12px 12px 24px rgba(21, 52, 220, 0.35),
+        -12px -12px 24px rgba(255,255,255,0.9);
+    }
+    .neo-light .neo-btn-primary:active {
+      box-shadow:
+        inset 4px 4px 8px rgba(0,0,0,0.2),
+        inset -4px -4px 8px rgba(255,255,255,0.15);
+    }
+    .neo-light .neo-surface {
+      background: var(--bg-light);
+      border-radius: 20px;
+      box-shadow:
+        12px 12px 24px #c5c9ce,
+        -12px -12px 24px #ffffff;
+    }
+    .neo-light .neo-inset {
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow:
+        inset 6px 6px 12px #c5c9ce,
+        inset -6px -6px 12px #ffffff;
+    }
+    .neo-light .neo-nav {
+      background: rgba(232, 236, 241, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+      box-shadow:
+        0 8px 32px rgba(17, 26, 49, 0.08);
+    }
+    .neo-light .neo-link {
+      color: var(--shift-slate);
+      transition: color 0.2s;
+    }
+    .neo-light .neo-link:hover {
+      color: var(--shift-blue);
+    }
+    .neo-light .neo-link.active {
+      color: var(--shift-blue);
+      font-weight: 600;
+    }
+
+    /* ── Dark Mode Neumorphism ── */
+    .neo-dark {
+      background: var(--bg-dark);
+    }
+    .neo-dark .neo-btn {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      border: none;
+      border-radius: 16px;
+      box-shadow:
+        8px 8px 16px #0d131c,
+        -8px -8px 16px #1f2b40;
+      transition: all 0.2s ease;
+    }
+    .neo-dark .neo-btn:hover {
+      box-shadow:
+        12px 12px 24px #0d131c,
+        -12px -12px 24px #1f2b40;
+      transform: translateY(-1px);
+    }
+    .neo-dark .neo-btn:active {
+      box-shadow:
+        inset 6px 6px 12px #0d131c,
+        inset -6px -6px 12px #1f2b40;
+      transform: translateY(0);
+    }
+    .neo-dark .neo-btn-primary {
+      background: linear-gradient(145deg, #1330c6, #1738f2);
+      color: white;
+      box-shadow:
+        8px 8px 16px rgba(0,0,0,0.4),
+        -8px -8px 16px rgba(255,255,255,0.05);
+    }
+    .neo-dark .neo-btn-primary:hover {
+      box-shadow:
+        12px 12px 24px rgba(0,0,0,0.5),
+        -12px -12px 24px rgba(255,255,255,0.08);
+    }
+    .neo-dark .neo-btn-primary:active {
+      box-shadow:
+        inset 4px 4px 8px rgba(0,0,0,0.3),
+        inset -4px -4px 8px rgba(255,255,255,0.05);
+    }
+    .neo-dark .neo-surface {
+      background: var(--bg-dark);
+      border-radius: 20px;
+      box-shadow:
+        12px 12px 24px #0d131c,
+        -12px -12px 24px #1f2b40;
+    }
+    .neo-dark .neo-inset {
+      background: var(--bg-dark);
+      border-radius: 16px;
+      box-shadow:
+        inset 6px 6px 12px #0d131c,
+        inset -6px -6px 12px #1f2b40;
+    }
+    .neo-dark .neo-nav {
+      background: rgba(22, 31, 46, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      box-shadow:
+        0 8px 32px rgba(0,0,0,0.3);
+    }
+    .neo-dark .neo-link {
+      color: rgba(232, 236, 241, 0.7);
+      transition: color 0.2s;
+    }
+    .neo-dark .neo-link:hover {
+      color: var(--shift-blue);
+    }
+    .neo-dark .neo-link.active {
+      color: var(--shift-blue);
+      font-weight: 600;
+    }
+
+    /* ── Toggle Switch Neumorphism ── */
+    .neo-toggle {
+      position: relative;
+      width: 56px;
+      height: 30px;
+      border-radius: 15px;
+      cursor: pointer;
+    }
+    .neo-light .neo-toggle {
+      box-shadow:
+        inset 4px 4px 8px #c5c9ce,
+        inset -4px -4px 8px #ffffff;
+    }
+    .neo-dark .neo-toggle {
+      box-shadow:
+        inset 4px 4px 8px #0d131c,
+        inset -4px -4px 8px #1f2b40;
+    }
+    .neo-toggle input { display: none; }
+    .neo-toggle .thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      transition: transform 0.3s cubic-bezier(0.85, 0.05, 0.18, 1.35);
+    }
+    .neo-light .neo-toggle .thumb {
+      background: var(--bg-light);
+      box-shadow:
+        3px 3px 6px #c5c9ce,
+        -3px -3px 6px #ffffff;
+    }
+    .neo-dark .neo-toggle .thumb {
+      background: var(--bg-dark);
+      box-shadow:
+        3px 3px 6px #0d131c,
+        -3px -3px 6px #1f2b40;
+    }
+    .neo-toggle input:checked + .thumb {
+      transform: translateX(26px);
+    }
+    .neo-toggle input:checked + .thumb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1330c6, #1738f2);
+      box-shadow:
+        2px 2px 4px rgba(21, 52, 220, 0.4),
+        -2px -2px 4px rgba(255,255,255,0.1);
+    }
+
+    /* ── Brand Logo ── */
+    .brand-logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .brand-logo span {
+      color: var(--shift-blue);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- LIGHT MODE PREVIEW -->
+<!-- ============================================ -->
+<section class="neo-light min-h-screen pb-20">
+  <nav class="neo-nav fixed top-0 left-0 right-0 z-50 px-6 py-4">
+    <div class="max-w-[1400px] mx-auto flex items-center justify-between">
+      <div class="brand-logo" style="color: var(--shift-navy);">
+        Shift<span>Latam</span>
+      </div>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#" class="neo-link active text-sm font-medium">Home</a>
+        <a href="#" class="neo-link text-sm font-medium">Servicios</a>
+        <a href="#" class="neo-link text-sm font-medium">Nosotros</a>
+        <a href="#" class="neo-link text-sm font-medium">Newsroom</a>
+        <a href="#" class="neo-link text-sm font-medium">Contacto</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="neo-btn px-5 py-2.5 text-sm font-semibold">Log in</button>
+        <button class="neo-btn neo-btn-primary px-5 py-2.5 text-sm font-semibold">Empezar</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="pt-32 max-w-[1400px] mx-auto px-6">
+    <h2 class="text-3xl font-bold mb-8" style="color: var(--shift-navy);">Light Mode — Neumorphism</h2>
+
+    <!-- Botones -->
+    <div class="neo-surface p-8 mb-8">
+      <h3 class="text-lg font-semibold mb-6" style="color: var(--shift-navy);">Botones</h3>
+      <div class="flex flex-wrap gap-4">
+        <button class="neo-btn px-6 py-3 font-semibold">Secundario</button>
+        <button class="neo-btn neo-btn-primary px-6 py-3 font-semibold">Primario</button>
+        <button class="neo-btn px-4 py-2 text-sm">Small</button>
+        <button class="neo-btn neo-btn-primary px-8 py-4 text-lg font-bold">Grande</button>
+        <button class="neo-btn px-6 py-3 font-semibold rounded-full">Pill Shape</button>
+      </div>
+    </div>
+
+    <!-- Toggle Switch -->
+    <div class="neo-surface p-8 mb-8 flex items-center gap-6">
+      <h3 class="text-lg font-semibold" style="color: var(--shift-navy);">Toggle Switch</h3>
+      <label class="neo-toggle">
+        <input type="checkbox">
+        <div class="thumb"></div>
+      </label>
+      <label class="neo-toggle">
+        <input type="checkbox" checked>
+        <div class="thumb"></div>
+      </label>
+    </div>
+
+    <!-- Cards -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+      <div class="neo-surface p-6">
+        <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center" style="background: linear-gradient(145deg, #1330c6, #1738f2); color: white;">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h4 class="font-semibold mb-2" style="color: var(--shift-navy);">Velocidad</h4>
+        <p class="text-sm" style="color: var(--shift-slate);">Respuesta inmediata con IA de última generación.</p>
+      </div>
+      <div class="neo-surface p-6">
+        <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center" style="background: linear-gradient(145deg, #dd39e6, #ff47ff); color: white;">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <h4 class="font-semibold mb-2" style="color: var(--shift-navy);">Seguridad</h4>
+        <p class="text-sm" style="color: var(--shift-slate);">Datos protegidos con encriptación de nivel empresarial.</p>
+      </div>
+      <div class="neo-inset p-6">
+        <h4 class="font-semibold mb-2" style="color: var(--shift-navy);">Inset Card</h4>
+        <p class="text-sm" style="color: var(--shift-slate);">Estilo hundido para inputs, selects o estados inactivos.</p>
+        <input type="text" placeholder="Escribe aquí..." class="mt-4 w-full px-4 py-2 rounded-xl bg-transparent outline-none text-sm" style="color: var(--shift-navy);">
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="neo-surface p-8">
+      <h3 class="text-lg font-semibold mb-4" style="color: var(--shift-navy);">Formulario</h3>
+      <div class="neo-inset p-1 mb-4">
+        <input type="email" placeholder="tu@email.com" class="w-full px-4 py-3 rounded-xl bg-transparent outline-none text-sm" style="color: var(--shift-navy);">
+      </div>
+      <div class="neo-inset p-1 mb-4">
+        <input type="password" placeholder="Contraseña" class="w-full px-4 py-3 rounded-xl bg-transparent outline-none text-sm" style="color: var(--shift-navy);">
+      </div>
+      <button class="neo-btn neo-btn-primary w-full py-3 font-semibold">Enviar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- DARK MODE PREVIEW -->
+<!-- ============================================ -->
+<section class="neo-dark min-h-screen pb-20">
+  <nav class="neo-nav fixed top-0 left-0 right-0 z-50 px-6 py-4">
+    <div class="max-w-[1400px] mx-auto flex items-center justify-between">
+      <div class="brand-logo" style="color: var(--text-dark);">
+        Shift<span>Latam</span>
+      </div>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#" class="neo-link active text-sm font-medium">Home</a>
+        <a href="#" class="neo-link text-sm font-medium">Servicios</a>
+        <a href="#" class="neo-link text-sm font-medium">Nosotros</a>
+        <a href="#" class="neo-link text-sm font-medium">Newsroom</a>
+        <a href="#" class="neo-link text-sm font-medium">Contacto</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="neo-btn px-5 py-2.5 text-sm font-semibold">Log in</button>
+        <button class="neo-btn neo-btn-primary px-5 py-2.5 text-sm font-semibold">Empezar</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="pt-32 max-w-[1400px] mx-auto px-6">
+    <h2 class="text-3xl font-bold mb-8" style="color: var(--text-dark);">Dark Mode — Neumorphism</h2>
+
+    <!-- Botones -->
+    <div class="neo-surface p-8 mb-8">
+      <h3 class="text-lg font-semibold mb-6" style="color: var(--text-dark);">Botones</h3>
+      <div class="flex flex-wrap gap-4">
+        <button class="neo-btn px-6 py-3 font-semibold">Secundario</button>
+        <button class="neo-btn neo-btn-primary px-6 py-3 font-semibold">Primario</button>
+        <button class="neo-btn px-4 py-2 text-sm">Small</button>
+        <button class="neo-btn neo-btn-primary px-8 py-4 text-lg font-bold">Grande</button>
+        <button class="neo-btn px-6 py-3 font-semibold rounded-full">Pill Shape</button>
+      </div>
+    </div>
+
+    <!-- Toggle Switch -->
+    <div class="neo-surface p-8 mb-8 flex items-center gap-6">
+      <h3 class="text-lg font-semibold" style="color: var(--text-dark);">Toggle Switch</h3>
+      <label class="neo-toggle">
+        <input type="checkbox">
+        <div class="thumb"></div>
+      </label>
+      <label class="neo-toggle">
+        <input type="checkbox" checked>
+        <div class="thumb"></div>
+      </label>
+    </div>
+
+    <!-- Cards -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+      <div class="neo-surface p-6">
+        <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center" style="background: linear-gradient(145deg, #1330c6, #1738f2); color: white;">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h4 class="font-semibold mb-2" style="color: var(--text-dark);">Velocidad</h4>
+        <p class="text-sm" style="color: rgba(232,236,241,0.6);">Respuesta inmediata con IA de última generación.</p>
+      </div>
+      <div class="neo-surface p-6">
+        <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center" style="background: linear-gradient(145deg, #dd39e6, #ff47ff); color: white;">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <h4 class="font-semibold mb-2" style="color: var(--text-dark);">Seguridad</h4>
+        <p class="text-sm" style="color: rgba(232,236,241,0.6);">Datos protegidos con encriptación de nivel empresarial.</p>
+      </div>
+      <div class="neo-inset p-6">
+        <h4 class="font-semibold mb-2" style="color: var(--text-dark);">Inset Card</h4>
+        <p class="text-sm" style="color: rgba(232,236,241,0.6);">Estilo hundido para inputs, selects o estados inactivos.</p>
+        <input type="text" placeholder="Escribe aquí..." class="mt-4 w-full px-4 py-2 rounded-xl bg-transparent outline-none text-sm" style="color: var(--text-dark);">
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="neo-surface p-8">
+      <h3 class="text-lg font-semibold mb-4" style="color: var(--text-dark);">Formulario</h3>
+      <div class="neo-inset p-1 mb-4">
+        <input type="email" placeholder="tu@email.com" class="w-full px-4 py-3 rounded-xl bg-transparent outline-none text-sm placeholder-gray-500" style="color: var(--text-dark);">
+      </div>
+      <div class="neo-inset p-1 mb-4">
+        <input type="password" placeholder="Contraseña" class="w-full px-4 py-3 rounded-xl bg-transparent outline-none text-sm placeholder-gray-500" style="color: var(--text-dark);">
+      </div>
+      <button class="neo-btn neo-btn-primary w-full py-3 font-semibold">Enviar</button>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

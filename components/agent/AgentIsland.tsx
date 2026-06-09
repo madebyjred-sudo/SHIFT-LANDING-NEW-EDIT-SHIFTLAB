@@ -85,6 +85,8 @@ const HINT_SEEN_KEY = "shifty:hint-seen";
 // idénticos a antes, solo sin Clawd visible.
 const CLAWD_ENABLED = false;
 
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+
 export default function AgentIsland({
   state,
   open,
@@ -95,6 +97,7 @@ export default function AgentIsland({
   onSend,
   input,
   onInputChange,
+  onFeedback,
 }: {
   state: AgentState;
   open: boolean;
@@ -105,6 +108,7 @@ export default function AgentIsland({
   onSend: (text: string) => void;
   input: string;
   onInputChange: (v: string) => void;
+  onFeedback?: (messageId: string, rating: 1 | -1, reason?: string) => void;
 }) {
   const reduce = useReducedMotion();
   const busy =
@@ -358,6 +362,7 @@ export default function AgentIsland({
               <AgentMessages
                 messages={state.messages as Message[]}
                 onQuickChip={(t) => onSend(t)}
+                onFeedback={onFeedback}
               />
               <AgentComposer
                 value={input}
@@ -371,9 +376,12 @@ export default function AgentIsland({
             </div>
           </motion.div>
         ) : (
-          <motion.button
+          <HoverBorderGradient
             key="pill"
-            type="button"
+            as={motion.button}
+            containerClassName="rounded-full bg-transparent p-px hover:bg-transparent dark:bg-transparent"
+            className="rounded-full p-0 flex items-center bg-transparent relative overflow-hidden"
+            // @ts-ignore
             initial={{ opacity: 0, scale: 0.92, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 8 }}
@@ -382,9 +390,7 @@ export default function AgentIsland({
             transition={spring}
             onClick={handleOpen}
             aria-label="Abrir Shifty"
-            className="overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F540FF]/60"
             style={{
-              borderRadius: 9999,
               background: SURFACE_BG,
               backdropFilter: SURFACE_BACKDROP,
               WebkitBackdropFilter: SURFACE_BACKDROP,
@@ -395,7 +401,7 @@ export default function AgentIsland({
             <div className="relative z-[1]">
               <CollapsedPill busy={busy} statusLabel={state.statusLabel} />
             </div>
-          </motion.button>
+          </HoverBorderGradient>
         )}
       </AnimatePresence>
     </div>
