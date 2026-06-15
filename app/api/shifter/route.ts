@@ -103,7 +103,9 @@ export async function POST(req: Request) {
         model,
         stream: false,
         temperature: 0.5,
-        max_tokens: 1200,
+        // Cockpit interno: Shifter piensa en profundidad. Budget alto
+        // para que no se corte a media frase (antes 1200 truncaba).
+        max_tokens: 4000,
         messages: [
           { role: "system", content: buildSystemPrompt() },
           { role: "user", content: message },
@@ -113,7 +115,7 @@ export async function POST(req: Request) {
         trace_label: body.traceLabel || "shifter-ai-dashboard",
         mode: "normal",
       }),
-      signal: AbortSignal.timeout(60_000),
+      signal: AbortSignal.timeout(120_000),
     });
 
     if (!res.ok) {
@@ -125,12 +127,29 @@ export async function POST(req: Request) {
     }
 
     const data = (await res.json()) as {
-      choices?: Array<{ message?: { content?: string } }>;
+      choices?: Array<{
+        message?: { content?: string; reasoning?: string };
+        finish_reason?: string;
+      }>;
     };
-    const text = data.choices?.[0]?.message?.content ?? "";
+    const choice = data.choices?.[0];
+    // GPT-5.5 a veces deja el content vacío y pone el texto en `reasoning`
+    // (o termina en tool_calls sin content). Fallback a reasoning.
+    const text =
+      (choice?.message?.content || "").trim() ||
+      (choice?.message?.reasoning || "").trim();
+
+    if (!text) {
+      return NextResponse.json({
+        success: false,
+        error: `El modelo no devolvió texto (finish: ${choice?.finish_reason ?? "?"}). Probá de nuevo o cambiá de modelo.`,
+        model,
+      });
+    }
+
     return NextResponse.json({
       success: true,
-      text: text || "Sin respuesta.",
+      text,
       model,
       latencyMs: Date.now() - started,
     });
