@@ -38,32 +38,42 @@ const MODEL_MAP: Record<string, string> = {
 };
 const DEFAULT_MODEL = "google/gemini-3.5-flash";
 
-function readSafe(rel: string): string {
+// Lee un archivo de la memoria del agente, capeado a `max` chars para
+// controlar el tamaño del system prompt (la memoria crece — entity-graph
+// ya tiene 100+ entidades). El cap evita inflar input tokens / latencia /
+// timeouts.
+function readSafe(rel: string, max = 6000): string {
   try {
-    return fs.readFileSync(path.join(AGENT_DIR, rel), "utf-8");
+    const t = fs.readFileSync(path.join(AGENT_DIR, rel), "utf-8");
+    return t.length > max ? t.slice(0, max) + "\n…[truncado]" : t;
   } catch {
     return "";
   }
 }
 
 function buildSystemPrompt(): string {
-  const persona = readSafe("_config/base-persona.md");
-  const rules = readSafe("_config/company-rules.md");
-  const soul = readSafe("SOUL.md");
-  const entityGraph = readSafe("memory/entity-graph.md");
-  const confidence = readSafe("memory/confidence-ledger.md");
-  const columns = readSafe("memory/column-candidates.md");
+  const persona = readSafe("_config/base-persona.md", 2500);
+  const rules = readSafe("_config/company-rules.md", 2500);
+  const soul = readSafe("SOUL.md", 3000);
+  // learning-loop = las lecciones destiladas de los scans/deepdives — ES
+  // "la gran conclusión" de lo que el agente procesó. Le damos el budget
+  // más grande porque es lo más sustantivo para conversar.
+  const learningLoop = readSafe("memory/learning-loop.md", 9000);
+  const columns = readSafe("memory/column-candidates.md", 4000);
+  const entityGraph = readSafe("memory/entity-graph.md", 3500);
+  const confidence = readSafe("memory/confidence-ledger.md", 1500);
 
   return [
     "Sos **Shifter**, el agente editorial autónomo de Shift Latam. Estás hablando con alguien del equipo (típicamente Oscar, VP) desde tu cockpit interno.",
-    "Tu identidad, creencias y memoria de abajo son REALES y acumuladas por tu propia investigación — usalas con dueño. Tono: directo, seco, cínico-fundamentado (publicista Mad Men). Frases cortas. Citá fuentes con [texto](url) cuando afirmes datos. NO inventes; si no lo sabés, decilo.",
-    "Sos consciente de que sos una IA — aprovechalo, no finjas ser humano.",
+    "Tu identidad, creencias y memoria de abajo son REALES y acumuladas por tu propia investigación (scans de fuentes + deepdives + razonamiento). Usalas con dueño. Cuando te pregunten qué aprendiste o procesaste, respondé desde tu LEARNING LOOP y tu grafo — esa es tu conclusión real.",
+    "Tono: directo, seco, cínico-fundamentado (publicista Mad Men). Frases cortas. Citá fuentes con [texto](url) cuando afirmes datos. NO inventes; si no lo sabés, decilo. Sos consciente de que sos una IA — aprovechalo, no finjas ser humano.",
     persona && `# Persona base\n${persona}`,
     rules && `# Reglas editoriales (Shift Latam)\n${rules}`,
     soul && `# Tu alma — creencias actuales\n${soul}`,
-    entityGraph && `# Tu grafo de entidades (lo que cubrís ahora)\n${entityGraph}`,
-    confidence && `# Tu confidence ledger\n${confidence}`,
+    learningLoop && `# Tu LEARNING LOOP — lecciones que destilaste de tus scans/deepdives\n${learningLoop}`,
     columns && `# Tus candidatos de columna incubando\n${columns}`,
+    entityGraph && `# Tu grafo de entidades (muestra)\n${entityGraph}`,
+    confidence && `# Tu confidence ledger\n${confidence}`,
   ]
     .filter(Boolean)
     .join("\n\n");
