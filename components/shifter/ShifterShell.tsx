@@ -100,7 +100,7 @@ export default function ShifterShell({
 
   if (!authChecked) {
     return (
-      <div className="flex min-h-[calc(100dvh-64px)] w-full items-center justify-center bg-[#0A0E27] pt-20 text-white md:pt-24">
+      <div className="flex min-h-dvh w-full items-center justify-center bg-[#0A0E27] pt-20 text-white md:pt-24">
         <div className="text-center">
           <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-[#F540FF]" />
           <p className="[font-family:var(--font-fira-mono)] text-[12px] text-white/60">Verificando acceso...</p>
@@ -110,7 +110,7 @@ export default function ShifterShell({
   }
 
   return (
-    <div className="relative isolate flex min-h-[calc(100dvh-64px)] w-full overflow-hidden bg-[#0A0E27] pt-20 text-white md:pt-24">
+    <div className="relative isolate flex min-h-dvh w-full overflow-hidden bg-[#0A0E27] pt-20 text-white md:pt-24">
       <LabDotGrid opacity={0.18} />
       <ShifterSidebar activeTab={activeTab} onChange={setActiveTab} />
       <div className="relative z-10 flex flex-1 flex-col min-w-0">
