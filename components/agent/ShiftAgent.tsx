@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { usePathname } from "next/navigation";
 import type { AgentState, Message, ThinkingStep, Citation } from "./agent-types";
 import { INITIAL_GREETING, nextId, runAgentTurn, type ChatMessage } from "./agent-engine";
 import AgentIsland from "./AgentIsland";
@@ -17,6 +18,12 @@ import AgentIsland from "./AgentIsland";
  * consume eventos `TurnEvent` sin cambios.
  */
 export default function ShiftAgent() {
+  // Shifty se renderiza en el root layout → aparece en TODAS las páginas.
+  // Lo ocultamos en el cockpit de Shifter (/newsroom/ShifterAI) donde
+  // estorba con el TOOLKIT y es redundante (ahí hablás con Shifter, no
+  // con Shifty). usePathname va primero para respetar rules-of-hooks;
+  // el early-return null va después de TODOS los hooks (al final).
+  const pathname = usePathname();
   const [state, setState] = React.useState<AgentState>({
     open: false,
     voice: false,
@@ -257,6 +264,9 @@ export default function ShiftAgent() {
   const handleToggleVoice = React.useCallback(() => {
     setState((s) => ({ ...s, voice: !s.voice }));
   }, []);
+
+  // Ocultar Shifty en el cockpit de Shifter (después de todos los hooks).
+  if (pathname?.startsWith("/newsroom/ShifterAI")) return null;
 
   return (
     <>
