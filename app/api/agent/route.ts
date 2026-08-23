@@ -25,17 +25,41 @@ import { upsertContactWithNote } from "@/lib/hubspot/upsert-contact";
 import { extractLeadWithLLM } from "@/lib/agent/extract-lead-llm";
 import { getVisitorContextForSession } from "@/lib/agent/contact-context-cache";
 import { notifyHotLead } from "@/lib/slack/notify-lead";
+import { retrieve, formatContext } from "@/lib/agent/kg-retrieve";
 import {
   logTurn,
   recordExtraction,
   recordHubspotSync,
 } from "@/lib/db/conversations";
 
-export const runtime = "nodejs"; // needs fs to read KB
+export const runtime = "nodejs"; // needs fs to read KB + DB for RAG
 export const dynamic = "force-dynamic"; // never cache responses
 
 const MAX_USER_MSG_LEN = 1500;
 const MAX_TURNS_KEPT = 12; // user+assistant pairs combined → ~6 exchanges
+const RAG_ENABLED = process.env.AGENT_RAG === "on";
+
+const COUNTRY_KEYWORDS: Record<string, string[]> = {
+  "Costa Rica": ["costa rica", "costarricense", "san josé", "tico"],
+  Colombia: ["colombia", "colombiano", "bogotá"],
+  Ecuador: ["ecuador", "ecuatoriano", "quito"],
+  "El Salvador": ["el salvador", "salvadoreño", "san salvador"],
+  Guatemala: ["guatemala", "guatemalteco", "ciudad de guatemala"],
+  Honduras: ["honduras", "hondureño", "tegucigalpa"],
+  Nicaragua: ["nicaragua", "nicaragüense", "managua"],
+  Panamá: ["panamá", "panameño", "ciudad de panamá"],
+  "República Dominicana": ["república dominicana", "dominicano", "santo domingo"],
+  Venezuela: ["venezuela", "venezolano", "caracas"],
+  "Estados Unidos": ["estados unidos", "usa", "miami", "ee.uu."],
+};
+
+function detectCountry(text: string): string | null {
+  const lower = text.toLowerCase();
+  for (const [country, keywords] of Object.entries(COUNTRY_KEYWORDS)) {
+    if (keywords.some((k) => lower.includes(k))) return country;
+  }
+  return null;
+}
 
 const CEREBRO_BASE_URL =
   process.env.CEREBRO_BASE_URL ||
@@ -55,6 +79,10 @@ type IncomingPayload = {
   /** URL de la page desde donde Shifty fue abierto. Útil para entender
    *  contexto del lead (ej. "vino desde /shift-lab"). */
   pageOrigin?: string;
+  /** Contenido textual visible de la página que el usuario está viendo.
+   *  Lo extrae el frontend del DOM para darle a Shifty contexto de lo
+   *  que hay en pantalla. */
+  pageContent?: string;
 };
 
 function getClientIp(request: Request): string {
@@ -137,6 +165,7 @@ export async function POST(request: Request) {
     payload.sessionId ??
     `sess_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
   const pageOrigin = payload.pageOrigin ?? request.headers.get("referer") ?? undefined;
+  const pageContent = payload.pageContent ?? undefined;
   const userAgent = request.headers.get("user-agent") ?? undefined;
   const lastUserMessage = messages[messages.length - 1].content;
 
@@ -206,6 +235,22 @@ export async function POST(request: Request) {
     console.warn("[shifty→context] lookup failed:", e);
   }
 
+  // ── RAG retrieval ───────────────────────────────────────────────────
+  // Si AGENT_RAG=on, recuperamos contexto relevante del knowledge graph
+  // (Newsroom + config curado) y lo inyectamos como system block. Esto
+  // reemplaza al KB YAML estático sin tocar el pipeline de HubSpot.
+  let retrievedContext: string | null = null;
+  if (RAG_ENABLED) {
+    try {
+      const country = detectCountry(lastUserMessage);
+      const nodes = await retrieve(lastUserMessage, { country, topK: 6 });
+      retrievedContext = formatContext(nodes);
+    } catch (e) {
+      console.warn("[shifty→rag] retrieve failed:", e);
+      // Fallamos gracefully: Shifty responde sin contexto recuperado.
+    }
+  }
+
   // Build Cerebro request. system_blocks goes server-side (no leak via
   // network from client). Bearer key likewise stays on the server.
   const cerebroBody = {
@@ -219,7 +264,7 @@ export async function POST(request: Request) {
     // Cost por turno: ~$0.013 max (gemini-3.5-flash a $9/M).
     max_tokens: 1500,
     messages: messages.map((m) => ({ role: m.role, content: m.content })),
-    system_blocks: buildSystemBlocks(visitorContext),
+    system_blocks: buildSystemBlocks(visitorContext, retrievedContext, pageOrigin, pageContent),
     tenant: "shift-pn",
     app_id_hint: "shift-pn-landing",
     trace_label: "shifty-landing",

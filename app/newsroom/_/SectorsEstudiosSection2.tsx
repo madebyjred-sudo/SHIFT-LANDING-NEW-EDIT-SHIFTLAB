@@ -65,7 +65,7 @@ function EstudioCard({
                 </div>
                 <div className="absolute right-0 top-0 flex justify-end sm:shrink-0 sm:self-start sm:pt-0.5">
                     <Link
-                        href="/newsroom/1"
+                        href="/newsroom"
                         className="group flex h-10 w-10 items-center justify-center rounded-full border border-[#1534DC] -white transition-[transform,background-color,border-color]  hover:border-[#F540FF] hover:bg-[#F540FF] md:h-11 md:w-11 lg:h-16 lg:w-16"
                         aria-label={`Ver más sobre ${getPlainText(title)}`}
                     >

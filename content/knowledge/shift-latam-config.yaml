@@ -1,0 +1,351 @@
+# content/knowledge/shift-latam-config.yaml
+# Config curado y brand-clean para el RAG de Shifty.
+# Fuentes: sitio shiftlatam.agency, about-shift-pn.yaml (deprecado) y
+#          validación interna del equipo. NO incluye casos detallados:
+#          esos viven en Directus (news_articles) y se ingieren por separado.
+# Fecha: 2026-07-08
+
+identity:
+  nombre_oficial: "Shift Latam"
+  nombre_corto: "Shift Latam"
+  legacy: "Antes CAC (Costa Rica, América Central y Caribe)"
+  tagline: "Agencia de comunicación estratégica, reputación y creatividad cultural en Latinoamérica"
+  propuesta_valor: |
+    Integramos estrategia, creatividad, data e inteligencia artificial para
+    construir sistemas de influencia sostenibles. No hacemos campañas aisladas:
+    desarrollamos plataformas que generan conversación, confianza y resultados
+    medibles.
+  modelo_propietario: "Shifting Culture®"
+  trayectoria: "Más de 40 años de trayectoria regional en Centroamérica. Rebranding a SHIFT en diciembre de 2022."
+  headcount_aprox: "~200 colaboradores entre Centroamérica, Caribe y Ecuador"
+  presencia_total: "10 hubs en Latinoamérica + oficina afiliada en Miami (Shift US)"
+  presencia_regional:
+    - Costa Rica
+    - Guatemala
+    - El Salvador
+    - Honduras
+    - Nicaragua
+    - Panamá
+    - Colombia
+    - Ecuador
+    - Venezuela
+    - República Dominicana
+  sitio_web: "https://shiftlatam.agency"
+
+services:
+  - id: crisis
+    name: "Crisis y gestión de riesgo"
+    description: |
+      Acompañamos a organizaciones antes, durante y después de eventos sensibles
+      que pueden afectar reputación: incidentes operativos, exposición regulatoria,
+      controversias públicas, conflictos laborales o crisis digitales. Combinamos
+      monitoreo, vocería, manejo de stakeholders y narrativa estratégica.
+    cuando_aplica:
+      - Riesgos regulatorios o ambientales
+      - Disputas con autoridades o sindicatos
+      - Crisis digitales o virales
+      - Cambios de liderazgo bajo escrutinio
+      - Recall de producto o fallas operativas
+  - id: media-data
+    name: "Media performance y data"
+    description: |
+      Distribución pagada, ganada y propia con medición continua. Integramos
+      data de consumo digital, escucha social y performance editorial para
+      decidir qué historia mover, en qué canal y a qué audiencia. Incluye
+      paid media, SEO/AEO, content marketing y dashboards ejecutivos.
+    capabilities:
+      - Performance digital (paid + earned)
+      - Escucha social y reputación en tiempo real
+      - Dashboards ejecutivos de reputación e influencia
+      - Mediciones de impacto en behavior y conversión
+  - id: creatividad
+    name: "Creatividad y campañas integradas"
+    description: |
+      Creatividad aplicada a problemas de negocio y cambio social. Diseñamos
+      plataformas integradas que combinan PR, contenido, activación, asuntos
+      públicos e influencia cultural. La creatividad no decora: traduce
+      tensiones culturales en ideas que mueven mercados.
+    capabilities:
+      - Campañas integradas regionales y locales
+      - PR creativo y storytelling de marca
+      - Activaciones culturales y experiencias
+      - Influencer y partnerships culturales
+      - Producción audiovisual y de contenido
+  - id: estrategia
+    name: "Estrategia corporativa y reputación"
+    description: |
+      Consultoría de comunicación a nivel C-suite: arquitectura de reputación
+      corporativa, asuntos públicos, comunicación interna, posicionamiento
+      ejecutivo y narrativa institucional. Trabajamos con boards, CEOs y
+      equipos de relaciones gubernamentales para alinear lo que la compañía
+      hace con lo que el mercado escucha.
+    capabilities:
+      - Reputación corporativa y narrativa de marca
+      - Asuntos públicos y relaciones gubernamentales
+      - Comunicación interna y de cultura organizacional
+      - Posicionamiento ejecutivo (CEO branding)
+      - ESG, sostenibilidad y propósito
+      - Comunicación financiera y de relación con inversores
+
+shiftlab:
+  name: "Shift LAB"
+  description: |
+    Unidad de innovación e inteligencia artificial aplicada a comunicación de
+    Shift Latam. Integra tecnología, creatividad y negocio para mejorar
+    análisis, acelerar decisiones y potenciar el criterio humano.
+  filosofia: |
+    No usamos IA como tendencia. La integramos como flujo operativo donde
+    humano y máquina trabajan en el mismo proceso. La tecnología sirve a la
+    estrategia, no al revés.
+  capabilities:
+    - Auditorías de madurez digital
+    - Implementación de IA en flujos estratégicos
+    - Automatización de procesos
+    - Diseño de productos comunicacionales
+    - Dashboards ejecutivos y data intelligence
+  productos_propietarios:
+    - name: "IA Shifter"
+      description: |
+        Agente de IA propietario que comprime data pública digital de
+        consumidores en categorías como banca, vehículos, fast food, seguros,
+        retail y farmacia, y la traduce en conversaciones estratégicas
+        accionables en segundos.
+    - name: "Brand Influence Index"
+      description: |
+        Índice de influencia de marca que mide señales reales de
+        comportamiento (no encuestas de percepción): consumo de contenido,
+        conversación pública y signos de confianza. Desarrollado con El
+        Financiero para Costa Rica.
+
+concepts:
+  - id: shifting-culture
+    name: "Shifting Culture®"
+    description: |
+      Modelo propietario de Shift Latam que conecta cultura, reputación y
+      negocio en un solo sistema estratégico. Las marcas no compiten solo por
+      atención sino por significado, y ese significado se construye desde la
+      cultura. Detecta tensiones culturales relevantes, traduce datos en
+      narrativas estratégicas y convierte conversaciones en influencia
+      sostenible.
+  - id: influencia
+    name: "Influencia"
+    description: |
+      La moneda real de la comunicación estratégica. Precede a reputación,
+      preferencia, confianza y crecimiento. Se construye cuando una marca
+      cambia cómo se la percibe, se habla de ella, se la elige y se la vive.
+  - id: tension-cultural
+    name: "Tensión cultural"
+    description: |
+      Verdad incómoda que revela una grieta sin resolver: entre lo que la
+      gente dice y siente, entre lo que la marca promete y lo que se percibe,
+      entre lo que la categoría vende y lo que la gente necesita.
+
+sectors:
+  - id: salud
+    name: "Salud y Life Sciences"
+    description: "Comunicación científica, manejo regulatorio, reputación médica y estrategia institucional."
+  - id: finanzas
+    name: "Finanzas y Servicios"
+    description: "Narrativa financiera, reputación corporativa, crisis y asuntos públicos."
+  - id: gobierno
+    name: "Gobierno y Asuntos Públicos"
+    description: "Gestión de agenda pública, narrativa institucional y comunicación estratégica."
+  - id: turismo
+    name: "Turismo y Marca País"
+    description: "Posicionamiento territorial, campañas de marca país y promoción cultural."
+  - id: consumo
+    name: "Consumo masivo y Retail"
+    description: "Lanzamientos, plataformas culturales y manejo de marca en categorías de alta competencia."
+  - id: tecnologia
+    name: "Tecnología y Educación"
+    description: "Posicionamiento de plataformas tecnológicas, educación digital y reputación de innovación."
+  - id: tercer-sector
+    name: "Tercer sector y Causas"
+    description: "Campañas de impacto social, ONGs y advocacy con resultados regulatorios o comportamentales."
+
+ideal_customer:
+  green:
+    name: "Green"
+    description: "Industria regulada, consumo masivo regional, gobierno con mandato cultural, 200+ empleados, equipo interno de comms. Handoff rápido."
+  yellow:
+    name: "Yellow"
+    description: "Mid-size regional, nuevo entrante en categoría regulada, government project, brand en pivote. 1-2 preguntas más antes de prometer handoff."
+  red:
+    name: "Red"
+    description: "Retail nicho single-location, brief táctico sin estrategia, budget < $100K anual, controversiales. Derivar a holahola@shiftlatam.agency con expectativa baja."
+
+hubs:
+  - country: "Costa Rica"
+    role: "Hub principal y sede regional"
+    city: "San José"
+    address: "Centro Empresarial Vía Lindora, 3er Piso"
+    phone: "+506 4110-6000"
+    contact_name: "Gabriela Piedra"
+    contact_role: "Senior VP Shift Latam"
+    contact_email: "gpiedra@shiftpn.co.cr"
+  - country: "Colombia"
+    city: "Bogotá"
+    address: "CRA 15 # 88-21 Of. 403"
+    phone: "+57 301 436 0416"
+    contact_name: "Gonzalo Piñeros"
+    contact_role: "General Manager Shift Colombia"
+    contact_email: "gonzalo.pineros@shiftpn.co"
+  - country: "Ecuador"
+    city: "Quito"
+    address: "Italia n32118, Avenida Mariana de Jesús"
+    phone: "+593 99 537 3108"
+    contact_name: "Angélica Moreno"
+    contact_role: "General Manager Shift Ecuador"
+    contact_email: "angelica.moreno@shiftpn.ec"
+  - country: "El Salvador"
+    city: "San Salvador"
+    address: "85 Avenida Norte, #619, San Salvador"
+    phone: "+503 7069-0896"
+    contact_name: "Camila Ferreiro"
+    contact_role: "General Manager Shift El Salvador"
+    contact_email: "cferreiro@shiftpn.sv"
+  - country: "Guatemala"
+    city: "Ciudad de Guatemala"
+    address: "5ª Avenida 5-55 Zona 14, Edificio Europlaza, Torre 2, Nivel 10"
+    phone: "+502 2388-5100"
+    contact_name: "Andrea Gandara"
+    contact_role: "General Director Shift Guatemala"
+    contact_email: "andreagan@shiftpn.gt"
+  - country: "Honduras"
+    city: "Tegucigalpa"
+    address: "Bulevar Suyapa, Torre Metropolis II, Piso 23"
+    phone: "+504 9897-0961"
+    contact_name: "Melissa Carrasco"
+    contact_role: "General Manager Shift Honduras"
+    contact_email: "melissa.carrasco@shift-pn.hn"
+  - country: "Nicaragua"
+    city: "Managua"
+    address: "Ofiplaza El Retiro, Edificio 6, Piso 1, Suite 614"
+    phone: "+505 2254-7627"
+    contact_name: "Rosario Montenegro"
+    contact_role: "General Manager Shift Nicaragua"
+    contact_email: "rmontenegro@shiftpn.com.ni"
+  - country: "Panamá"
+    city: "Ciudad de Panamá"
+    address: "Financial Park, Piso 6, Costa del Este, Juan Díaz"
+    phone: "+507 269 3835"
+    contact_name: "JJ Altmann"
+    contact_role: "General Manager Shift Panamá"
+    contact_email: "jjaltmann@omgcr.com"
+  - country: "República Dominicana"
+    city: "Santo Domingo"
+    address: "Av. Abraham Lincoln 1061, Piantini"
+    phone: "+1 809-274-6813"
+    contact_name: "Andrea Ramírez"
+    contact_role: "General Manager Shift Caribe"
+    contact_email: "andrea.ramirez@caribbeanpn.com"
+  - country: "Venezuela"
+    city: "Caracas (operación remota desde Madrid)"
+    phone: "+34 663 20 83 20"
+    contact_name: "Valentina Rosas Godoy"
+    contact_role: "Director Shift Venezuela"
+    contact_email: "# TBD — pendiente email corporativo"
+  - country: "Estados Unidos"
+    city: "Coral Gables, Florida (Miami)"
+    role: "Oficina afiliada para mercado hispano US (Shift US)"
+    phone: "+1 786 973 6648"
+    contact_name: "Karla Cobreiro"
+    contact_role: "Office Director Miami"
+    contact_email: "# TBD — pendiente email corporativo"
+
+people:
+  - name: "Rodrigo Castro"
+    role: "CEO Shift Latam"
+    hub: "Costa Rica"
+    bio: "Lidera la estrategia regional y la integración entre creatividad, data e IA. Vocero principal de la agencia ante medios trade."
+  - name: "Gabriela Piedra"
+    role: "Senior Vice President Shift Latam"
+    hub: "Costa Rica"
+    bio: "Lidera la oferta de reputación corporativa y la operación del hub Costa Rica."
+  - name: "Oscar Solano"
+    role: "VP - CCO & CSO Shift Latam (Chief Creative & Strategy Officer)"
+    hub: "Costa Rica"
+    bio: "Lidera creatividad y estrategia regional. Vocero de campañas premiadas en Cannes Lions, SABRE y PRWeek."
+  - name: "Fabiana Martínez"
+    role: "Business Development Director Shift Latam"
+    hub: "Costa Rica"
+    bio: "Lidera new business y desarrollo comercial regional."
+  - name: "Ana Solera"
+    role: "Creative Art Director Shift Latam"
+    hub: "Costa Rica"
+  - name: "Ana Fonseca"
+    role: "Operations Lead Shift Costa Rica"
+    hub: "Costa Rica"
+  - name: "Sarah Beirute"
+    role: "VP PR & Experience Shift Costa Rica"
+    hub: "Costa Rica"
+  - name: "Nathy Chinchilla"
+    role: "Head of Creative Shift Costa Rica"
+    hub: "Costa Rica"
+  - name: "Johanna Perlaza"
+    role: "Account Director Shift Costa Rica"
+    hub: "Costa Rica"
+  - name: "Pamela Campos"
+    role: "Account Director Shift Costa Rica"
+    hub: "Costa Rica"
+  - name: "Carmen Mata"
+    role: "Experience Lead Shift Costa Rica"
+    hub: "Costa Rica"
+  - name: "Melanie Méndez"
+    role: "Account Supervisor Shift Costa Rica"
+    hub: "Costa Rica"
+  - name: "Johanna Mora"
+    role: "Account Supervisor Shift Costa Rica"
+    hub: "Costa Rica"
+  - name: "Camila Chaquea"
+    role: "Chief Digital Officer Shift Colombia"
+    hub: "Colombia"
+  - name: "Paula Rozo"
+    role: "General Account Director Shift Colombia"
+    hub: "Colombia"
+  - name: "Laura Hurtado"
+    role: "Digital Director Shift Colombia"
+    hub: "Colombia"
+  - name: "Loly Cando"
+    role: "General Account Director Shift Ecuador"
+    hub: "Ecuador"
+  - name: "Andrés Herrera"
+    role: "Innovation & Digital Director Shift Guatemala"
+    hub: "Guatemala"
+
+awards:
+  summary: "Más de 120 premios internacionales acumulados. Reconocimientos recientes incluyen PRWeek Global Awards, Cannes Lions, SABRE Awards Latin America y Global SABRE Awards."
+
+links_internos:
+  - path: "/"
+    name: "Inicio"
+    when_to_cite: "Cuando se presenta la agencia por primera vez."
+  - path: "/services"
+    name: "Servicios"
+    when_to_cite: "Cuando preguntan qué hacemos, qué ofrecemos o por capabilities."
+  - path: "/about-us"
+    name: "Nosotros"
+    when_to_cite: "Cuando preguntan por equipo, hubs, países o presencia regional."
+  - path: "/shift-lab"
+    name: "Shift LAB"
+    when_to_cite: "Cuando preguntan por IA, tecnología, innovación o productos propietarios."
+  - path: "/shifting-culture"
+    name: "Shifting Culture"
+    when_to_cite: "Cuando preguntan por metodología, modelo propietario o cómo trabajamos."
+  - path: "/purpose"
+    name: "Propósito"
+    when_to_cite: "Cuando preguntan por valores, propósito o qué mueve a la agencia."
+  - path: "/awards"
+    name: "Premios"
+    when_to_cite: "Cuando preguntan por reconocimientos, palmarés o premiación."
+  - path: "/newsroom"
+    name: "Newsroom"
+    when_to_cite: "Cuando preguntan por estudios, perspectivas, casos publicados o publicaciones."
+  - path: "/contact"
+    name: "Contacto"
+    when_to_cite: "Cuando preguntan por agendar, hablar con alguien o hubs por país."
+
+contactos:
+  new_business: "rcastro@shiftpn.co.cr"
+  general: "fmartinez@shiftpn.co.cr"
+  handoff: "holahola@shiftpn.com"

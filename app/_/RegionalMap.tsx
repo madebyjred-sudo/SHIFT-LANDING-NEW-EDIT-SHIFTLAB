@@ -51,7 +51,7 @@ export default function RegionalMap() {
                             alt="Mapa de Latinoamérica con países de operación de Shift Latam"
                             fill
                             className="object-contain"
-                            priority
+                            loading="lazy"
                         />
 
                         {/* The Overlay Interactive Markers */}

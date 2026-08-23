@@ -104,7 +104,7 @@ export default function HomeServiciosSection() {
                   fill
                   className="object-cover object-center"
                   sizes="(max-width: 1380px) 100vw, 1380px"
-                  priority
+                  loading="lazy"
                 />
               </div>
 

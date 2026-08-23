@@ -1,7 +1,10 @@
 import { Metadata } from "next";
-import directus, { readItems, getDirectusImageUrl, type NewsArticle, type NewsCategory } from "@/lib/directus";
+import { getDirectusImageUrl, type NewsArticle, type NewsCategory, type Author } from "@/lib/directus";
+import { directusItems } from "@/lib/directus-auth";
 import NewsroomGrid from "@/components/newsroom/NewsroomGrid";
 import type { NewsCardArticle } from "@/components/newsroom/NewsCard";
+import { isAiAuthor } from "@/lib/newsroom/ai-authors";
+import { rankArticles } from "@/lib/newsroom/rank";
 
 import CurrentMonth from "@/components/newsroom/CurrentMonth";
 
@@ -13,179 +16,35 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
-// ─── MOCK DATA ───────────────────────────────────────────────
-const MOCK_CATEGORIES = [
-  { id: "cat-1", name: "Noticias", slug: "noticias" },
-  { id: "cat-2", name: "Insights", slug: "insights" },
-  { id: "cat-3", name: "Casos de Éxito", slug: "casos-de-exito" },
-  { id: "cat-4", name: "Cultura", slug: "cultura" },
-  { id: "cat-5", name: "Eventos", slug: "eventos" },
-  { id: "cat-6", name: "Innovación", slug: "innovacion" },
-];
-
-const MOCK_ARTICLES: NewsCardArticle[] = [
-  {
-    id: "m1",
-    slug: "futuro-comunicacion-ia-generativa",
-    title: "El futuro de la comunicación estratégica en la era de la inteligencia artificial generativa",
-    excerpt: "Cómo los LLMs y los agentes autónomos están redefiniendo el landscape del PR corporativo, la gestión de crisis en tiempo real y la creación de narrativas a escala regional.",
-    date_published: "2026-05-28T10:00:00Z",
-    cover_image: "/assets/images/shift-lab/shift-lab-banner-desktop.png",
-    category_name: "Innovación",
-    category_slug: "innovacion",
-    read_time: 8,
-    author: "Equipo Shift LAB",
-    isMock: true,
-  },
-  {
-    id: "m2",
-    slug: "shift-omnicom-alianza-regional",
-    title: "Shift Latam y Omnicom PR Group consolidan alianza estratégica en la región",
-    excerpt: "Un nuevo capítulo en nuestra expansión regional fortalece las operaciones en Centroamérica, Caribe y el mercado US Hispanic con capacidades globales.",
-    date_published: "2026-05-26T14:30:00Z",
-    cover_image: "/assets/png/sectors/newsroom-banner.png",
-    category_name: "Noticias",
-    category_slug: "noticias",
-    read_time: 5,
-    author: "Comunicaciones Shift",
-    isMock: true,
-  },
-  {
-    id: "m3",
-    slug: "radiografia-consumidor-2026",
-    title: "Radiografía del Consumidor 2026: Cultura, Propósito y Acción",
-    excerpt: "Descubre las macrotendencias que guiarán el consumo este año según nuestro más reciente estudio de Shifting Culture® aplicado a 6 mercados de América Latina.",
-    date_published: "2026-05-24T09:15:00Z",
-    cover_image: "/assets/png/shifting-culture/shifting-culture-banner.png",
-    category_name: "Insights",
-    category_slug: "insights",
-    read_time: 12,
-    author: "Research & Insights",
-    isMock: true,
-  },
-  {
-    id: "m4",
-    slug: "campana-transformacion-digital",
-    title: "Caso Grupo Centennial: De la transformación digital a la reputación corporativa",
-    excerpt: "Cómo diseñamos una estrategia integral de comunicación que posicionó a un conglomerado regional como referente en innovación empresarial.",
-    date_published: "2026-05-22T11:00:00Z",
-    cover_image: "/assets/png/sectors/estudio-1.png",
-    category_name: "Casos de Éxito",
-    category_slug: "casos-de-exito",
-    read_time: 7,
-    author: "Cuentas Estratégicas",
-    isMock: true,
-  },
-  {
-    id: "m5",
-    slug: "shift-day-2026-nueve-paises",
-    title: "Así vivimos el Shift Day 2026: 200 personas conectadas desde 9 países",
-    excerpt: "Nuestro encuentro anual reunió a todo el equipo regional para co-crear la visión estratégica del próximo año, celebrar logros y reforzar la cultura Shift.",
-    date_published: "2026-05-20T16:45:00Z",
-    cover_image: "/assets/png/sectors/sectors-banner.png",
-    category_name: "Cultura",
-    category_slug: "cultura",
-    read_time: 6,
-    author: "People & Culture",
-    isMock: true,
-  },
-  {
-    id: "m6",
-    slug: "fiap-2026-paneles-ia-pr",
-    title: "Shift presente en FIAP 2026: 3 paneles sobre IA aplicada a la comunicación",
-    excerpt: "Nuestros líderes compartieron escenario con ejecutivos de Google, Meta y WPP para debatir el futuro del earned media.",
-    date_published: "2026-05-18T20:00:00Z",
-    cover_image: "/assets/png/sectors/sectors-news-1.png",
-    category_name: "Eventos",
-    category_slug: "eventos",
-    read_time: 4,
-    author: "Marketing Shift",
-    isMock: true,
-  },
-  {
-    id: "m7",
-    slug: "cerebro-motor-analisis-predictivo",
-    title: "Cerebro: Nuestro motor propietario de análisis predictivo ya opera en 6 mercados",
-    excerpt: "El sistema de inteligencia artificial desarrollado por Shift LAB procesa más de 50,000 menciones diarias para anticipar tendencias y gestionar reputación.",
-    date_published: "2026-05-15T08:30:00Z",
-    cover_image: "/assets/png/sectors/estudio-2.png",
-    category_name: "Innovación",
-    category_slug: "innovacion",
-    read_time: 9,
-    author: "Equipo Shift LAB",
-    isMock: true,
-  },
-  {
-    id: "m8",
-    slug: "apertura-oficinas-miami",
-    title: "Shift abre oficinas en Miami para atender el mercado US Hispanic",
-    excerpt: "La expansión al mercado estadounidense consolida nuestra presencia en el corredor de comunicación más dinámico de las Américas.",
-    date_published: "2026-05-12T12:00:00Z",
-    cover_image: "/assets/png/sectors/newsroom-inner-1.png",
-    category_name: "Noticias",
-    category_slug: "noticias",
-    read_time: 4,
-    author: "Comunicaciones Shift",
-    isMock: true,
-  },
-  {
-    id: "m9",
-    slug: "tendencias-earned-media-2027",
-    title: "5 tendencias que definirán el earned media en 2027",
-    excerpt: "Desde la fragmentación de audiencias hasta el auge del contenido generado por IA, estas son las fuerzas que transformarán nuestra industria.",
-    date_published: "2026-05-10T09:00:00Z",
-    cover_image: "/assets/png/sectors/newsroom-inner-2.png",
-    category_name: "Insights",
-    category_slug: "insights",
-    read_time: 10,
-    author: "Research & Insights",
-    isMock: true,
-  },
-  {
-    id: "m10",
-    slug: "crisis-a-oportunidad-reputacion",
-    title: "De crisis a oportunidad: Gestión de reputación en América Latina",
-    excerpt: "Un análisis de los 10 casos más relevantes de gestión de crisis corporativa en la región durante el último año.",
-    date_published: "2026-05-08T14:00:00Z",
-    cover_image: "/assets/png/sectors/estudio-3.png",
-    category_name: "Casos de Éxito",
-    category_slug: "casos-de-exito",
-    read_time: 11,
-    author: "Cuentas Estratégicas",
-    isMock: true,
-  },
-  {
-    id: "m11",
-    slug: "diversidad-inclusion-compromiso",
-    title: "Diversidad e inclusión: Nuestro compromiso regional con datos concretos",
-    excerpt: "Publicamos nuestro primer reporte de diversidad con métricas transparentes sobre género, edad y representación en los 9 países donde operamos.",
-    date_published: "2026-05-05T10:00:00Z",
-    cover_image: "/assets/png/sectors/sectors-news-2.png",
-    category_name: "Cultura",
-    category_slug: "cultura",
-    read_time: 6,
-    author: "People & Culture",
-    isMock: true,
-  },
-  {
-    id: "m12",
-    slug: "workshop-comunicacion-proposito",
-    title: "Workshop: Comunicación con propósito en la era digital — Resumen",
-    excerpt: "Más de 120 profesionales de la comunicación participaron en nuestro taller sobre cómo integrar propósito en estrategias de marca.",
-    date_published: "2026-05-02T16:00:00Z",
-    cover_image: "/assets/png/sectors/sectors-news-3.png",
-    category_name: "Eventos",
-    category_slug: "eventos",
-    read_time: 5,
-    author: "Marketing Shift",
-    isMock: true,
-  },
-];
-
 // ─── HELPERS ─────────────────────────────────────────────────
 
-function mapDirectusArticle(article: NewsArticle): NewsCardArticle {
+function mapDirectusArticle(
+  article: NewsArticle,
+  authorsById: Map<string, Author>,
+  authorsByName: Map<string, Author>,
+): NewsCardArticle {
   const cat = article.category as NewsCategory | null;
+  // author_id no es una relación expandible en Directus → unimos por id
+  // contra el listado de autores cargado aparte.
+  const au =
+    article.author_id != null
+      ? authorsById.get(String(article.author_id)) ?? null
+      : null;
+  // Co-autoría (collabs): segundo autor, unido por co_author_id.
+  const coId = (article as unknown as { co_author_id?: number | string | null })
+    .co_author_id;
+  let co = coId != null ? authorsById.get(String(coId)) ?? null : null;
+  // Fallback robusto: Directus puede no exponer co_author_id (campo agregado por
+  // SQL directo, fuera de su caché de esquema). En ese caso derivamos el co-autor
+  // de la convención "Principal × Co" en el campo author (texto reconocido).
+  const rawAuthor = typeof article.author === "string" ? article.author : "";
+  if (!co && rawAuthor.includes(" × ")) {
+    const coName = rawAuthor.split(" × ").pop()?.trim() ?? "";
+    co = authorsByName.get(coName.toLowerCase()) ?? null;
+  }
+  // Nombre del autor principal: el de author_id; si no, la parte previa al " × ".
+  const principalName =
+    au?.name ?? (rawAuthor.includes(" × ") ? rawAuthor.split(" × ")[0].trim() : article.author);
   return {
     id: article.id,
     slug: article.slug,
@@ -196,50 +55,53 @@ function mapDirectusArticle(article: NewsArticle): NewsCardArticle {
     category_name: cat?.name ?? null,
     category_slug: cat?.slug ?? null,
     read_time: article.read_time,
-    author: article.author,
+    author: principalName,
+    author_avatar: au?.avatar ? getDirectusImageUrl(au.avatar) : null,
+    author_role: au?.role ?? null,
+    author_is_ai: isAiAuthor(au?.name, au?.role),
+    co_author: co?.name ?? null,
+    co_author_avatar: co?.avatar ? getDirectusImageUrl(co.avatar) : null,
+    co_author_is_ai: isAiAuthor(co?.name, co?.role),
   };
 }
 
 // ─── PAGE ────────────────────────────────────────────────────
 
 export default async function NewsroomPage() {
-  // Fetch from Directus
+  // Contenido en vivo desde Directus — sin datos mock. Si no hay
+  // publicados, la grilla muestra su estado vacío.
   let articles: NewsCardArticle[] = [];
-  let categories = MOCK_CATEGORIES;
-  let isMock = true;
+  let categories: { id: string; name: string; slug: string }[] = [];
 
   try {
-    const rawArticles = (await directus.request(
-      readItems("news_articles", {
-        filter: { status: { _eq: "published" } },
-        sort: ["-date_published"],
-        fields: ["*", { category: ["id", "name", "slug"] }],
-        limit: 50,
-      })
-    )) as unknown as NewsArticle[];
+    const rawArticles = await directusItems<NewsArticle>(
+      "/items/news_articles?filter[status][_eq]=published&sort=-date_published&fields=*,category.id,category.name,category.slug&limit=50"
+    );
+    const authorsList = await directusItems<Author>(
+      "/items/authors?fields=id,name,avatar,role&limit=200"
+    );
+    const authorsById = new Map(authorsList.map((a) => [String(a.id), a]));
+    const authorsByName = new Map(
+      authorsList.map((a) => [String(a.name).toLowerCase(), a]),
+    );
+    articles = rawArticles.map((a) =>
+      mapDirectusArticle(a, authorsById, authorsByName),
+    );
 
-    if (rawArticles.length > 0) {
-      articles = rawArticles.map(mapDirectusArticle);
-      isMock = false;
-
-      // Fetch categories
-      const rawCats = await directus.request(
-        readItems("news_categories", { sort: ["name"], limit: 20 })
-      );
-      if (rawCats.length > 0) {
-        categories = rawCats.map((c) => ({ id: c.id, name: c.name, slug: c.slug }));
-      }
-    }
-  } catch {
-    // Directus unavailable — fall through to mocks
-  }
-
-  if (isMock) {
-    articles = MOCK_ARTICLES;
+    const rawCats = await directusItems<NewsCategory>(
+      "/items/news_categories?sort=name&limit=20"
+    );
+    categories = rawCats.map((c) => ({
+      id: String(c.id),
+      name: c.name,
+      slug: c.slug,
+    }));
+  } catch (err) {
+    console.error("[newsroom] Directus fetch failed:", err);
   }
 
   return (
-    <main className="min-h-screen bg-white overflow-hidden selection:bg-[#F540FF] selection:text-white">
+    <div className="min-h-screen bg-white overflow-hidden selection:bg-[#F540FF] selection:text-white">
       {/* ── Editorial Header ── */}
       <section className="relative pt-[160px] pb-6 md:pt-[220px] md:pb-10 px-6">
         {/* Background Video (Space) */}
@@ -289,8 +151,8 @@ export default async function NewsroomPage() {
 
       {/* ── Grid Section ── */}
       <section className="relative z-10 max-w-[1400px] mx-auto px-6 pb-40">
-        <NewsroomGrid articles={articles} categories={categories} />
+        <NewsroomGrid articles={rankArticles(articles)} categories={categories} />
       </section>
-    </main>
+    </div>
   );
 }

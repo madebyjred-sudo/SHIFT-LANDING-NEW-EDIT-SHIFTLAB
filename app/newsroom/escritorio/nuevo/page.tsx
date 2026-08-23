@@ -34,6 +34,8 @@ export default function NuevoArticuloPage() {
   const [error, setError] = useState("");
   const [previewMode, setPreviewMode] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [authorName, setAuthorName] = useState<string | null>(null);
+  const [authorEmail, setAuthorEmail] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -42,6 +44,12 @@ export default function NuevoArticuloPage() {
         return;
       }
       setUserId(data.user.id);
+      setAuthorName(
+        data.user.user_metadata?.full_name ||
+          data.user.email?.split("@")[0] ||
+          "Autor"
+      );
+      setAuthorEmail(data.user.email ?? null);
     });
   }, [router, supabase]);
 
@@ -145,6 +153,8 @@ export default function NuevoArticuloPage() {
           gallery_images: galleryIds,
           status,
           user_id: userId,
+          author_name: authorName,
+          author_email: authorEmail,
         }),
       });
 

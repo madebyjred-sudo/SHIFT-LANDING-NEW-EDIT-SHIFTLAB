@@ -11,7 +11,7 @@ const regionalOffices = [
     location: "Centro Empresarial Vía Lindora, 3er Piso",
     phone: "+506 4110-6000",
     email: "gpiedra@shiftpn.co.cr",
-    mapSrc: "/assets/images/aboutus/Costa Rica.svg",
+    mapSrc: "/assets/images/aboutus/Costa Rica.webp",
   },
   {
     name: "Colombia",
@@ -20,7 +20,7 @@ const regionalOffices = [
     location: "CRA 15 # 88- 21 Of. 403",
     phone: "+57 3014360416",
     email: "gonzalo.pineros@shiftpn.co",
-    mapSrc: "/assets/images/aboutus/Colombia.svg",
+    mapSrc: "/assets/images/aboutus/Colombia.webp",
   },
   {
     name: "Ecuador",
@@ -29,7 +29,7 @@ const regionalOffices = [
     location: "Italia n32118 Avenida Mariana de Jesús",
     phone: "+593 995373108",
     email: "angelica.moreno@shiftpn.ec",
-    mapSrc: "/assets/images/aboutus/Ecuador.svg",
+    mapSrc: "/assets/images/aboutus/Ecuador.webp",
   },
   {
     name: "El Salvador",
@@ -38,7 +38,7 @@ const regionalOffices = [
     location: "85 Avenida Nte., #619 San Salvador",
     phone: "+503 7069-0896",
     email: "cferreiro@shiftpn.sv",
-    mapSrc: "/assets/images/aboutus/El Salvador.svg",
+    mapSrc: "/assets/images/aboutus/El Salvador.webp",
   },
   {
     name: "Guatemala",
@@ -47,7 +47,7 @@ const regionalOffices = [
     location: "5 avenida 5-55 zona 14, Edificio Europlaza, Torre 2, Nivel 10, Oficina",
     phone: "+502 2388-5100",
     email: "andreagan@shiftpn.gt",
-    mapSrc: "/assets/images/aboutus/Guatemala.svg",
+    mapSrc: "/assets/images/aboutus/Guatemala.webp",
   },
   {
     name: "Honduras",
@@ -56,7 +56,7 @@ const regionalOffices = [
     location: "Blvd. Suyapa, Torre Metropolis II, piso 23",
     phone: "+504 9897-0961",
     email: "melissa.carrasco@shift-pn.hn",
-    mapSrc: "/assets/images/aboutus/Honduras.svg",
+    mapSrc: "/assets/images/aboutus/Honduras.webp",
   },
   {
     name: "Nicaragua",
@@ -65,7 +65,7 @@ const regionalOffices = [
     location: "Ofiplaza El Retiro Edificio 6, Piso 1, Suite 614, Managua",
     phone: "+505 2254-7627",
     email: "rmontenegro@shiftpn.com.ni",
-    mapSrc: "/assets/images/aboutus/Nicaragua.svg",
+    mapSrc: "/assets/images/aboutus/Nicaragua.webp",
   },
   {
     name: "Panamá",
@@ -74,7 +74,7 @@ const regionalOffices = [
     location: "Financial Park, Piso 6. Costa del este, Juan Díaz, ciudad de Panamá",
     phone: "+507 269 3835",
     email: "jjaltmann@omgcr.com",
-    mapSrc: "/assets/images/aboutus/Honduras.svg",
+    mapSrc: "/assets/images/aboutus/Honduras.webp",
   },
   {
     name: "Rep. Dominicana",
@@ -83,7 +83,7 @@ const regionalOffices = [
     location: "Av. Abraham Lincoln 1061, Piantini. Santo Domingo, Rep. Dominicana",
     phone: "809-274-6813",
     email: "andrea.ramirez@caribbeanpn.com",
-    mapSrc: "/assets/images/aboutus/Rep. Dominicana.svg",
+    mapSrc: "/assets/images/aboutus/Rep. Dominicana.webp",
   },
   {
     name: "Venezuela",
@@ -92,7 +92,7 @@ const regionalOffices = [
     location: "Dirección por confirmar",
     phone: "+34 663 20 83 20",
     email: "rcastro@shiftpn.co.cr",
-    mapSrc: "/assets/images/aboutus/Costa Rica.svg",
+    mapSrc: "/assets/images/aboutus/Costa Rica.webp",
   },
   {
     name: "Miami",
@@ -101,11 +101,14 @@ const regionalOffices = [
     location: "Oficina afiliada para mercado hispano US",
     phone: "+1 786 973 6648",
     email: "rcastro@shiftpn.co.cr",
-    mapSrc: "/assets/images/aboutus/Costa Rica.svg",
+    mapSrc: "/assets/images/aboutus/Costa Rica.webp",
   },
 ];
 
-export default function HomeIntroSection() {
+export default function HomeIntroSection({
+  title = "Nuestra presencia regional",
+  subtitle = "Esta estructura nos permite activar estrategias con coherencia global y ejecución local.",
+}: { title?: string; subtitle?: string } = {}) {
   const [activeOffice, setActiveOffice] = useState<number | null>(null);
   const [activeMobileOffice, setActiveMobileOffice] = useState<number | null>(null);
 
@@ -115,12 +118,12 @@ export default function HomeIntroSection() {
         <div className="w-full">
           <div className="sm:flex-row sm:justify-between gap-[70px] sm:gap-0">
 
-            <h2 className="max-w-[632px] mt-4 sm:mt-6 text-3xl sm:text-[50px] [font-family:var(--font-glitz-local)] font-normal leading-[1.08] text-[#0E1745]">
-              Nuestra presencia regional
+            <h2 className="max-w-[632px] mt-4 sm:mt-6 text-3xl sm:text-[50px] [font-family:var(--font-glitz-local)] font-normal leading-[1.08] text-[#0E1745] whitespace-pre-line">
+              {title}
             </h2>
 
             <p className="mt-2 sm:mt-4 max-w-[770px] sm:max-w-[565px] text-sm sm:text-lg leading-tight text-[#111A31] [font-family:var(--font-fira-sans)]">
-              Esta estructura nos permite activar estrategias con coherencia global y ejecución local.
+              {subtitle}
             </p>
 
             <div
