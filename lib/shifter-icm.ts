@@ -1,8 +1,21 @@
 import { promises as fs } from "fs";
 import path from "path";
 import type { Dirent } from "fs";
+import { getAgent } from "./avatar-factory/agent-registry";
 
-const ICM_DIR = path.join(process.cwd(), "lib", "avatar-factory", "avatars", "shifter");
+// Binary / non-text files the cockpit must never read as UTF-8 (the agent's
+// dedup DB alone is ~24MB). Transient `last-think-*` dumps are skipped by name.
+const SKIP_EXT = new Set([
+  ".db", ".sqlite", ".sqlite3", ".png", ".jpg", ".jpeg", ".gif",
+  ".webp", ".ico", ".pdf", ".zip", ".gz", ".lock",
+]);
+// Above this size we keep the file in the tree but don't load its content.
+const MAX_CONTENT_BYTES = 256 * 1024;
+// Raw working data the cockpit doesn't need: the agent's research output
+// (`stages/`), run logs (`runs/`) and scraped articles (`output/`) accumulate
+// to 1,000+ files / ~16MB over a week. The cockpit shows the *curated* mind
+// (_config, memory, skills, root identity files), so we never descend here.
+const SKIP_DIR = new Set(["stages", "runs", "output", "node_modules"]);
 
 export interface IcmFile {
   id: string;
@@ -44,9 +57,10 @@ export interface ShifterMemory {
   sourceHistory: string;
 }
 
-export async function loadShifterICM(): Promise<ShifterMemory> {
+/** Carga el ICM de cualquier agente desde su avatarDir. */
+export async function loadAgentICM(avatarDir: string): Promise<ShifterMemory> {
   const folders: IcmFolder[] = [];
-  await walk(ICM_DIR, "", folders);
+  await walk(avatarDir, "", folders);
 
   const allFiles = folders.flatMap((f) => f.files);
   const registry = allFiles.find((f) => f.name === "source-registry.md");
@@ -81,6 +95,12 @@ export async function loadShifterICM(): Promise<ShifterMemory> {
   };
 }
 
+/** Shim de compatibilidad: el ICM de Shifter. */
+export function loadShifterICM(): Promise<ShifterMemory> {
+  const shifter = getAgent("shifter")!;
+  return loadAgentICM(shifter.avatarDir);
+}
+
 async function walk(base: string, rel: string, out: IcmFolder[]) {
   const dir = path.join(base, rel);
   let entries: Dirent[] = [];
@@ -97,11 +117,21 @@ async function walk(base: string, rel: string, out: IcmFolder[]) {
     if (e.name.startsWith(".")) continue;
     const childRel = path.posix.join(rel, e.name);
     if (e.isDirectory()) {
+      if (SKIP_DIR.has(e.name)) continue;   // skip raw output/run data dirs
       subdirs.push(childRel);
     } else if (e.isFile()) {
+      const ext = path.extname(e.name).toLowerCase();
+      // The cockpit only needs the curated *text* memory. Skip binary blobs
+      // (e.g. the ~24MB articles-seen.db) and the transient reasoning dumps —
+      // reading those as UTF-8 and shipping them to the client on every
+      // render is what made the page take ~1 minute to load.
+      if (SKIP_EXT.has(ext)) continue;
+      if (/^last-think-(raw|prompt)/.test(e.name)) continue;
       const full = path.join(base, childRel);
       const stat = await fs.stat(full);
-      const content = await fs.readFile(full, "utf-8");
+      // Keep oversized text files visible in the tree, but don't load their
+      // content into the page payload.
+      const content = stat.size > MAX_CONTENT_BYTES ? "" : await fs.readFile(full, "utf-8");
       files.push({
         id: childRel.replace(/[^a-zA-Z0-9]/g, "_"),
         name: e.name,
@@ -109,7 +139,7 @@ async function walk(base: string, rel: string, out: IcmFolder[]) {
         fullPath: full,
         size: stat.size,
         modifiedAt: stat.mtime.toISOString(),
-        extension: path.extname(e.name).toLowerCase(),
+        extension: ext,
         content,
       });
     }

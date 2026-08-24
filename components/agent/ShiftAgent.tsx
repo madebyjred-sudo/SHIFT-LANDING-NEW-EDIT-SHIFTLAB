@@ -3,7 +3,7 @@
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import type { AgentState, Message, ThinkingStep, Citation } from "./agent-types";
-import { INITIAL_GREETING, nextId, runAgentTurn, type ChatMessage } from "./agent-engine";
+import { INITIAL_GREETING, nextId, runAgentTurn, extractPageContent, type ChatMessage } from "./agent-engine";
 import AgentIsland from "./AgentIsland";
 
 /**
@@ -130,7 +130,8 @@ export default function ShiftAgent() {
 
       try {
         const pageOrigin = typeof window !== "undefined" ? window.location.href : undefined;
-        for await (const evt of runAgentTurn(turnMessages, text, sessionIdRef.current, pageOrigin)) {
+        const pageContent = typeof window !== "undefined" ? extractPageContent() : undefined;
+        for await (const evt of runAgentTurn(turnMessages, text, sessionIdRef.current, pageOrigin, pageContent)) {
           switch (evt.type) {
             case "thinking-start": {
               const steps: ThinkingStep[] = evt.steps;
@@ -265,8 +266,11 @@ export default function ShiftAgent() {
     setState((s) => ({ ...s, voice: !s.voice }));
   }, []);
 
-  // Ocultar Shifty en el cockpit de Shifter (después de todos los hooks).
+  // Ocultar el island flotante en el cockpit de Shifter y en /contact
+  // (ahí Shifty vive embebido como gateway). Después de todos los hooks.
   if (pathname?.startsWith("/newsroom/ShifterAI")) return null;
+  if (pathname?.startsWith("/agent-admin")) return null;
+  if (pathname === "/contact") return null;
 
   return (
     <>

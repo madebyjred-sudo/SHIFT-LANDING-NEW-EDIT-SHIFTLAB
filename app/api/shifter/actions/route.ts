@@ -11,6 +11,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { action, topic } = body;
 
+    // Self-fetch al propio app por LOCALHOST, no por req.nextUrl.origin: detrás de
+    // nginx el origin es https://shiftlatam.agency y el server no se alcanza por su
+    // dominio público HTTPS (→ "fetch failed"). El puerto lo fija pm2 (PORT=3002).
+    const LOCAL_BASE = `http://127.0.0.1:${process.env.PORT || 3000}`;
+
     switch (action) {
       case "scan": {
         // Run scan in background — don't await, fire and forget
@@ -43,7 +48,7 @@ export async function POST(req: NextRequest) {
           );
         }
         // Forward to the existing shifter API
-        const res = await fetch(`${req.nextUrl.origin}/api/shifter`, {
+        const res = await fetch(`${LOCAL_BASE}/api/shifter`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -58,7 +63,7 @@ export async function POST(req: NextRequest) {
 
       case "column": {
         // Forward to the existing shifter API
-        const res = await fetch(`${req.nextUrl.origin}/api/shifter`, {
+        const res = await fetch(`${LOCAL_BASE}/api/shifter`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

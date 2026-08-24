@@ -245,7 +245,7 @@ const TABS: { id: RightPanel; label: string; icon: typeof Eye }[] = [
   { id: "graph", label: "Grafo", icon: Brain },
 ];
 
-export default function MemoryTab({ memory }: { memory: ShifterMemory }) {
+export default function MemoryTab({ memory, apiBase = "/api/shifter" }: { memory: ShifterMemory; apiBase?: string }) {
   const folderTree = useMemo(() => buildFolderTree(memory.folders), [memory]);
 
   const [selectedFolderId, setSelectedFolderId] = useState<string>(() => {
@@ -331,10 +331,10 @@ export default function MemoryTab({ memory }: { memory: ShifterMemory }) {
     setLoadingMemory(true);
     try {
       const [i, e, r, c] = await Promise.all([
-        fetch("/api/shifter/memory?type=insights").then((r) => r.json()),
-        fetch("/api/shifter/memory?type=entities").then((r) => r.json()),
-        fetch("/api/shifter/memory?type=relationships").then((r) => r.json()),
-        fetch("/api/shifter/memory?type=columns").then((r) => r.json()),
+        fetch(`${apiBase}/memory?type=insights`).then((r) => r.json()),
+        fetch(`${apiBase}/memory?type=entities`).then((r) => r.json()),
+        fetch(`${apiBase}/memory?type=relationships`).then((r) => r.json()),
+        fetch(`${apiBase}/memory?type=columns`).then((r) => r.json()),
       ]);
       if (i.success) setInsights(i.data);
       if (e.success) setEntities(e.data);
@@ -351,11 +351,11 @@ export default function MemoryTab({ memory }: { memory: ShifterMemory }) {
     if (["insights", "entities", "columns", "trends", "graph"].includes(rightPanel)) {
       fetchMemory();
     }
-  }, [rightPanel, refreshTick]);
+  }, [rightPanel, refreshTick, apiBase]);
 
   const updateInsight = async (id: number, updates: Partial<MemoryInsight>) => {
     try {
-      const res = await fetch("/api/shifter/memory", {
+      const res = await fetch(`${apiBase}/memory`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "insight", id, data: updates }),
@@ -386,7 +386,7 @@ export default function MemoryTab({ memory }: { memory: ShifterMemory }) {
     setSaving(true);
     try {
       const rel = editingFile ? editingFile.relativePath : `${selectedFolder.relativePath}/${editorFilename}`;
-      const res = await fetch("/api/shifter/icm", {
+      const res = await fetch(`${apiBase}/icm`, {
         method: editingFile ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ relativePath: rel, content: editorValue, contentType: "html" }),
@@ -409,7 +409,7 @@ export default function MemoryTab({ memory }: { memory: ShifterMemory }) {
   const handleDelete = async (file: IcmFile) => {
     if (!confirm(`¿Eliminar ${file.relativePath}?`)) return;
     try {
-      const res = await fetch(`/api/shifter/icm?path=${encodeURIComponent(file.relativePath)}`, { method: "DELETE" });
+      const res = await fetch(`${apiBase}/icm?path=${encodeURIComponent(file.relativePath)}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         window.location.reload();

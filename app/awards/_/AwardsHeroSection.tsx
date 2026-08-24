@@ -77,12 +77,12 @@ export default function AwardsHeroSection() {
             <GradientText text="Más Premiadas en" />
             <GradientText text="Latinoamérica" />
         </h1>
-        <h1 className="relative z-10 pb-6 text-4xl font-glitz leading-[0.95] md:hidden">
+        <h2 className="relative z-10 pb-6 text-4xl font-glitz leading-[0.95] md:hidden">
             <GradientText text="Una de las" />
             <GradientText text="Agencias Más" />
             <GradientText text="Premiadas en" />
             <GradientText text="Latinoamérica" />
-        </h1>
+        </h2>
     </>
 
     const subText = <p className="relative z-10 w-full max-w-[90%] md:max-w-full lg:max-w-[500px] lg:ml-auto pt-4 md:mt-[120px] text-[18px] tracking-normal leading-[20px] text-[#111A31] [font-family:var(--font-fira-sans)]">

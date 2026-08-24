@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { motion, type Variants } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 
 /**
  * Generic glow menu / pill nav with dropdown support.
@@ -229,6 +229,7 @@ function HighlightItem({
   isActive: boolean;
   isLight: boolean;
 }) {
+  const reduce = useReducedMotion();
   return (
     <li className={item.hideOnMobile ? "hidden sm:block" : ""}>
       <Link
@@ -249,8 +250,8 @@ function HighlightItem({
             background:
               "radial-gradient(circle at center, rgba(245,64,255,0.38) 0%, rgba(245,64,255,0.14) 55%, rgba(245,64,255,0) 100%)",
           }}
-          animate={{ opacity: isActive ? [0.85, 1, 0.85] : [0.55, 0.85, 0.55] }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          animate={reduce ? { opacity: isActive ? 1 : 0.7 } : { opacity: isActive ? [0.85, 1, 0.85] : [0.55, 0.85, 0.55] }}
+          transition={reduce ? undefined : { duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
         />
         {/* Glow extra en hover — refuerzo */}
         <span

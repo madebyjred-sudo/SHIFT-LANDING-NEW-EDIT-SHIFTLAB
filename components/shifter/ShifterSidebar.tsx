@@ -1,13 +1,14 @@
 "use client";
 
-import { Network, FolderOpen, Terminal } from "lucide-react";
+import { Network, FolderOpen, Terminal, SquareTerminal } from "lucide-react";
 
-type Tab = "graph" | "memory" | "comms";
+type Tab = "graph" | "memory" | "comms" | "gateway";
 
 const TABS: { id: Tab; label: string; icon: typeof Network }[] = [
   { id: "graph", label: "Neural Graph", icon: Network },
   { id: "memory", label: "Memory", icon: FolderOpen },
   { id: "comms", label: "Comms", icon: Terminal },
+  { id: "gateway", label: "Gateway", icon: SquareTerminal },
 ];
 
 export function ShifterSidebar({

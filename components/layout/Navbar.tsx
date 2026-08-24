@@ -15,6 +15,7 @@ const menuItems: GlowMenuItem[] = [
   { label: "Nosotros", href: "/about-us", hideOnMobile: true },
   { label: "Servicios", href: "/services", hideOnMobile: true },
   { label: "Premios", href: "/awards", hideOnMobile: true },
+  { label: "Newsroom", href: "/newsroom", hideOnMobile: true },
   { label: "Contacto", href: "/contact" },
   // Shift LAB sale del dropdown a un slot propio — wordmark con color
   // split (Shift en blanco/azul / LAB magenta) + halo magenta always-on
@@ -40,6 +41,7 @@ const menuItems: GlowMenuItem[] = [
       { label: "Premios", href: "/awards", mobileOnly: true },
       { label: "Shift LAB", href: "/shift-lab", mobileOnly: true },
       { label: "Shifting Culture®", href: "/shifting-culture" },
+      { label: "Newsroom", href: "/newsroom", mobileOnly: true },
       { label: "Propósito", href: "/purpose" },
     ],
   },

@@ -115,12 +115,12 @@ export default function PurposeHeroSection() {
         <GradientText text="Cultura, Reputación" />
         <GradientText text="y Crecimiento" />
       </h1>
-      <h1 className="text-4xl pb-6 font-semibold leading-[0.95] md:hidden">
+      <h2 className="text-4xl pb-6 font-semibold leading-[0.95] md:hidden">
         <GradientText text="Impulsamos" />
         <GradientText text="Cultura, " />
         <GradientText text="Reputación y" />
         <GradientText text="Crecimiento" />
-      </h1>
+      </h2>
     </div>
   );
 

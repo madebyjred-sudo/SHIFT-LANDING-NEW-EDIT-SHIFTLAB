@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getDirectusImageUrl } from "@/lib/directus";
+import { embedMedia } from "@/lib/newsroom/media-embeds";
 
 interface ArticleContentProps {
   content: string;
@@ -8,9 +9,12 @@ interface ArticleContentProps {
 /*
  * Parsea HTML plano y lo convierte en componentes React enriquecidos.
  * Fallback seguro: si el parseo falla, renderiza el HTML crudo.
+ * `embedMedia` convierte links de YouTube/LinkedIn (solos en su párrafo)
+ * en embeds responsivos — pathway único para media incrustada.
  */
 export default function ArticleContent({ content }: ArticleContentProps) {
   if (!content) return null;
+  const html = embedMedia(content);
 
   return (
     <div
@@ -33,7 +37,7 @@ export default function ArticleContent({ content }: ArticleContentProps) {
         prose-table:border-collapse prose-table:w-full prose-table:my-8
         prose-th:bg-[#111A31]/5 prose-th:text-[#111A31] prose-th:font-bold prose-th:px-4 prose-th:py-3 prose-th:text-left prose-th:text-sm
         prose-td:border-t prose-td:border-[#111A31]/10 prose-td:px-4 prose-td:py-3 prose-td:text-sm prose-td:text-[#1F2A44]"
-      dangerouslySetInnerHTML={{ __html: content }}
+      dangerouslySetInnerHTML={{ __html: html }}
     />
   );
 }

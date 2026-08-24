@@ -12,6 +12,12 @@ export interface NewsCardArticle {
   category_slug: string | null;
   read_time: number | null;
   author: string | null;
+  author_avatar?: string | null;
+  author_role?: string | null;
+  author_is_ai?: boolean;
+  co_author?: string | null;
+  co_author_avatar?: string | null;
+  co_author_is_ai?: boolean;
   isMock?: boolean;
 }
 
@@ -103,6 +109,44 @@ function TravelArticleCard({
                 {article.excerpt}
               </p>
             )}
+            {article.author && (
+              <div className="flex items-center gap-2.5 pt-1">
+                {(article.author_avatar || article.co_author_avatar) && (
+                  <span className="flex shrink-0 -space-x-2">
+                    {article.author_avatar && (
+                      <Image
+                        src={article.author_avatar}
+                        alt={article.author}
+                        width={32}
+                        height={32}
+                        className={`h-8 w-8 rounded-full object-cover ${article.author_is_ai ? "ai-avatar" : "ring-2 ring-black/40"}`}
+                      />
+                    )}
+                    {article.co_author_avatar && (
+                      <Image
+                        src={article.co_author_avatar}
+                        alt={article.co_author ?? ""}
+                        width={32}
+                        height={32}
+                        className={`h-8 w-8 rounded-full object-cover ${article.co_author_is_ai ? "ai-avatar" : "ring-2 ring-black/40"}`}
+                      />
+                    )}
+                  </span>
+                )}
+                <span className="leading-tight [font-family:var(--font-figtree)]">
+                  <span className="block text-[12px] md:text-[13px] font-semibold text-white/90">
+                    {article.author}
+                    {article.co_author && <span className="text-white/55"> × </span>}
+                    {article.co_author}
+                  </span>
+                  {(article.co_author || article.author_role) && (
+                    <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-white/55">
+                      {article.co_author ? "Collab" : article.author_role}
+                    </span>
+                  )}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Bottom Section: Meta + CTA (revealed on hover, slides up into view) */}
@@ -116,12 +160,6 @@ function TravelArticleCard({
                   <>
                     <span className="text-white/40">·</span>
                     <span>{article.read_time} min lectura</span>
-                  </>
-                )}
-                {article.author && (
-                  <>
-                    <span className="text-white/40">·</span>
-                    <span>{article.author}</span>
                   </>
                 )}
               </div>
@@ -184,7 +222,24 @@ function PanoramicCard({ article, index = 0 }: NewsCardProps) {
           </p>
         )}
 
-        <div className="flex items-center gap-3 text-[12px] md:text-[13px] text-white/50 [font-family:var(--font-fira-sans)]">
+        <div className="flex flex-wrap items-center gap-3 text-[12px] md:text-[13px] text-white/50 [font-family:var(--font-fira-sans)]">
+          {article.author && (
+            <span className="flex items-center gap-1.5 text-white/80">
+              {(article.author_avatar || article.co_author_avatar) && (
+                <span className="flex -space-x-1.5">
+                  {article.author_avatar && (
+                    <Image src={article.author_avatar} alt={article.author} width={22} height={22} className={`h-[22px] w-[22px] rounded-full object-cover ${article.author_is_ai ? "ai-avatar" : "ring-1 ring-[#111A31]"}`} />
+                  )}
+                  {article.co_author_avatar && (
+                    <Image src={article.co_author_avatar} alt={article.co_author ?? ""} width={22} height={22} className={`h-[22px] w-[22px] rounded-full object-cover ${article.co_author_is_ai ? "ai-avatar" : "ring-1 ring-[#111A31]"}`} />
+                  )}
+                </span>
+              )}
+              <span className="font-semibold [font-family:var(--font-figtree)]">
+                {article.author}{article.co_author ? ` × ${article.co_author}` : ""}
+              </span>
+            </span>
+          )}
           {article.date_published && <span>{formatDate(article.date_published)}</span>}
           {article.read_time && (
             <>
@@ -234,7 +289,24 @@ function CompactCard({ article, index = 0 }: NewsCardProps) {
         </p>
       )}
 
-      <div className="flex items-center gap-3 text-[12px] text-white/40 [font-family:var(--font-fira-sans)]">
+      <div className="flex flex-wrap items-center gap-2.5 text-[12px] text-white/40 [font-family:var(--font-fira-sans)]">
+        {article.author && (
+          <span className="flex items-center gap-1.5 text-white/70">
+            {(article.author_avatar || article.co_author_avatar) && (
+              <span className="flex -space-x-1.5">
+                {article.author_avatar && (
+                  <Image src={article.author_avatar} alt={article.author} width={20} height={20} className={`h-5 w-5 rounded-full object-cover ${article.author_is_ai ? "ai-avatar" : "ring-1 ring-[#111A31]"}`} />
+                )}
+                {article.co_author_avatar && (
+                  <Image src={article.co_author_avatar} alt={article.co_author ?? ""} width={20} height={20} className={`h-5 w-5 rounded-full object-cover ${article.co_author_is_ai ? "ai-avatar" : "ring-1 ring-[#111A31]"}`} />
+                )}
+              </span>
+            )}
+            <span className="font-semibold [font-family:var(--font-figtree)]">
+              {article.author}{article.co_author ? ` × ${article.co_author}` : ""}
+            </span>
+          </span>
+        )}
         {article.date_published && <span>{formatDate(article.date_published)}</span>}
         {article.read_time && (
           <>
