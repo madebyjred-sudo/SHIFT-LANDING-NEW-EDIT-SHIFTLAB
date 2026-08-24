@@ -6,14 +6,17 @@ services:
     container_name: shifter_openclaw
     restart: always
     ports:
-      - "3000:3000"
+      - "3005:3000"
     volumes:
-      - ./config:/app/config
+      - ./config:/home/node/.openclaw
       - ./skills:/app/skills
       # Mount the actual source of truth for the ICM
       - /var/www/shiftlatam-web/lib/avatar-factory/avatars/shifter:/app/icm_knowledge
     environment:
       - OPENCLAW_ENV=production
+      - OPENCLAW_GATEWAY_MODE=local
+      - OPENCLAW_ALLOW_UNCONFIGURED=true
+      - OPENCLAW_GATEWAY_TOKEN=shift_latam_shifter_key_2026
       - CRON_SCHEDULE=0 8 * * 0,3 # Sunday and Wednesday at 8:00 AM
       - ZEP_API_URL=http://172.17.0.1:8180
       - ZEP_API_KEY=shift_latam_shifter_key_2026

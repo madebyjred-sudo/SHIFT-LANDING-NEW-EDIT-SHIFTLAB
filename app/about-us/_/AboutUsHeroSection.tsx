@@ -74,11 +74,11 @@ export default function HomeIntroSection() {
         <div className="w-full">
           <div className="flex flex-col sm:flex-row sm:justify-between  sm:gap-4 md:gap-6">
 
-            <h2 className="max-w-[632px] mt-6 sm:mt-8 text-2xl sm:text-[50px] [font-family:var(--font-glitz-local)] font-normal leading-[1.08] bg-linear-to-r from-[#1534DC] via-[#2A43E6] to-[#F540FF] bg-clip-text text-transparent">
+            <h1 className="max-w-[632px] mt-6 sm:mt-8 text-2xl sm:text-[50px] [font-family:var(--font-glitz-local)] font-normal leading-[1.08] bg-linear-to-r from-[#1534DC] via-[#2A43E6] to-[#F540FF] bg-clip-text text-transparent">
               <GradientText text="Agencia de Comunicación" />
               <GradientText text="y Relaciones Públicas" />
               <GradientText text="en Latinoamérica" />
-            </h2>
+            </h1>
 
             <div className="flex flex-col items-start">
               <p className="mt-8 sm:mt-10 max-w-[770px] sm:max-w-[535px] text-sm sm:text-lg leading-tight text-[#111A31] [font-family:var(--font-fira-sans)]">

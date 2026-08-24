@@ -34,7 +34,7 @@ export default function ShiftingCulturePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
       />
-      <main className="overflow-hidden">
+      <div className="overflow-hidden">
         <ShiftingCultureHeroSection />
         <ShiftingCultureInfoSection />
         {/* <PageAspectBanner
@@ -54,7 +54,7 @@ export default function ShiftingCulturePage() {
         {/* <ShiftingCultureAIPhilosophySection /> */}
         {/* <ShiftingCultureServiceSection /> */}
         <WhyDifferent />
-      </main>
+      </div>
     </>
   );
 }

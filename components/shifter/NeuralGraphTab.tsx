@@ -43,19 +43,19 @@ const TYPE_LABELS: Record<NodeType, string> = {
   doc: "Documento ICM",
 };
 
-function deriveNodes(memory: ShifterMemory): { nodes: GraphNode[]; links: GraphLink[] } {
+function deriveNodes(memory: ShifterMemory, agentName: string): { nodes: GraphNode[]; links: GraphLink[] } {
   const nodes: GraphNode[] = [];
   const links: GraphLink[] = [];
 
   // Core identity node
   nodes.push({
     id: "shifter-core",
-    name: "Shifter Core",
+    name: `${agentName} Core`,
     type: "core",
-    description: "Agente editorial autónomo del Newsroom de Shift Latam. OpenClaw + Zep + Directus.",
+    description: `Núcleo de identidad de ${agentName}. ICM propio + memoria aislada.`,
     x: 400,
     y: 300,
-    meta: "OpenClaw",
+    meta: "ICM",
   });
 
   // ICM docs around center in a lower arc
@@ -124,12 +124,21 @@ function linePath(x1: number, y1: number, x2: number, y2: number) {
   return `M ${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}`;
 }
 
-export default function NeuralGraphTab({ memory }: { memory: ShifterMemory }) {
+export default function NeuralGraphTab({
+  memory,
+  colorCore = "#00FF88",
+  agentName = "Shifter",
+}: {
+  memory: ShifterMemory;
+  colorCore?: string;
+  agentName?: string;
+}) {
   const [selected, setSelected] = useState<GraphNode | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
 
-  const { nodes, links } = deriveNodes(memory);
+  const { nodes, links } = deriveNodes(memory, agentName);
+  const nodeColor = (t: NodeType) => (t === "core" ? colorCore : TYPE_COLORS[t]);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -148,7 +157,7 @@ export default function NeuralGraphTab({ memory }: { memory: ShifterMemory }) {
           // 02_KnowledgeMap
         </p>
         <h2 className="mt-1 [font-family:var(--font-zilla-slab)] text-[26px] font-bold leading-[1.05] text-white md:text-[34px]">
-          Shifter
+          {agentName}
           <br />
           <span className="text-[#F540FF]">Knowledge Map.</span>
         </h2>
@@ -205,14 +214,14 @@ export default function NeuralGraphTab({ memory }: { memory: ShifterMemory }) {
                 cx={node.x}
                 cy={node.y}
                 r={r}
-                fill={TYPE_COLORS[node.type]}
+                fill={nodeColor(node.type)}
                 filter={isHovered || node.type === "core" ? "url(#glow)" : undefined}
                 initial={reducedMotion ? {} : { scale: 0, opacity: 0 }}
                 animate={{ scale: isHovered ? 1.2 : 1, opacity: 1 }}
                 transition={{ duration: 0.25, delay: idx * 0.03 }}
               />
               {node.type === "core" && (
-                <circle cx={node.x} cy={node.y} r={26} fill="none" stroke={TYPE_COLORS[node.type]} strokeOpacity={0.25} strokeWidth={1} />
+                <circle cx={node.x} cy={node.y} r={26} fill="none" stroke={nodeColor(node.type)} strokeOpacity={0.25} strokeWidth={1} />
               )}
               <text
                 x={node.x}

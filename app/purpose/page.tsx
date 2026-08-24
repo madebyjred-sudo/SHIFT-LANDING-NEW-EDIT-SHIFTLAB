@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageFullWidthVideoBanner from "@/components/common/PageFullWidthVideoBanner";
 import PurposeHeroSection from "@/app/purpose/_/PurposeHeroSection";
 import PurposeImpactSection from "@/app/purpose/_/PurposeImpactSection";
+import PurposeCTASection from "@/app/purpose/_/PurposeCTASection";
 import { createPageMetadata, createWebPageSchema } from "@/app/seo";
 
 const PAGE_TITLE = "Propósito";
@@ -37,6 +38,7 @@ export default function PurposePage() {
           ariaLabel="Banner de la página Propósito de Shift Latam"
         />
         <PurposeImpactSection />
+        <PurposeCTASection />
       </div>
     </>
   );

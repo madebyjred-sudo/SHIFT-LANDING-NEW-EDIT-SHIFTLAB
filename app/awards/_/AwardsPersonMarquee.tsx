@@ -264,10 +264,10 @@ export default function AwardsPersonMarquee() {
   return (
     <div ref={sectionRef} className="pb-22 md:pb-40 md:mb-10 pt-2">
       <div ref={headlineRef} className={enterMotion}>
-        <h1 className="relative py-18 md:py-36 z-10 font-glitz font-normal tracking-normal text-lg text-center leading-[100%] md:text-[50px]">
+        <p className="relative py-18 md:py-36 z-10 font-glitz font-normal tracking-normal text-lg text-center leading-[100%] md:text-[50px]">
           <GradientText text={`“Los premios celebran nuestro trabajo, el`} />
           <GradientText text={`impacto celebra a nuestros clientes.”`} />
-        </h1>
+        </p>
       </div>
       <div className="awards-person-scroll relative w-full">
         <Image

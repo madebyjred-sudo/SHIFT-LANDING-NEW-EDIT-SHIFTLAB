@@ -1,4 +1,5 @@
 import { execSync } from "child_process";
+import { getAgent } from "./avatar-factory/agent-registry";
 
 export interface OpenClawStatus {
   running: boolean;
@@ -8,10 +9,23 @@ export interface OpenClawStatus {
   lastLogs: string[];
 }
 
-export function getOpenClawStatus(): OpenClawStatus {
+// Solo nombres de container válidos (alfanum + _ -); evita inyección en execSync.
+function safeContainer(name: string): string {
+  if (!/^[a-zA-Z0-9_.-]+$/.test(name)) throw new Error(`container inválido: ${name}`);
+  return name;
+}
+
+/** Estado del container OpenClaw de cualquier agente. */
+export function getAgentSystemStatus(containerName: string): OpenClawStatus {
   const result: OpenClawStatus = { running: false, lastLogs: [] };
+  let c: string;
   try {
-    const ps = execSync("docker ps --filter name=shifter_openclaw --format '{{.Status}}'", {
+    c = safeContainer(containerName);
+  } catch {
+    return result;
+  }
+  try {
+    const ps = execSync(`docker ps --filter name=${c} --format '{{.Status}}'`, {
       encoding: "utf-8",
     }).trim();
     result.running = ps.includes("Up");
@@ -20,7 +34,7 @@ export function getOpenClawStatus(): OpenClawStatus {
   }
 
   try {
-    const logs = execSync("docker logs --tail 20 shifter_openclaw 2>&1", {
+    const logs = execSync(`docker logs --tail 20 ${c} 2>&1`, {
       encoding: "utf-8",
     });
     result.lastLogs = logs
@@ -46,4 +60,10 @@ export function getOpenClawStatus(): OpenClawStatus {
   }
 
   return result;
+}
+
+/** Shim de compatibilidad: el container de Shifter. */
+export function getOpenClawStatus(): OpenClawStatus {
+  const shifter = getAgent("shifter")!;
+  return getAgentSystemStatus(shifter.containerName);
 }

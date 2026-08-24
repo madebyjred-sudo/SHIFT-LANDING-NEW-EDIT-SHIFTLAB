@@ -167,6 +167,58 @@ function startStepReveal(steps: ThinkingStep[]): StepController {
 }
 
 /**
+ * Extrae el contenido textual visible de la página actual, excluyendo
+ * navegación, footer, scripts y elementos decorativos. Se usa para darle
+ * a Shifty contexto de lo que el usuario está viendo.
+ *
+ * Prioridad: <main> → <article> → <body>. Truncado a ~4000 caracteres
+ * para no romper el presupuesto de tokens.
+ */
+export function extractPageContent(): string {
+  if (typeof document === "undefined") return "";
+
+  const root =
+    document.querySelector("main") ??
+    document.querySelector("article") ??
+    document.body;
+  if (!root) return "";
+
+  const clone = root.cloneNode(true) as HTMLElement;
+
+  // Eliminamos elementos que no aportan contenido semántico.
+  const selectorsToRemove = [
+    "script",
+    "style",
+    "noscript",
+    "svg",
+    "nav",
+    "footer",
+    "header",
+    "aside",
+    "button",
+    "input",
+    "textarea",
+    "select",
+    "[aria-hidden='true']",
+    ".shifty-agent-island", // por si el propio widget queda dentro del root
+  ];
+  for (const sel of selectorsToRemove) {
+    clone.querySelectorAll(sel).forEach((el) => el.remove());
+  }
+
+  // Si aún queda mucho texto, intentamos quedarnos solo con párrafos,
+  // headings y listas, que suelen ser el cuerpo real de la página.
+  const text = clone.innerText || clone.textContent || "";
+  const cleaned = text
+    .replace(/\s+/g, " ")
+    .replace(/\b\w+@[\w.-]+\.\w+\b/g, "[email]") // scrub emails
+    .trim();
+
+  const MAX_LEN = 4000;
+  return cleaned.length > MAX_LEN ? cleaned.slice(0, MAX_LEN) + "…" : cleaned;
+}
+
+/**
  * Turno real. Conserva el contrato del mock: AsyncGenerator de TurnEvent.
  *
  * Argumentos:
@@ -176,12 +228,15 @@ function startStepReveal(steps: ThinkingStep[]): StepController {
  *                Enviado a /api/agent para agrupar turnos del mismo visitor
  *                en DB y attach transcript completo a HubSpot.
  *   - pageOrigin: window.location.href (optional). Útil para tracking.
+ *   - pageContent: contenido textual visible de la página actual
+ *     (optional). Permite que Shifty sepa qué está viendo el usuario.
  */
 export async function* runAgentTurn(
   messages: ChatMessage[],
   lastUserInput: string,
   sessionId?: string,
   pageOrigin?: string,
+  pageContent?: string,
 ): AsyncGenerator<TurnEvent> {
   const intent = matchScript(lastUserInput);
   // SIEMPRE usamos DEFAULT_THINKING (genérico) — los pasos específicos
@@ -215,7 +270,7 @@ export async function* runAgentTurn(
       const res = await fetch("/api/agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages, sessionId, pageOrigin }),
+        body: JSON.stringify({ messages, sessionId, pageOrigin, pageContent }),
       });
       if (!res.ok) {
         const errBody = await res.text().catch(() => "");

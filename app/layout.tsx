@@ -8,6 +8,7 @@ import LenisProvider from "@/components/layout/LenisProvider";
 import { LiquidGlassFilter } from "@/components/ui/liquid-glass";
 import ShiftAgent from "@/components/agent/ShiftAgent";
 import { SITE_NAME, SITE_URL } from "@/app/seo";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 
 const firaSans = Fira_Sans({
   variable: "--font-fira-sans",
@@ -58,7 +59,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "es_CR",
+    locale: "es_419",
     siteName: SITE_NAME,
     url: SITE_URL,
     title: `${SITE_NAME} | Comunicación y reputación`,
@@ -91,10 +92,11 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="es"
+      lang="es-419"
       className={`${firaSans.variable} ${firaMono.variable} ${figtree.variable} ${glitz.variable} ${mozillaText.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <GoogleAnalytics ga_id="G-J0597B4QEQ" />
         <LenisProvider>
           <a
             href="#main-content"
@@ -128,12 +130,40 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
+              "@id": `${SITE_URL}/#organization`,
               name: SITE_NAME,
+              alternateName: "Shift Latam",
               url: SITE_URL,
+              logo: {
+                "@type": "ImageObject",
+                url: `${SITE_URL}/assets/svg/nav-logo.svg`,
+              },
+              description:
+                "Red de comunicación estratégica y relaciones públicas en América Latina. Reputación corporativa, comunicación de liderazgo y análisis de conversación digital para marcas, instituciones y líderes.",
+              areaServed: [
+                "Costa Rica",
+                "Guatemala",
+                "El Salvador",
+                "Honduras",
+                "Nicaragua",
+                "Panamá",
+                "Colombia",
+                "Ecuador",
+                "Venezuela",
+                "República Dominicana",
+              ],
+              knowsAbout: [
+                "Comunicación estratégica",
+                "Reputación corporativa",
+                "Relaciones públicas",
+                "Marca personal de liderazgo",
+                "Análisis de conversación digital",
+                "Comunicación de crisis",
+              ],
               sameAs: [
-                "https://www.facebook.com/cacporternovelli/?locale=es_LA",
+                "https://www.facebook.com/cacporternovelli/",
                 "https://www.instagram.com/shiftlatampn/",
-                "https://cr.linkedin.com/company/shiftlatamporternovelli",
+                "https://www.linkedin.com/company/shiftlatamporternovelli/",
               ],
             }),
           }}

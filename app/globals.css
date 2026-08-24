@@ -146,6 +146,95 @@ html.lenis body {
   margin: 1.5em 0;
 }
 
+/* ── Article body (Newsroom) ──
+   El plugin @tailwindcss/typography no está activo, así que las clases
+   prose-* del wrapper .article-content no aplican. Estilamos el HTML del
+   artículo explícitamente (espaciado de párrafos, citas, títulos). */
+.article-content {
+  color: #1F2A44;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+}
+.article-content > :first-child {
+  margin-top: 0;
+}
+.article-content p {
+  margin: 0 0 1.5rem;
+  line-height: 1.8;
+}
+.article-content p:last-child {
+  margin-bottom: 0;
+}
+.article-content h2 {
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  color: #111A31;
+  margin: 3rem 0 1.25rem;
+  letter-spacing: -0.01em;
+}
+.article-content h3 {
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.25;
+  color: #111A31;
+  margin: 2.25rem 0 1rem;
+}
+.article-content blockquote {
+  border-left: 3px solid #1534DC;
+  background: rgba(21, 52, 220, 0.03);
+  padding: 1.25rem 1.5rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+  margin: 2rem 0;
+  color: rgba(17, 26, 49, 0.9);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+.article-content blockquote p {
+  margin: 0;
+}
+.article-content blockquote p + p {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  font-style: normal;
+  color: rgba(17, 26, 49, 0.6);
+}
+.article-content strong {
+  font-weight: 700;
+  color: #111A31;
+}
+.article-content em {
+  font-style: italic;
+}
+.article-content a {
+  color: #1534DC;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.article-content a:hover {
+  color: #F540FF;
+  text-decoration: underline;
+}
+.article-content ul,
+.article-content ol {
+  margin: 0 0 1.5rem;
+  padding-left: 1.5rem;
+}
+.article-content ul { list-style: disc; }
+.article-content ol { list-style: decimal; }
+.article-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+}
+@media (min-width: 768px) {
+  .article-content { font-size: 1.125rem; }
+  .article-content h2 { font-size: 2rem; }
+  .article-content h3 { font-size: 1.5rem; }
+}
+
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
@@ -215,3 +304,50 @@ html.lenis body {
     width: calc((100cqw - 3 * 1.5rem) / 4);
   }
 }
+
+/* ── Diferenciador de autoría por agente IA (Shifter & co.) ── */
+/* Trace glow en magenta de marca: marca el avatar como "escrito por IA". */
+@keyframes shiftAiPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1.5px rgba(245, 64, 255, 0.65),
+      0 0 12px -1px rgba(245, 64, 255, 0.55);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1.5px rgba(245, 64, 255, 0.95),
+      0 0 22px 1px rgba(245, 64, 255, 0.85);
+  }
+}
+
+.ai-avatar {
+  box-shadow:
+    0 0 0 1.5px rgba(245, 64, 255, 0.7),
+    0 0 14px -1px rgba(245, 64, 255, 0.6);
+  animation: shiftAiPulse 2.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-avatar {
+    animation: none;
+  }
+}
+
+/* Chip del tag "AI": gradiente de marca + glow sutil, diferenciado del resto. */
+.ai-tag {
+  background-image: linear-gradient(120deg, #1534dc 0%, #f540ff 100%);
+  border: 1px solid rgba(245, 64, 255, 0.4);
+  box-shadow: 0 0 16px -4px rgba(245, 64, 255, 0.55);
+}
+
+/* ── Foco visible accesible (WCAG 2.4.7) ── */
+/* Indicador de teclado consistente en todo lo interactivo. Doble anillo
+   (azul de marca + halo claro) para que se vea sobre fondos oscuros y claros. */
+:focus-visible {
+  outline: 2px solid #1534dc;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.6);
+  border-radius: 3px;
+}
+/* El mouse no dispara :focus-visible, así que no afecta el look con click. */

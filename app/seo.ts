@@ -21,7 +21,7 @@ function resolveSiteUrl(): string {
 export const SITE_URL = resolveSiteUrl();
 
 export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Shift Latam";
-export const DEFAULT_LOCALE = "es_CR";
+export const DEFAULT_LOCALE = "es_419";
 
 export function absoluteUrl(pathname: string): string {
   if (!pathname || pathname === "/") return SITE_URL;
@@ -57,11 +57,13 @@ export function createPageMetadata({
       title,
       description,
       siteName: SITE_NAME,
+      images: [`${SITE_URL}/opengraph-image.png`],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [`${SITE_URL}/opengraph-image.png`],
     },
   };
 }

@@ -48,7 +48,10 @@ export default function ServiceCardVideoWithScrollAudio({
     };
   }, [cardIndex, register]);
 
-  const audioEnabled = activeIndex === cardIndex;
+  // Videos de servicios silenciados por decisión de marca — el audio
+  // scroll-driven queda desactivado (la maquinaria IO no estorba).
+  const audioEnabled = false;
+  void activeIndex;
 
   return (
     <div ref={rootRef} className={className}>
