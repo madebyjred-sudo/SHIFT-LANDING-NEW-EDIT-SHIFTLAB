@@ -22,6 +22,16 @@ const ABOUTUS = [
     description: "VP - CCO & CSO Shift \n Latam",
   },
   {
+    imageSrc: "/assets/images/aboutus/persona-29-sandra.jpg",
+    title: "Sandra Kleinburg",
+    description: "Partner Shift México",
+  },
+  {
+    imageSrc: "/assets/images/aboutus/persona-30-karen.jpg",
+    title: "Karen Ovseyevitz",
+    description: "Partner Shift México",
+  },
+  {
     imageSrc: "/assets/images/aboutus/persona-4.jpg",
     title: "Gonzalo Piñeros",
     description: "General Manager Shift \n Colombia",
@@ -35,11 +45,6 @@ const ABOUTUS = [
     imageSrc: "/assets/images/aboutus/persona-6.jpg",
     title: "Camila Ferreiro",
     description: "General Manager Shift \n El Salvador",
-  },
-  {
-    imageSrc: "/assets/images/aboutus/persona-7.jpg",
-    title: "Andrea Gandara",
-    description: "General Director Shift \n Guatemala",
   },
   {
     imageSrc: "/assets/images/aboutus/persona-8.jpg",
@@ -110,11 +115,6 @@ const ABOUTUS = [
     imageSrc: "/assets/images/aboutus/persona-22.jpg",
     title: "Johanna Mora",
     description: "Account Supervisor \n Shift Costa Rica",
-  },
-  {
-    imageSrc: "/assets/images/aboutus/persona-23.jpg",
-    title: "Carmen Mata",
-    description: "Experience Lead Shift \n Costa Rica",
   },
   {
     imageSrc: "/assets/images/aboutus/persona-24.jpg",

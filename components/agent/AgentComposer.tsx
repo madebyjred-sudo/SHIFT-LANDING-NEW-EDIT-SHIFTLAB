@@ -22,6 +22,7 @@ export default function AgentComposer({
   voice,
   onToggleVoice,
   voiceError,
+  hideVoice = false,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -30,6 +31,7 @@ export default function AgentComposer({
   voice: boolean;
   onToggleVoice: () => void;
   voiceError?: string | null;
+  hideVoice?: boolean;
 }) {
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
 
@@ -56,10 +58,8 @@ export default function AgentComposer({
         </div>
       )}
       <div
-        className={`relative flex items-end gap-2 rounded-lg border bg-white/[0.025] px-2 py-1.5 transition-all duration-200 ${
-          voice
-            ? "border-[#F540FF]/40 bg-white/[0.04] shadow-[0_0_0_3px_rgba(245,64,255,0.08)]"
-            : "border-white/[0.08] focus-within:border-[#F540FF]/35 focus-within:bg-white/[0.04] focus-within:shadow-[0_0_0_3px_rgba(245,64,255,0.06)]"
+        className={`relative flex items-end gap-2 rounded-lg bg-white/[0.025] px-2 py-1.5 transition-all duration-200 ${
+          voice ? "bg-white/[0.04]" : "focus-within:bg-white/[0.04]"
         }`}
       >
         {/* Textarea siempre visible — la transcripción del voice
@@ -84,16 +84,17 @@ export default function AgentComposer({
           }
           disabled={busy}
           autoFocus
-          className="flex-1 resize-none bg-transparent px-2 py-2 text-[16px] sm:text-[13.5px] text-white placeholder:text-white/30 outline-none disabled:opacity-60 caret-[#F540FF]"
+          className="flex-1 resize-none bg-transparent px-2 py-2 text-[16px] sm:text-[13.5px] text-white placeholder:text-white/55 outline-none disabled:opacity-60 caret-[#F540FF]"
           style={{ minHeight: "32px", maxHeight: "132px" }}
         />
 
+        {!hideVoice && (
         <button
           type="button"
           aria-label={voice ? "Detener dictado" : "Dictar por voz"}
           title={voice ? "Detener dictado" : "Dictar por voz"}
           onClick={onToggleVoice}
-          className={`relative grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/30 ${
+          className={`relative grid h-9 w-9 shrink-0 place-items-center rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/30 ${
             voice
               ? "text-[#F540FF]"
               : "text-white/40 hover:text-white/80 hover:bg-white/[0.04]"
@@ -113,13 +114,14 @@ export default function AgentComposer({
           )}
           <span className="relative">{voice ? <StopIcon /> : <MicIcon />}</span>
         </button>
+        )}
 
         <button
           type="button"
           onClick={() => canSend && onSend()}
           disabled={!canSend}
           aria-label="Enviar"
-          className={`grid h-7 w-7 shrink-0 place-items-center rounded-md text-[13px] leading-none transition-colors duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/30 ${
+          className={`grid h-9 w-9 shrink-0 place-items-center rounded-md text-[13px] leading-none transition-colors duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/30 ${
             canSend
               ? "text-white hover:bg-white/[0.06]"
               : "cursor-not-allowed text-white/25"

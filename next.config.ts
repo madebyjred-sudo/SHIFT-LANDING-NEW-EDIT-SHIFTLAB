@@ -48,6 +48,19 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // Assets estáticos de /public/assets/* (imágenes, svg, video, fuentes):
+        // no llevan hash en el nombre pero cambian poco. Caché de 30 días con
+        // revalidación en background. Antes: max-age=0 → re-descarga en cada
+        // navegación (P0 de performance del audit).
+        source: "/assets/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=2592000, stale-while-revalidate=86400",
+          },
+        ],
+      },
+      {
         // SSE de Shifty no se buferea en nginx — chunks llegan vivos.
         source: "/api/agent/:path*",
         headers: [

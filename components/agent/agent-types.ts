@@ -175,7 +175,7 @@ export const SCRIPT: ScriptedReply[] = [
       { id: "t2", kind: "ponder", label: "Resumo hubs y liderazgo", duration: 600 },
     ],
     reply:
-      "Operamos en **10 hubs latam + Miami**: Costa Rica (sede), Guatemala, El Salvador, Honduras, Nicaragua, Panamá, Colombia, Ecuador, Venezuela y República Dominicana. Cada hub tiene su propio liderazgo regional con contacto directo.",
+      "Operamos en **11 hubs latam + Miami**: Costa Rica (sede), Guatemala, El Salvador, Honduras, Nicaragua, Panamá, México, Colombia, Ecuador, Venezuela y República Dominicana. Cada hub tiene su propio liderazgo regional con contacto directo.",
     citations: [{ label: "Equipo regional", href: "/about-us" }],
     suggestions: [
       "¿Quién está en mi país?",

@@ -12,36 +12,61 @@
 //   - Max user message length (1500 chars).
 //   - Bearer key + base URL via server-only env vars.
 //
-// Modelo: gemini-3.5-flash. Decisión consciente — calidad antes que
+// Modelo: gemini-3.7-flash. Decisión consciente — calidad antes que
 // cantidad. La razón cuesta más por turno ($0.012 promedio vs $0.0016
 // de 2.5-flash), pero el reasoning interno mejora la robustez de
 // guardrails (jailbreak, off-topic, lead capture flow) y la fidelidad
 // a la KB. A $50/mes da ~4K turnos/mes — suficiente para una landing.
 
 import { rateLimit } from "@/lib/rate-limit";
-import { buildSystemBlocks } from "@/lib/agent/system-prompt";
+import { buildSystemBlocks, buildDynamicContextMessage } from "@/lib/agent/system-prompt";
 import { tryExtractLeadFromConversation } from "@/lib/hubspot/extract-lead";
 import { upsertContactWithNote } from "@/lib/hubspot/upsert-contact";
 import { extractLeadWithLLM } from "@/lib/agent/extract-lead-llm";
 import { getVisitorContextForSession } from "@/lib/agent/contact-context-cache";
 import { notifyHotLead } from "@/lib/slack/notify-lead";
+import { retrieve, formatContext } from "@/lib/agent/kg-retrieve";
 import {
   logTurn,
   recordExtraction,
   recordHubspotSync,
 } from "@/lib/db/conversations";
 
-export const runtime = "nodejs"; // needs fs to read KB
+export const runtime = "nodejs"; // needs fs to read KB + DB for RAG
 export const dynamic = "force-dynamic"; // never cache responses
 
 const MAX_USER_MSG_LEN = 1500;
 const MAX_TURNS_KEPT = 12; // user+assistant pairs combined → ~6 exchanges
+const RAG_ENABLED = process.env.AGENT_RAG === "on";
+
+const COUNTRY_KEYWORDS: Record<string, string[]> = {
+  "Costa Rica": ["costa rica", "costarricense", "san josé", "tico"],
+  Colombia: ["colombia", "colombiano", "bogotá"],
+  Ecuador: ["ecuador", "ecuatoriano", "quito"],
+  "El Salvador": ["el salvador", "salvadoreño", "san salvador"],
+  Guatemala: ["guatemala", "guatemalteco", "ciudad de guatemala"],
+  Honduras: ["honduras", "hondureño", "tegucigalpa"],
+  Nicaragua: ["nicaragua", "nicaragüense", "managua"],
+  Panamá: ["panamá", "panameño", "ciudad de panamá"],
+  México: ["méxico", "mexico", "mexicano", "mexicana", "cdmx", "ciudad de méxico"],
+  "República Dominicana": ["república dominicana", "dominicano", "santo domingo"],
+  Venezuela: ["venezuela", "venezolano", "caracas"],
+  "Estados Unidos": ["estados unidos", "usa", "miami", "ee.uu."],
+};
+
+function detectCountry(text: string): string | null {
+  const lower = text.toLowerCase();
+  for (const [country, keywords] of Object.entries(COUNTRY_KEYWORDS)) {
+    if (keywords.some((k) => lower.includes(k))) return country;
+  }
+  return null;
+}
 
 const CEREBRO_BASE_URL =
   process.env.CEREBRO_BASE_URL ||
   "https://shift-cerebro-production.up.railway.app";
 const CEREBRO_API_KEY = process.env.CEREBRO_API_KEY || "";
-const MODEL_ID = process.env.AGENT_MODEL_ID || "google/gemini-3.5-flash";
+const MODEL_ID = process.env.AGENT_MODEL_ID || "google/gemini-3.7-flash";
 
 type IncomingMessage = { role: "user" | "assistant"; content: string };
 
@@ -55,6 +80,10 @@ type IncomingPayload = {
   /** URL de la page desde donde Shifty fue abierto. Útil para entender
    *  contexto del lead (ej. "vino desde /shift-lab"). */
   pageOrigin?: string;
+  /** Contenido textual visible de la página que el usuario está viendo.
+   *  Lo extrae el frontend del DOM para darle a Shifty contexto de lo
+   *  que hay en pantalla. */
+  pageContent?: string;
 };
 
 function getClientIp(request: Request): string {
@@ -137,6 +166,7 @@ export async function POST(request: Request) {
     payload.sessionId ??
     `sess_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
   const pageOrigin = payload.pageOrigin ?? request.headers.get("referer") ?? undefined;
+  const pageContent = payload.pageContent ?? undefined;
   const userAgent = request.headers.get("user-agent") ?? undefined;
   const lastUserMessage = messages[messages.length - 1].content;
 
@@ -206,28 +236,84 @@ export async function POST(request: Request) {
     console.warn("[shifty→context] lookup failed:", e);
   }
 
+  // ── RAG retrieval ───────────────────────────────────────────────────
+  // Si AGENT_RAG=on, recuperamos contexto relevante del knowledge graph
+  // (Newsroom + config curado) y lo inyectamos como system block. Esto
+  // reemplaza al KB YAML estático sin tocar el pipeline de HubSpot.
+  let retrievedContext: string | null = null;
+  if (RAG_ENABLED) {
+    try {
+      const country = detectCountry(lastUserMessage);
+      const nodes = await retrieve(lastUserMessage, { country, topK: 6 });
+      retrievedContext = formatContext(nodes);
+    } catch (e) {
+      console.warn("[shifty→rag] retrieve failed:", e);
+      // Fallamos gracefully: Shifty responde sin contexto recuperado.
+    }
+  }
+
+  // ── Contexto dinámico: viaja como mensaje `user`, NO en el system ─────
+  // Gemini trata su `systemInstruction` como inmutable al cachear. Si el
+  // contexto RAG / visitante / página va como cola del system, invalida el
+  // prefijo estático entero y el caché nunca muerde (sin error visible).
+  // Va como turno `user` justo antes de la pregunta real.
+  const dynamicContext = buildDynamicContextMessage(
+    visitorContext,
+    retrievedContext,
+    pageOrigin,
+    pageContent,
+  );
+  const outgoingMessages = messages.map((m) => ({ role: m.role, content: m.content }));
+  if (dynamicContext) {
+    outgoingMessages.splice(Math.max(0, outgoingMessages.length - 1), 0, {
+      role: "user",
+      content: dynamicContext,
+    });
+  }
+
   // Build Cerebro request. system_blocks goes server-side (no leak via
   // network from client). Bearer key likewise stays on the server.
   const cerebroBody = {
     model: MODEL_ID,
     stream: true,
     temperature: 0.4,
-    // 1500 = budget generoso para que el reasoning interno (Gemini 3.5
-    // lo fuerza ON y a veces come 400-600 tokens en queries complejos)
-    // no estrangule la respuesta visible. Antes con 800 se cortaba a
-    // media oración en queries tipo "campaña con IA en consumo masivo".
-    // Cost por turno: ~$0.013 max (gemini-3.5-flash a $9/M).
-    max_tokens: 1500,
-    messages: messages.map((m) => ({ role: m.role, content: m.content })),
-    system_blocks: buildSystemBlocks(visitorContext),
+    // NOTA — sticky routing: OpenRouter acepta `session_id` para fijar la
+    // sesión al mismo proveedor y mantener el caché caliente desde el primer
+    // request. NO lo mandamos porque Cerebro no lo reenvía: su
+    // `_openrouter_request_kwargs` arma el payload campo por campo (model,
+    // messages, stream, max_tokens, temperature, tools, tool_choice) y
+    // descarta todo lo demás, así que el campo moriría en el gateway y el
+    // código mentiría sobre lo que hace. Sin él, OpenRouter deriva la clave
+    // de sticky hasheando el primer mensaje system + el primer no-system:
+    // como nuestro system es ahora ESTABLE, ese hash es estable y el sticky
+    // funciona igual. Si algún día Cerebro hace passthrough del campo, esta
+    // es la mejora: pasar `session_id: sessionId`.
+    // Techo al máximo que acepta el modelo. NO es un objetivo de longitud: el
+    // modelo para solo (`finish_reason: stop`), así que subirlo no alarga las
+    // respuestas, solo elimina toda posibilidad de truncar — que es el modo de
+    // falla clásico cuando el reasoning interno se come el presupuesto antes
+    // de escribir una palabra visible.
+    //
+    // Son 65.536 y no más: gemini-3.7-flash tope ahí. Probado — pedir 300.000
+    // no da error, OpenRouter lo recorta en silencio, así que un número mayor
+    // acá sería una cifra que el código promete y el proveedor ignora.
+    //
+    // Costo: el gasto real lo fija lo que el modelo escribe (unos cientos de
+    // tokens por turno), no este techo. El peor caso teórico es ~$0.12 por
+    // turno; si alguna vez hiciera falta acotarlo, la palanca es el prompt de
+    // sistema o `reasoning_effort`, no bajar este número.
+    max_tokens: 65536,
+    messages: outgoingMessages,
+    // Solo lo ESTABLE: guardrails + KB/aviso RAG + metodología, con un único
+    // breakpoint de caché al final. Lo dinámico ya viaja en outgoingMessages.
+    system_blocks: buildSystemBlocks(),
     tenant: "shift-pn",
     app_id_hint: "shift-pn-landing",
     trace_label: "shifty-landing",
     mode: "normal",
-    // gemini-3.5-flash requires reasoning enabled (OpenRouter rebota con
-    // 400 si pasamos enabled:false). Lo dejamos OFF en el cliente pero
-    // el provider lo fuerza ON. Aceptamos el costo extra por la calidad
-    // de razonamiento en guardrails y flow de captura.
+    // El provider fuerza el reasoning ON (OpenRouter rebota con 400 si se
+    // pasa enabled:false). Se acepta por la calidad en guardrails y en el
+    // flujo de captura; con 3.7 el costo de ese extra bajó a la cuarta parte.
   };
 
   let upstream: Response;

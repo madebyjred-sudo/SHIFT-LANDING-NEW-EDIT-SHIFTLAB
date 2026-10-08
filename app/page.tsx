@@ -35,7 +35,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
       />
-      <div className="home-page">
+      <div className="home-page overflow-x-clip">
         <HomeHeroSection />
         <HomeIntroSection />
         <PartnershipMarquee />

@@ -269,7 +269,7 @@ export default function AgentIsland({
 
   return (
     <div
-      className="fixed z-[100] right-3 sm:right-6 bottom-3 sm:bottom-6 flex flex-col items-end gap-3"
+      className="shifty-agent-island fixed z-[100] right-3 sm:right-6 bottom-3 sm:bottom-6 flex flex-col items-end gap-3"
       style={{
         // Safe area iOS — el iPhone notch/home indicator come ~34px
         // abajo. Sin esto el pill queda DEBAJO de la barra del sistema

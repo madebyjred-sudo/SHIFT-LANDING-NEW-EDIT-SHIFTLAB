@@ -1,14 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
-
-const MEMORY_DIR = path.join(
-  process.cwd(),
-  "lib",
-  "avatar-factory",
-  "avatars",
-  "shifter",
-  "memory"
-);
+import { getAgent } from "./avatar-factory/agent-registry";
 
 export interface ScanStatus {
   lastScanAt: string | null;
@@ -38,21 +30,27 @@ export interface ShifterStatus {
   costToday: number;
 }
 
-export async function getShifterStatus(): Promise<ShifterStatus> {
+export async function getAgentStatus(memoryDir: string): Promise<ShifterStatus> {
   const [scan, trends, columns, costToday] = await Promise.all([
-    readScanStatus(),
-    readTrends(),
-    readColumnCandidates(),
-    readCostToday(),
+    readScanStatus(memoryDir),
+    readTrends(memoryDir),
+    readColumnCandidates(memoryDir),
+    readCostToday(memoryDir),
   ]);
 
   return { scan, trends, columns, costToday };
 }
 
-async function readScanStatus(): Promise<ScanStatus> {
+/** Shim de compatibilidad: el estado de Shifter. */
+export function getShifterStatus(): Promise<ShifterStatus> {
+  const shifter = getAgent("shifter")!;
+  return getAgentStatus(path.join(shifter.avatarDir, "memory"));
+}
+
+async function readScanStatus(memoryDir: string): Promise<ScanStatus> {
   try {
     const raw = await fs.readFile(
-      path.join(MEMORY_DIR, "heartbeat-state.json"),
+      path.join(memoryDir, "heartbeat-state.json"),
       "utf-8"
     );
     const data = JSON.parse(raw);
@@ -73,12 +71,12 @@ async function readScanStatus(): Promise<ScanStatus> {
   }
 }
 
-async function readTrends(): Promise<TrendItem[]> {
+async function readTrends(memoryDir: string): Promise<TrendItem[]> {
   // Trends are embedded in the learning-loop.md and entity-graph.md
   // For now, extract from the latest think file or learning-loop
   try {
     const raw = await fs.readFile(
-      path.join(MEMORY_DIR, "learning-loop.md"),
+      path.join(memoryDir, "learning-loop.md"),
       "utf-8"
     );
     // Extract insight blocks that look like trends
@@ -104,10 +102,10 @@ async function readTrends(): Promise<TrendItem[]> {
   }
 }
 
-async function readColumnCandidates(): Promise<ColumnCandidate[]> {
+async function readColumnCandidates(memoryDir: string): Promise<ColumnCandidate[]> {
   try {
     const raw = await fs.readFile(
-      path.join(MEMORY_DIR, "column-candidates.md"),
+      path.join(memoryDir, "column-candidates.md"),
       "utf-8"
     );
     const blocks = raw.split(/^## /m).filter((b) => b.trim());
@@ -142,10 +140,10 @@ async function readColumnCandidates(): Promise<ColumnCandidate[]> {
   }
 }
 
-async function readCostToday(): Promise<number> {
+async function readCostToday(memoryDir: string): Promise<number> {
   try {
     const raw = await fs.readFile(
-      path.join(MEMORY_DIR, "cost-log.jsonl"),
+      path.join(memoryDir, "cost-log.jsonl"),
       "utf-8"
     );
     const today = new Date().toISOString().slice(0, 10);

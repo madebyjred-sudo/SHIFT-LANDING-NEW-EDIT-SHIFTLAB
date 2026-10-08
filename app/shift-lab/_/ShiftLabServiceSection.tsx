@@ -170,7 +170,7 @@ function CardLi({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.4 }}
       transition={{ duration: 0.6, delay: index * 0.06 }}
-      className="group relative h-[clamp(480px,72vh,660px)] w-[clamp(360px,46vw,520px)] overflow-hidden rounded-2xl backdrop-blur-sm transition-all duration-300"
+      className="group relative h-[clamp(480px,72vh,660px)] max-h-full w-[min(360px,82vw)] overflow-hidden rounded-2xl backdrop-blur-sm transition-all duration-300"
       style={{ backgroundColor: service.bgColor }}
     >
       {/* Image full-bleed — composición upper-heavy + bottom whitespace
@@ -178,13 +178,29 @@ function CardLi({
           para subir el subject otro toque sin pelear con object-position
           — el bottom liberado se llena con el card bg lavender que
           matchea el image bg → seamless. */}
-      <Image
-        src={service.illustration}
-        alt=""
-        fill
-        sizes="(min-width: 1024px) 520px, 100vw"
-        className="-translate-y-16 object-cover transition-transform duration-500 ease-out group-hover:-translate-y-16 group-hover:scale-[1.04]"
-      />
+      {/* La ilustración va a su ancho natural máximo (720px de fuente) sin
+          estirarse: antes, con `fill` + `object-cover`, se escalaba para cubrir
+          la tarjeta y se veía blanda.
+
+          Ocupa TODO el ancho a propósito. Se probó contenerla y dejar que el
+          color de la tarjeta extendiera los lados, pero el fondo de estas
+          imágenes no es plano —va de #D4D1E4 a #EDECF2 dentro de una misma
+          pieza—, así que cualquier color liso deja una banda visible. Sin borde
+          lateral no hay nada que empatar.
+
+          El recorte queda solo abajo, que es el whitespace que la fuente 4:5
+          trae por diseño. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 flex h-[58%] items-start justify-center overflow-hidden">
+        <Image
+          src={service.illustration}
+          alt=""
+          width={720}
+          height={894}
+          sizes="(min-width: 1024px) 520px, 100vw"
+          className="w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+          style={{ height: "auto" }}
+        />
+      </div>
 
       {/* Border dinámico — gradient stroke vía mask trick que adapta el
           color a las zonas del card: arriba dark-on-light (lavender bg),

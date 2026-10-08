@@ -2,6 +2,20 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+
+// Enlaces de navegación del pie (descubribilidad + SEO interno).
+const FOOTER_LINKS: { label: string; href: string }[] = [
+  { label: "Inicio", href: "/" },
+  { label: "Nosotros", href: "/about-us" },
+  { label: "Servicios", href: "/services" },
+  { label: "Shifting Culture", href: "/shifting-culture" },
+  { label: "Shift LAB", href: "/shift-lab" },
+  { label: "Newsroom", href: "/newsroom" },
+  { label: "Premios", href: "/awards" },
+  { label: "Propósito", href: "/purpose" },
+  { label: "Contacto", href: "/contact" },
+];
 
 import {
   AnimatedContainer,
@@ -25,6 +39,7 @@ const COUNTRIES: Country[] = [
   { name: "Costa Rica",      timeZone: "America/Costa_Rica",    img: UNSPLASH("1552727131-5fc6af16796d") },
   { name: "Panamá",          timeZone: "America/Panama",        img: UNSPLASH("1632505702897-cc41b0ba3b64") },
   { name: "Nicaragua",       timeZone: "America/Managua",       img: UNSPLASH("1711609065017-749841408b17") },
+  { name: "México",          timeZone: "America/Mexico_City",   img: UNSPLASH("1630646188133-c1db51adad97") },
   { name: "Colombia",        timeZone: "America/Bogota",        img: UNSPLASH("1714686495394-73e2bb1bbd39") },
   { name: "Ecuador",         timeZone: "America/Guayaquil",     img: UNSPLASH("1706957614198-8d2e5f0ed6ea") },
   { name: "El Salvador",     timeZone: "America/El_Salvador",   img: UNSPLASH("1690384451505-2aef8ae1b0ef") },
@@ -199,7 +214,7 @@ export default function Footer() {
             height={26}
             className="h-auto w-[160px] sm:w-[200px] opacity-45"
           />
-          <p className="m-0 text-sm text-white/45 [font-family:var(--font-figtree,inherit)]">
+          <p className="m-0 text-sm text-white/65 [font-family:var(--font-figtree,inherit)]">
             © {new Date().getFullYear()} Shift Latam · Afiliado a Omnicom PR. All rights reserved.
           </p>
         </AnimatedContainer>
@@ -219,6 +234,25 @@ export default function Footer() {
           </ul>
         </div>
       </div>
+
+      {/* Navegación del pie — enlaces a todas las páginas (descubribilidad + SEO interno) */}
+      <nav
+        aria-label="Enlaces del pie de página"
+        className="relative z-10 mx-auto w-full max-w-[96rem] mt-12 pt-8 border-t border-white/10"
+      >
+        <ul className="m-0 flex flex-wrap gap-x-6 gap-y-3 p-0 list-none">
+          {FOOTER_LINKS.map((l) => (
+            <li key={l.href}>
+              <Link
+                href={l.href}
+                className="text-sm text-white/55 transition-colors hover:text-white [font-family:var(--font-figtree,inherit)]"
+              >
+                {l.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </FooterSection>
   );
 }

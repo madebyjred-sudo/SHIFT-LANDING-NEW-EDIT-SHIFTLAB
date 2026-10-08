@@ -166,8 +166,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const recipient = HUB_EMAILS[hub];
-    if (!recipient) {
+    const recipientEntry = HUB_EMAILS[hub];
+    // Un hub puede tener uno o varios destinatarios (México: dos).
+    // Normalizamos a lista para que el envío sea idéntico en ambos casos.
+    const recipients = (
+      Array.isArray(recipientEntry) ? recipientEntry : [recipientEntry]
+    ).filter(Boolean);
+    if (recipients.length === 0) {
       return NextResponse.json(
         { ok: false, message: "No hay correo configurado para esta sede." },
         { status: 500 },
@@ -202,7 +207,7 @@ export async function POST(request: Request) {
     // igual llega al GM por email.
     const emailPromise = transporter.sendMail({
       from,
-      to: recipient,
+      to: recipients,
       replyTo: email,
       subject: `Nuevo contacto desde web - ${hub}`,
       text: (() => {

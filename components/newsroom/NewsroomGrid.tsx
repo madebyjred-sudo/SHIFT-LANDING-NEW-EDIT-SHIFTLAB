@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import NewsCard, { type NewsCardArticle } from "./NewsCard";
 import CategoryFilter from "./CategoryFilter";
+import FeedSpotlightCard from "./FeedSpotlightCard";
+import CollectionsRail, { type ColeccionResumen } from "./CollectionsRail";
 
 interface Category {
   id: string;
@@ -13,14 +15,18 @@ interface Category {
 interface NewsroomGridProps {
   articles: NewsCardArticle[];
   categories: Category[];
+  /** Colección destacada. Se omite y la franja cae a solo el artículo. */
+  voces?: { total: number; activos: string[] } | null;
+  /** Colecciones con su conteo, para el riel de cabecera. */
+  colecciones?: ColeccionResumen[];
 }
 
-const INITIAL_GRID_COUNT = 8; // Show 8 in the grid zone initially
-const LOAD_MORE_COUNT = 4;
+const POR_PAGINA = 9;
 
-export default function NewsroomGrid({ articles, categories }: NewsroomGridProps) {
+
+export default function NewsroomGrid({ articles, categories, voces = null, colecciones = [] }: NewsroomGridProps) {
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [visibleGridCount, setVisibleGridCount] = useState(INITIAL_GRID_COUNT);
+  const [pagina, setPagina] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -35,26 +41,24 @@ export default function NewsroomGrid({ articles, categories }: NewsroomGridProps
     count: articles.filter((a) => a.category_slug === cat.slug).length,
   }));
 
-  // Layout zones: hero (1), secondary (3), panoramic (1) + compacts (2), grid (rest)
+  // Estructura editorial: una franja destacada arriba (la pieza del momento y
+  // la puerta a la colección), y debajo una grilla regular paginada. El bento
+  // de tamaños alternados se retiró: con portadas irregulares —hoy varias
+  // piezas no tienen— la asimetría acentuaba los huecos en vez de disimularlos.
   const hero = filtered[0] || null;
-  const secondaries = filtered.slice(1, 4);
-  const panoramic = filtered[4] || null;
-  const compacts = filtered.slice(5, 7);
-  const gridArticles = filtered.slice(7, 7 + visibleGridCount);
-  const hasMore = filtered.length > 7 + visibleGridCount;
+  const resto = filtered.slice(1);
+  const totalPaginas = Math.max(1, Math.ceil(resto.length / POR_PAGINA));
+  const pageActual = Math.min(pagina, totalPaginas);
+  const enPagina = resto.slice((pageActual - 1) * POR_PAGINA, pageActual * POR_PAGINA);
 
   // Handle filter change with transition
   const handleFilterChange = (slug: string | null) => {
     setIsTransitioning(true);
     setTimeout(() => {
       setActiveFilter(slug);
-      setVisibleGridCount(INITIAL_GRID_COUNT);
+      setPagina(1);
       setTimeout(() => setIsTransitioning(false), 50);
     }, 150);
-  };
-
-  const handleLoadMore = () => {
-    setVisibleGridCount((prev) => prev + LOAD_MORE_COUNT);
   };
 
   // Intersection Observer for scroll-reveal
@@ -75,7 +79,7 @@ export default function NewsroomGrid({ articles, categories }: NewsroomGridProps
     cards?.forEach((card) => observer.observe(card));
 
     return () => observer.disconnect();
-  }, [filtered, visibleGridCount, isTransitioning]);
+  }, [filtered, pageActual, isTransitioning]);
 
   return (
     <>
@@ -104,78 +108,102 @@ export default function NewsroomGrid({ articles, categories }: NewsroomGridProps
           </div>
         ) : (
           <>
-            {/* ZONE 1: Hero */}
-            {hero && (
-              <div className="newsroom-card-reveal mb-8 lg:mb-10">
-                <NewsCard article={hero} variant="hero" priority index={0} />
-              </div>
-            )}
-
-            {/* ZONE 2: Secondary (3 columns) */}
-            {secondaries.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-8 lg:mb-10">
-                {secondaries.map((article, i) => (
-                  <div key={article.id} className="newsroom-card-reveal">
-                    <NewsCard article={article} variant="standard" index={i + 1} />
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* ZONE 3: Panoramic + Compact Stack */}
-            {(panoramic || compacts.length > 0) && (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-8 lg:mb-10">
-                {panoramic && (
-                  <div className="lg:col-span-8 newsroom-card-reveal">
-                    <NewsCard article={panoramic} variant="panoramic" index={4} />
-                  </div>
-                )}
-                {compacts.length > 0 && (
-                  <div className="lg:col-span-4 flex flex-col gap-6 lg:gap-8">
-                    {compacts.map((article, i) => (
-                      <div key={article.id} className="newsroom-card-reveal flex-1">
-                        <NewsCard article={article} variant="compact" index={5 + i} />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* ZONE 4: Standard Grid */}
-            {gridArticles.length > 0 && (
-              <>
-                {/* Divider */}
-                <div className="flex items-center gap-6 mb-10">
-                  <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#111A31]/15 to-transparent" />
-                  <span className="text-[#111A31]/30 text-[11px] font-bold uppercase tracking-[0.2em] [font-family:var(--font-figtree)]">
-                    Más artículos
-                  </span>
-                  <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#111A31]/15 to-transparent" />
+            {/* Franja destacada: la pieza del momento y la colección. */}
+            <div className="mb-10 grid grid-cols-1 gap-6 lg:grid-cols-12 md:mb-12">
+              {hero && (
+                <div className="newsroom-card-reveal lg:col-span-7">
+                  <NewsCard article={hero} variant="hero" priority index={0} className="h-full" />
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
-                  {gridArticles.map((article, i) => (
-                    <div key={article.id} className="newsroom-card-reveal">
-                      <NewsCard article={article} variant="grid" index={7 + i} />
-                    </div>
-                  ))}
+              )}
+              {voces && (
+                <div className="newsroom-card-reveal lg:col-span-5">
+                  <FeedSpotlightCard
+                    total={voces.total}
+                    activos={voces.activos}
+                    className="h-full min-h-[340px]"
+                  />
                 </div>
-              </>
-            )}
+              )}
+            </div>
 
-            {/* Load More */}
-            {hasMore && (
-              <div className="flex justify-center mt-16">
+            {/* Tira de colecciones: va DEBAJO de la franja destacada y como línea
+                fina. Arriba y en tarjetas hacía efecto de doble bandeja contra el
+                panel oscuro de la colección, y le competía la atención. */}
+            {pageActual === 1 && !activeFilter && <CollectionsRail items={colecciones} />}
+
+            {/* Encabezado partido: título a la izquierda, contexto a la derecha. */}
+            <div className="mb-12 grid grid-cols-1 items-end gap-8 lg:grid-cols-12 md:mb-16">
+              <div className="lg:col-span-7">
+                <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[#111A31]/40 [font-family:var(--font-figtree)]">
+                  Nuestro Newsroom
+                </p>
+                <h2 className="text-[36px] leading-[1.05] text-[#111A31] md:text-[56px] [font-family:var(--font-glitz-local)]">
+                  Todo lo que estamos
+                  <br />
+                  <span className="text-[#1534DC]">publicando</span>
+                </h2>
+              </div>
+              <p className="text-[15px] leading-[1.75] text-[#111A31]/55 lg:col-span-5 [font-family:var(--font-fira-sans)]">
+                Análisis, casos y lecturas de mercado escritas por nuestros equipos en
+                la región y por los agentes editoriales de Shift LAB. Todo pasa por
+                revisión humana antes de publicarse.
+              </p>
+            </div>
+
+            {/* Grilla regular. */}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+              {enPagina.map((article, i) => (
+                <div key={article.id} className="newsroom-card-reveal">
+                  <NewsCard article={article} variant="grid" index={i + 1} className="h-full" />
+                </div>
+              ))}
+            </div>
+
+            {/* Paginación numerada. */}
+            {totalPaginas > 1 && (
+              <nav
+                aria-label="Paginación del Newsroom"
+                className="mt-16 flex items-center justify-center gap-2"
+              >
                 <button
-                  onClick={handleLoadMore}
-                  className="group relative px-10 py-4 rounded-full border border-[#111A31]/15 text-[#111A31] text-[12px] font-bold uppercase tracking-[0.2em] [font-family:var(--font-figtree)] hover:border-[#1534DC] hover:shadow-[0_0_30px_rgba(21,52,220,0.15)] transition-all duration-300 cursor-pointer"
+                  type="button"
+                  onClick={() => setPagina((n) => Math.max(1, n - 1))}
+                  disabled={pageActual === 1}
+                  aria-label="Página anterior"
+                  className="mr-2 flex h-10 w-10 items-center justify-center rounded-full border border-[#111A31]/15 text-[#111A31] transition-colors duration-200 hover:border-[#1534DC] disabled:cursor-not-allowed disabled:opacity-30"
                 >
-                  <span className="relative z-10">Cargar más artículos</span>
-                  <div className="absolute inset-0 rounded-full bg-[#1534DC]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  ←
                 </button>
-              </div>
+
+                {Array.from({ length: totalPaginas }, (_, n) => n + 1).map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => setPagina(n)}
+                    aria-current={n === pageActual ? "page" : undefined}
+                    className={
+                      "h-10 w-10 rounded-full text-[13px] font-bold transition-all duration-200 [font-family:var(--font-figtree)] " +
+                      (n === pageActual
+                        ? "bg-[#1534DC] text-white"
+                        : "border border-[#111A31]/15 text-[#111A31]/60 hover:border-[#1534DC] hover:text-[#111A31]")
+                    }
+                  >
+                    {n}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() => setPagina((n) => Math.min(totalPaginas, n + 1))}
+                  disabled={pageActual === totalPaginas}
+                  aria-label="Página siguiente"
+                  className="ml-2 flex h-10 w-10 items-center justify-center rounded-full border border-[#111A31]/15 text-[#111A31] transition-colors duration-200 hover:border-[#1534DC] disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  →
+                </button>
+              </nav>
             )}
+
           </>
         )}
       </div>

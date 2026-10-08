@@ -3,11 +3,30 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { LabDotGrid } from "@/components/ui/lab-primitives";
+import AmericasGlobe from "@/components/ui/AmericasGlobe";
 
 /**
  * Shift LAB · Problem we solve — editorial closing statement.
  * Glitz headline, mono body, single clean CTA. No prompts or run-this.
  */
+/**
+ * Los doce mercados de Shift. El globo de esta sección es decorativo —no captura
+ * clics— pero muestra la red real, no puntos inventados.
+ */
+const MERCADOS = [
+  { pais: "Costa Rica", lat: 9.93, lng: -84.09, activo: true },
+  { pais: "El Salvador", lat: 13.69, lng: -89.19, activo: true },
+  { pais: "Guatemala", lat: 14.63, lng: -90.51, activo: true },
+  { pais: "Honduras", lat: 14.07, lng: -87.19, activo: true },
+  { pais: "Nicaragua", lat: 12.11, lng: -86.24, activo: true },
+  { pais: "Panamá", lat: 8.98, lng: -79.52, activo: true },
+  { pais: "Colombia", lat: 4.71, lng: -74.07, activo: true },
+  { pais: "Ecuador", lat: -0.18, lng: -78.47, activo: true },
+  { pais: "Rep. Dominicana", lat: 18.49, lng: -69.93, activo: true },
+  { pais: "Venezuela", lat: 10.48, lng: -66.9, activo: true },
+  { pais: "Miami", lat: 25.72, lng: -80.27, activo: true },
+];
+
 export default function ProblemWeSolveSection() {
   return (
     <section className="relative isolate overflow-hidden bg-[#0E1745] py-28 md:py-40">
@@ -21,6 +40,22 @@ export default function ProblemWeSolveSection() {
           filter: "blur(40px)",
         }}
       />
+
+      {/* Globo en picada: el eje va inclinado (segundo valor de `vista`) para
+          mirarlo desde arriba, y gira solo. Decorativo — sin clics. La máscara
+          lo desvanece antes del borde para que no se corte en recto. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-[300px] top-1/2 z-0 hidden -translate-y-1/2 opacity-[0.65] md:block lg:-right-[150px]"
+      >
+        <AmericasGlobe
+          mercados={MERCADOS}
+          vista={[78, -42]}
+          spin={0.045}
+          size={1280}
+          className="sl-globe-fade"
+        />
+      </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1380px] px-6 md:px-12 lg:px-16">
         <motion.div

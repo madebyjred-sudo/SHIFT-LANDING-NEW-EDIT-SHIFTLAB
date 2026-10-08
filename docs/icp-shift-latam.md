@@ -174,7 +174,7 @@ Por bad-fit confirmado (Bottega Privée) + heurísticas:
 
 ### Sources usados
 
-- `content/knowledge/about-shift-pn.yaml` + `.compact.yaml` (knowledge base interno verificado para Shifty)
+- `content/knowledge/about-shift-latam.yaml` + `.compact.yaml` (knowledge base interno verificado para Shifty)
 - **Best-fit clients nombrados por dirección:** Banco de Costa Rica · ICT · Maruchan CA · BMI Seguros · GFI Pharma · Taco Bell CR
 - **Bad-fit confirmado:** Bottega Privée (cava de vinos, single-location)
 - Patrones de cases premiados: PRWeek Global 2024 (5 oros + Campaign of the Year), Cannes Lions 2024, SABRE LATAM/Global, Effie Index 2021
@@ -215,7 +215,7 @@ Antes de operacionalizar este ICP, validar:
 
 ### ✓ Ya wireado en código
 
-- **Knowledge base de Shifty** (`content/knowledge/about-shift-pn.compact.yaml`): sección `ideal_customer` agregada con perfil Green, trigger, best-fit refs, Red exclusiones y tono recomendado para Red.
+- **Knowledge base de Shifty** (`content/knowledge/about-shift-latam.compact.yaml`): sección `ideal_customer` agregada con perfil Green, trigger, best-fit refs, Red exclusiones y tono recomendado para Red.
 - **System prompt de Shifty** (`lib/agent/system-prompt.ts`): nuevo bloque "Cualificación del lead (ICP-aware)" con tier handling Green/Yellow/Red y guardrails de UX (nunca "no eres nuestro ICP", siempre conversacional).
 - **Server-side** (`lib/hubspot/upsert-contact.ts`): el campo `icp_tier` se setea automáticamente si viene en el input. Si la property aún no existe en HubSpot, se ignora silently (no rompe el upsert).
 

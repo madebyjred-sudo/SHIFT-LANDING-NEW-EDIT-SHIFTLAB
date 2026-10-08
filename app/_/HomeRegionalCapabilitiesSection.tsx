@@ -14,6 +14,7 @@ type RegionalPoint = {
 };
 
 const REGIONAL_POINTS: RegionalPoint[] = [
+  { id: "mexico", label: "México", top: "38%", left: "24%" },
   { id: "El Salvador", label: "El Salvador", top: "39%", left: "34%" },
   { id: "honduras", label: "Honduras", top: "43.8%", left: "34%" },
   { id: "guatemala", label: "Guatemala", top: "48.5%", left: "28%" },

@@ -5,6 +5,7 @@ export const HUB_OPTIONS = [
   "Honduras",
   "Nicaragua",
   "Panamá",
+  "México",
   "Colombia",
   "Ecuador",
   "Venezuela",

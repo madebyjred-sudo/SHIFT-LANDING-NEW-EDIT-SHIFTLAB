@@ -16,8 +16,8 @@ Conecta el chat flotante "Shifty" (que tu equipo de UI ya tenía diseñado en `c
 ### Archivos nuevos
 - `app/api/agent/route.ts` — Next.js App Router POST que proxea SSE a Cerebro `/v1/chat/completions` (OAI compat). Rate-limited por IP, validación de input, sin leak de Bearer al cliente.
 - `lib/agent/system-prompt.ts` — Build de `system_blocks` (guardrails ES + KB YAML) con `cache_control:ephemeral` para prompt caching.
-- `content/knowledge/about-shift-pn.yaml` — KB full (~14K tokens) del research agent. Verificada contra fuentes públicas (PRWeek, Cannes, telediario.cr, latinspots, delfino.cr, elfinancierocr, etc).
-- `content/knowledge/about-shift-pn.compact.yaml` — KB condensada (~2.4K tokens) que el bot usa por default. Switchable via `AGENT_KB_FILE`.
+- `content/knowledge/about-shift-latam.yaml` — KB full (~14K tokens) del research agent. Verificada contra fuentes públicas (PRWeek, Cannes, telediario.cr, latinspots, delfino.cr, elfinancierocr, etc).
+- `content/knowledge/about-shift-latam.compact.yaml` — KB condensada (~2.4K tokens) que el bot usa por default. Switchable via `AGENT_KB_FILE`.
 - Todos los `components/agent/*.tsx` (eran untracked, ahora en el branch).
 
 ### Archivos modificados
@@ -113,7 +113,7 @@ Sin ese top-up, ningún deploy va a funcionar. Con el top-up, el cap $50/mes de 
 ## 10. Backlog Phase 2 (cuando Jred dé luz verde)
 
 - HubSpot lead push: cuando el bot junta nombre+email+país+brief, llamar a HubSpot Forms API.
-- Lead routing por país: mapear el país capturado al hub correcto (ver `content/knowledge/about-shift-pn.compact.yaml` → `hubs_12_paises`).
+- Lead routing por país: mapear el país capturado al hub correcto (ver `content/knowledge/about-shift-latam.compact.yaml` → `hubs_12_paises`).
 - Output validator post-LLM (capa 3 guardrails).
 - Switch a KB full cuando el budget OpenRouter permita prompts > 4K tokens.
 - A/B test del greeting con métricas reales.

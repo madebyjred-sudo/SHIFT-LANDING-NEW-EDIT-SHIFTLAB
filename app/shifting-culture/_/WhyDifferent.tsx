@@ -58,10 +58,10 @@ export default function ProblemWeSolveSection() {
 
   const headingText = (
     <div ref={headlineRef} className={enterMotion}>
-      <h1 className="text-2xl max-w-[200px] min-[420px]:max-w-full font-glitz  leading-[1.05]  md:text-4xl lg:text-[50px]">
+      <h2 className="text-2xl max-w-[200px] min-[420px]:max-w-full font-glitz  leading-[1.05]  md:text-4xl lg:text-[50px]">
         <span className="rotate-180 inline-block">?</span>
         Por qué es diferente?
-      </h1>
+      </h2>
     </div>
   );
 

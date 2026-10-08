@@ -10,6 +10,8 @@ const people: { src: string }[] = [
   { src: "/assets/images/aboutus/persona-2.jpg" },  // Gabriela Piedra
   { src: "/assets/images/aboutus/persona-3.jpg" },  // Oscar Solano
   { src: "/assets/images/aboutus/persona-15.jpg" }, // Ana Solera
+  { src: "/assets/images/aboutus/persona-29-sandra.jpg" }, // Sandra Kleinburg (Partner México)
+  { src: "/assets/images/aboutus/persona-30-karen.jpg" }, // Karen Ovseyevitz (Partner México)
   { src: "/assets/images/aboutus/persona-4.jpg" },  // Gonzalo Piñeros
   { src: "/assets/images/aboutus/persona-5.jpg" },  // Angélica Moreno
   { src: "/assets/images/aboutus/persona-6.jpg" },  // Camila Ferreiro

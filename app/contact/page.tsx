@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import ContactDetailsSection from "@/app/contact/_/ContactDetailsSection";
-import ContactIntroSection from "@/app/contact/_/ContactIntroSection";
-import ContactPrimaryFormSection from "@/app/contact/_/ContactPrimaryFormSection";
+import ContactGatewaySection from "@/app/contact/_/ContactGatewaySection";
+import RegionalPresenceSection from "@/app/about-us/_/AboutUsOurRegionalSection";
 import { createPageMetadata, createWebPageSchema } from "@/app/seo";
 
 const PAGE_TITLE = "Contacto";
@@ -28,9 +28,12 @@ export default function ContactPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
       />
-      <ContactIntroSection />
-      <ContactPrimaryFormSection showFooterSpring={false} />
+      <ContactGatewaySection />
       <ContactDetailsSection />
+      <RegionalPresenceSection
+        title={"Puntos de contacto\nen la región"}
+        subtitle="Si busca el contacto local, puede verlo en la tarjeta de su ubicación respectiva."
+      />
     </>
   );
 }

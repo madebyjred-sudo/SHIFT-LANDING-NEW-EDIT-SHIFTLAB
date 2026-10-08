@@ -3,8 +3,9 @@
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import type { AgentState, Message, ThinkingStep, Citation } from "./agent-types";
-import { INITIAL_GREETING, nextId, runAgentTurn, type ChatMessage } from "./agent-engine";
+import { INITIAL_GREETING, nextId, runAgentTurn, extractPageContent, type ChatMessage } from "./agent-engine";
 import AgentIsland from "./AgentIsland";
+import { onShiftyOpen } from "@/lib/shifty-bus";
 
 /**
  * ShiftAgent — orchestrator.
@@ -130,7 +131,8 @@ export default function ShiftAgent() {
 
       try {
         const pageOrigin = typeof window !== "undefined" ? window.location.href : undefined;
-        for await (const evt of runAgentTurn(turnMessages, text, sessionIdRef.current, pageOrigin)) {
+        const pageContent = typeof window !== "undefined" ? extractPageContent() : undefined;
+        for await (const evt of runAgentTurn(turnMessages, text, sessionIdRef.current, pageOrigin, pageContent)) {
           switch (evt.type) {
             case "thinking-start": {
               const steps: ThinkingStep[] = evt.steps;
@@ -190,6 +192,17 @@ export default function ShiftAgent() {
     },
     [state.status, state.messages, startAgentMessage, updateAgentMessage, setStatus],
   );
+
+  // Apertura desde otros componentes (ej. "¿Alguna pregunta nueva?" del
+  // FAQ de un artículo): despliega el island y manda el mensaje como si
+  // lo hubiera escrito el visitante. El agente ya lee la página abierta
+  // via extractPageContent(), así que llega con el artículo como contexto.
+  React.useEffect(() => {
+    return onShiftyOpen(({ message }) => {
+      setState((s) => (s.open ? s : { ...s, open: true }));
+      if (message) window.setTimeout(() => void send(message), 350);
+    });
+  }, [send]);
 
   const handleClear = React.useCallback(() => {
     // If there was an actual conversation (more than just the greeting),
@@ -265,8 +278,11 @@ export default function ShiftAgent() {
     setState((s) => ({ ...s, voice: !s.voice }));
   }, []);
 
-  // Ocultar Shifty en el cockpit de Shifter (después de todos los hooks).
+  // Ocultar el island flotante en el cockpit de Shifter y en /contact
+  // (ahí Shifty vive embebido como gateway). Después de todos los hooks.
   if (pathname?.startsWith("/newsroom/ShifterAI")) return null;
+  if (pathname?.startsWith("/agent-admin")) return null;
+  if (pathname === "/contact") return null;
 
   return (
     <>

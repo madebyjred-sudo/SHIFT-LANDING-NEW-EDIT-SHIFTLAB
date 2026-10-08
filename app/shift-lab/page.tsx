@@ -33,14 +33,14 @@ export default function ShiftLabPage() {
       />
       {/* Single dark canvas spans the full page — sections share a
           consistent navy background and the navbar reads it as "dark". */}
-      <main className="overflow-x-clip bg-[#0A0E27]">
+      <div className="overflow-x-clip bg-[#0A0E27]">
         <ShiftLabHeroSection />
         <ShiftLabInfoSection />
         <ShiftLabBannerSection />
         <ShiftLabAIPhilosophySection />
         <ShiftLabServiceSection />
         <ProblemWeSolveSection />
-      </main>
+      </div>
     </>
   );
 }

@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
  * resultado típico de un engagement. Responde la pregunta natural
  * del visitante después de los cards: "OK, ¿qué hay adentro?".
  *
- * Source de verdad: content/knowledge/about-shift-pn.yaml (sección
+ * Source de verdad: content/knowledge/about-shift-latam.yaml (sección
  * `servicios.*.capabilities`). Si actualizás capabilities en el KB,
  * sincronizar acá manualmente.
  */

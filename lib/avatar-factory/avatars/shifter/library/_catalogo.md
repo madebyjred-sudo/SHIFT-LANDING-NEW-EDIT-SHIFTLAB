@@ -1,0 +1,6 @@
+- **propaganda** — Bernays, Edward L.. «Propaganda» (Gutenberg, eligió por: propaganda bernays)
+- **the-prince** — Machiavelli, Niccolò. «The Prince» (Gutenberg, eligió por: the prince machiavelli)
+- **crystallizing-public-opinion** — Bernays, Edward L.. «Crystallizing Public Opinion» (Gutenberg, eligió por: Crystallizing Public Opinion)
+- **the-crowd-b-a-study-of-the-popular-mind** — Le Bon, Gustave. «The crowd : $b A study of the popular mind» (Gutenberg, eligió por: The Crowd Le Bon)
+- **public-opinion** — Lippmann, Walter. «Public opinion» (Gutenberg, eligió por: Public Opinion Walter Lippmann)
+- **the-essays-of-arthur-schopenhauer-the-art-of-contr** — Schopenhauer, Arthur. «The Essays of Arthur Schopenhauer; the Art of Controversy» (Gutenberg, eligió por: Essays Schopenhauer Art Controversy)

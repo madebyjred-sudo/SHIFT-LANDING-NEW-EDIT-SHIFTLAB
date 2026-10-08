@@ -5,6 +5,7 @@ import Image from 'next/image';
 import FooterSpring from "@/components/ui/FooterSpring";
 
 const countries = [
+    { name: "México", left: "31.6%", top: "34.6%" },
     { name: "Guatemala", left: "34.5%", top: "42%" },
     { name: "Honduras", left: "41%", top: "35.5%" },
     { name: "El Salvador", left: "41%", top: "39%" },
@@ -51,7 +52,7 @@ export default function RegionalMap() {
                             alt="Mapa de Latinoamérica con países de operación de Shift Latam"
                             fill
                             className="object-contain"
-                            priority
+                            loading="lazy"
                         />
 
                         {/* The Overlay Interactive Markers */}

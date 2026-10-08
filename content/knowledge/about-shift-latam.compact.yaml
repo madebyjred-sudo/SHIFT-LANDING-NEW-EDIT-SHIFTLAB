@@ -1,5 +1,5 @@
 # Knowledge base COMPACT para Shifty — ~2K tokens.
-# Sólo esenciales. El archivo full `about-shift-pn.yaml` queda como
+# Sólo esenciales. El archivo full `about-shift-latam.yaml` queda como
 # referencia humana y para futura versión con cache (cuando el budget
 # OpenRouter permita prompts más grandes).
 
@@ -26,22 +26,43 @@ shift_lab:
   que_es: "Unidad de tecnología e IA aplicada a comunicación de Shift Latam. Construimos donde vive la IA y se vuelve útil para briefs de comunicación."
   capabilities_high_level: [diseño + ingeniería, inteligencia aplicada, operación continua]
   servicios: [auditoría de madurez en IA, IA integrada a flujos de trabajo, automatización de tareas repetitivas, productos digitales a medida, dashboards e inteligencia de datos]
+  dos_productos_con_nombre_propio: "Shifty Eco (visibilidad de la marca dentro de las respuestas de IA) y Shift BrandHub (el sistema operativo de la marca). Estos DOS sí se nombran; el detalle está en productos_publicos."
   productos_publicos:
-    # NO MENCIONAR productos por nombre en respuestas. Productos internos
-    # están bajo NDA hasta nuevo aviso. Si preguntan por "qué productos
-    # construye Shift LAB", responder con tipos (asistentes, sistemas
-    # internos, dashboards) — no con nombres comerciales.
-    politica: "no_nombrar"
+    # CAMBIO 2026-07-29 (Jred): la politica pasa de "no nombrar nada" a una
+    # lista blanca de DOS productos. El resto sigue sin nombrarse: se describen
+    # por tipo (asistentes, sistemas internos, dashboards), nunca por nombre.
+    politica: "solo_los_de_esta_lista"
+    mencionables:
+      shifty_eco:
+        que_es: "Mide la visibilidad de una marca dentro de las respuestas de la inteligencia artificial, con rigor de auditoria."
+        prueba_gratis: "Se escribe el nombre de la empresa y se ve en vivo, con busqueda web, que responden seis modelos frontera: si la nombran, donde aparece, como la describen y que tan cierto es."
+        informe_completo: "Agrega matriz de percepcion, brechas de contenido y cuatro metricas: posicion, citacion, sentimiento y exactitud."
+        url: "https://eco.shiftlabdev.space"
+        dossier: "https://eco.shiftlabdev.space/dossier"
+        cuando_mencionarlo: "Reputacion dentro de modelos de IA, GEO, aparecer en respuestas generadas, que dice ChatGPT de mi marca, auditoria de visibilidad, exactitud de lo que la IA afirma de una empresa."
+      shift_brandhub:
+        que_es: "El sistema operativo de la marca: centraliza, organiza y activa los activos, con gobernanza y accesos."
+        detalle: "Asset store con el sistema visual completo, un agente de IA estructural que interpreta y organiza los activos existentes y guia a cada persona hacia la version correcta (no genera piezas nuevas), y una capa de inteligencia sobre el uso real de la marca."
+        url: "https://brandhub.shiftlatam.agency"
+        dossier: "https://brandhub.shiftlatam.agency/dossier"
+        cuando_mencionarlo: "Consistencia de marca, equipos grandes o multipais usando mal los activos, versiones viejas circulando, gobernanza, onboarding de agencias y proveedores, escalar una identidad sin perderla."
+    como_mencionarlos:
+      - "Solo cuando el visitante ya describio el problema que el producto resuelve. Nunca como anuncio."
+      - "Maximo uno por conversacion. Dos lo vuelve folleto."
+      - "Sin adjetivos comerciales (lider, innovador, revolucionario, el mejor)."
+      - "SIN PRECIOS, sin rangos, sin estimados. Sigue valiendo la regla 6 de los guardrails."
+      - "Si la conversacion no los pide, no se nombran."
 
 hubs_12_paises:
   costa_rica: "San José — Centro Empresarial Vía Lindora 3er Piso — gpiedra@shiftpn.co.cr — +506 4110-6000"
   colombia: "Bogotá — gonzalo.pineros@shiftpn.co — +57 301 436 0416"
   ecuador: "Quito — angelica.moreno@shiftpn.ec — +593 99 537 3108"
   el_salvador: "San Salvador — cferreiro@shiftpn.sv — +503 7069-0896"
-  guatemala: "Guatemala — andreagan@shiftpn.gt — +502 2388-5100"
+  guatemala: "Guatemala — veronicap@shiftpn.gt — +502 2388-5100"
   honduras: "Tegucigalpa — melissa.carrasco@shift-pn.hn — +504 9897-0961"
   nicaragua: "Managua — rmontenegro@shiftpn.com.ni — +505 2254-7627"
   panama: "Ciudad de Panamá — jjaltmann@omgcr.com — +507 269 3835"
+  mexico: "Ciudad de México — Av. Santa Fe 505, Cruz Manca, Santa Fe, Cuajimalpa de Morelos, CDMX 01219 — Karen.Ovseyevitz@shiftlatam.agency · sandra.kleinburg@shiftlatam.agency — +52 1 55 3009 3250"
   republica_dominicana: "Santo Domingo — Andrea Ramírez GM Shift Caribe — andrea.ramirez@caribbeanpn.com — +1 809-274-6813"
   venezuela: "Caracas (op. remota desde Madrid) — Valentina Rosas Godoy Directora — +34 663 20 83 20"
   miami_us: "Coral Gables FL — Karla Cobreiro Office Director — +1 786 973 6648"
@@ -112,7 +133,7 @@ competencia:
   principales: [LLYC, Edelman, Burson, Weber Shandwick, FleishmanHillard]
   diferenciador: |
     PR + creatividad + data + IA bajo un mismo modelo (Shifting Culture®), no verticales separados.
-    Cobertura nativa en 10 mercados latam con un solo P&L regional.
+    Cobertura nativa en 11 mercados latam con un solo P&L regional.
     Shift LAB: primera unidad de IA propietaria en comms LATAM.
     Campaign of the Year en PRWeek Global 2024.
 
@@ -198,7 +219,7 @@ links_internos:
 
   - path: "/about-us"
     titulo: "Sobre nosotros"
-    contenido: "Quiénes somos, liderazgo regional + por país, los 10 hubs (CR, GT, SV, HN, NI, PA, CO, EC, VE, RD) + Miami, con sus contactos."
+    contenido: "Quiénes somos, liderazgo regional + por país, los 11 hubs (CR, GT, SV, HN, NI, PA, MX, CO, EC, VE, RD) + Miami, con sus contactos."
     enlaces_sugeridos: ["nuestra página de equipo", "quiénes somos", "el detalle del equipo regional", "los líderes por país"]
     cuando_citar: "Cuando preguntan por el equipo, hubs, cobertura regional, países, líderes, oficinas, años en el mercado."
 
@@ -234,17 +255,21 @@ links_internos:
 
   - path: "/contact"
     titulo: "Contacto"
-    contenido: "Formulario + emails + lista completa de los 10 hubs con direcciones y teléfonos."
+    contenido: "Formulario + emails + lista completa de los 11 hubs con direcciones y teléfonos."
     enlaces_sugeridos: ["la página de contacto", "el formulario de contacto", "los hubs con dirección y teléfono"]
     cuando_citar: "Cuando quieren agendar, escribir email, llamar, ver hubs por país con dirección y teléfono. Si están en lead capture flow, NO mandar al form — guiarlos por chat."
 
 faqs_principales:
+  - q: "¿Qué dice ChatGPT o la IA de mi marca? ¿Se puede medir?"
+    a: "Sí. Shifty Eco mide la visibilidad de una marca dentro de las respuestas de IA, con rigor de auditoría. La prueba gratis muestra en vivo qué responden seis modelos frontera sobre la empresa: si la nombran, dónde aparece, cómo la describen y qué tan cierto es. El informe completo suma matriz de percepción, brechas de contenido y las métricas de posición, citación, sentimiento y exactitud. Está en https://eco.shiftlabdev.space"
+  - q: "¿Cómo ordeno la marca cuando muchos equipos o países usan versiones viejas de los activos?"
+    a: "Con Shift BrandHub, el sistema operativo de la marca: centraliza, organiza y activa los activos con gobernanza y accesos. Trae un asset store con el sistema visual completo y un agente de IA estructural que interpreta lo que ya existe y guía a cada persona hacia la versión correcta. Está en https://brandhub.shiftlatam.agency"
   - q: "¿Qué hace Shift?"
-    a: "Agencia de comunicación estratégica + reputación corporativa + creatividad cultural, 10 países latam. Integra PR, creatividad, data e IA bajo Shifting Culture®."
+    a: "Agencia de comunicación estratégica + reputación corporativa + creatividad cultural, 11 países latam. Integra PR, creatividad, data e IA bajo Shifting Culture®."
   - q: "¿Servicios?"
     a: "4 capas: Estrategia corporativa+reputación; Creatividad+campañas; Media performance+data; Crisis. Sumar Shift LAB para IA aplicada."
   - q: "¿Países?"
-    a: "10 hubs latam: CR (hub), GT, SV, HN, NI, PA, CO, EC, VE, RD. Más Miami (Shift US)."
+    a: "11 hubs latam: CR (hub), GT, SV, HN, NI, PA, MX, CO, EC, VE, RD. Más Miami (Shift US)."
   - q: "¿Sede?"
     a: "Costa Rica — Centro Empresarial Vía Lindora, 3er Piso, San José."
   - q: "¿Afiliación?"
@@ -270,7 +295,7 @@ faqs_principales:
   - q: "¿Crisis?"
     a: "Es nuestra 4ta capa. Acompañamos antes/durante/después. Si estás en crisis activa: escribí directo a rcastro@shiftpn.co.cr con asunto 'crisis' — conectamos en horas."
   - q: "¿Diferencia vs Edelman/LLYC?"
-    a: "Operamos las 4 patas (PR+creatividad+data+IA) bajo un mismo modelo (Shifting Culture®), no verticales separados. Tenemos Lab de IA propietaria. Cobertura nativa en 10 mercados con un solo P&L. +120 premios. Campaign of the Year en PRWeek Global 2024."
+    a: "Operamos las 4 patas (PR+creatividad+data+IA) bajo un mismo modelo (Shifting Culture®), no verticales separados. Tenemos Lab de IA propietaria. Cobertura nativa en 11 mercados con un solo P&L. +120 premios. Campaign of the Year en PRWeek Global 2024."
   - q: "¿Quién sos?"
     a: "Shifty, asistente del sitio de SHIFT LATAM. Te explico servicios, casos, equipo y te conecto con la persona indicada. No reemplazo una llamada — la facilito."
 

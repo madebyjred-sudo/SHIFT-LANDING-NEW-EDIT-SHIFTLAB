@@ -31,14 +31,14 @@ export default function AwardsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
       />
-      <main className="overflow-x-hidden">
+      <div className="overflow-x-hidden">
         <AwardsHeroSection />
         <AwardsLogoStrip />
         <div className="h-10 md:h-14 lg:hidden"></div>
         <AwardsVideoManifesto />
         <AwardsCarouselSection />
         <ContactPrimaryFormSection />
-      </main>
+      </div>
     </>
   );
 }

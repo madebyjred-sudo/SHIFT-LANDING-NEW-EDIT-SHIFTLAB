@@ -1,20 +1,36 @@
 import Image from "next/image";
 import { getDirectusImageUrl } from "@/lib/directus";
+import { embedMedia } from "@/lib/newsroom/media-embeds";
+import { splitFaq } from "@/lib/newsroom/faq";
+import ArticleFaq from "./ArticleFaq";
 
 interface ArticleContentProps {
   content: string;
+  /** Título del artículo: contexto para el asistente desde el FAQ. */
+  articleTitle?: string;
 }
 
 /*
  * Parsea HTML plano y lo convierte en componentes React enriquecidos.
  * Fallback seguro: si el parseo falla, renderiza el HTML crudo.
+ * `embedMedia` convierte links de YouTube/LinkedIn (solos en su párrafo)
+ * en embeds responsivos — pathway único para media incrustada.
+ *
+ * El bloque "Preguntas frecuentes" se separa del cuerpo y se pinta como
+ * acordeón (`ArticleFaq`). Si el artículo no lo trae, todo sigue igual.
  */
-export default function ArticleContent({ content }: ArticleContentProps) {
+export default function ArticleContent({
+  content,
+  articleTitle = "",
+}: ArticleContentProps) {
   if (!content) return null;
+  const { body, faqHeading, items } = splitFaq(content);
+  const html = embedMedia(body);
 
   return (
-    <div
-      className="article-content prose prose-lg md:prose-xl max-w-none [font-family:var(--font-fira-sans)]
+    <>
+      <div
+        className="article-content prose prose-lg md:prose-xl max-w-none [font-family:var(--font-fira-sans)]
         prose-headings:[font-family:var(--font-figtree)] prose-headings:font-bold prose-headings:text-[#111A31]
         prose-h2:text-2xl md:prose-h2:text-3xl prose-h2:mt-14 prose-h2:mb-6
         prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-4
@@ -33,7 +49,16 @@ export default function ArticleContent({ content }: ArticleContentProps) {
         prose-table:border-collapse prose-table:w-full prose-table:my-8
         prose-th:bg-[#111A31]/5 prose-th:text-[#111A31] prose-th:font-bold prose-th:px-4 prose-th:py-3 prose-th:text-left prose-th:text-sm
         prose-td:border-t prose-td:border-[#111A31]/10 prose-td:px-4 prose-td:py-3 prose-td:text-sm prose-td:text-[#1F2A44]"
-      dangerouslySetInnerHTML={{ __html: content }}
-    />
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+
+      {items.length > 0 && (
+        <ArticleFaq
+          heading={faqHeading || "Preguntas frecuentes"}
+          items={items}
+          articleTitle={articleTitle}
+        />
+      )}
+    </>
   );
 }

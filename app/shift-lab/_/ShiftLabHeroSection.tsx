@@ -30,7 +30,8 @@ export default function ShiftLabHeroSection() {
         loop
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
+        poster="/assets/videos/shift-lab/hero-scroll-poster.webp"
         className="absolute inset-0 h-full w-full object-cover"
         aria-hidden
       />
@@ -81,12 +82,12 @@ export default function ShiftLabHeroSection() {
               ligeramente desplazada respecto al wordmark, lo que
               ayuda al ritmo visual diagonal del hero. */}
           <div className="md:justify-self-end md:text-left md:translate-y-3 lg:translate-y-6">
-            <h2 className="max-w-xl text-[22px] md:text-[30px] lg:text-[38px] font-bold leading-[1.08] tracking-tight text-white [font-family:var(--font-zilla-slab)]">
+            <h1 className="max-w-xl text-[22px] md:text-[30px] lg:text-[38px] font-bold leading-[1.08] tracking-tight text-white [font-family:var(--font-zilla-slab)]">
               Innovación e Inteligencia Artificial{" "}
               <span className="text-[#F540FF]">
                 aplicada a comunicación.
               </span>
-            </h2>
+            </h1>
             <p
               className="mt-5 max-w-md text-[12px] md:text-[13px] leading-[1.7] text-white/80"
               style={{

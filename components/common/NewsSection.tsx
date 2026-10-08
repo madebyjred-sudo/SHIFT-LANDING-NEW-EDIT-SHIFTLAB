@@ -64,7 +64,7 @@ export default function NewsSection({
               </p>
             )}
             <div className="mt-6 lg:mt-8">
-              <Link href="/newsroom/1">
+              <Link href="/newsroom">
                 <OutlineArrowButton label={featured.buttonLabel ?? "Ver más"} />
               </Link>
             </div>

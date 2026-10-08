@@ -52,5 +52,9 @@ export { readItems, readItem };
 
 export function getDirectusImageUrl(imageId: string) {
   if (!imageId) return null;
-  return `${directusUrl}/assets/${imageId}`;
+  // Proxy same-origin con token (`/api/newsroom/image/<id>`): el rol público
+  // de Directus no puede leer `/assets`, y el asset va por HTTP (mixed content
+  // en una página HTTPS). La ruta sirve el binario autenticado y same-origin,
+  // así el optimizador de Next lo acepta sin remotePatterns.
+  return `/api/newsroom/image/${imageId}`;
 }

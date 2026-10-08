@@ -9,26 +9,32 @@
 // Para agregar/sacar países, editá también `app/contact/hubs.ts`.
 //
 // (Históricamente teníamos México y Perú con fallback a la bandeja
-// general porque no había GM público asignado. Ambos quedaron fuera
-// del sitio — si vuelven a aparecer, restaurá GENERAL_INBOX como
-// fallback.)
+// general porque no había GM público asignado. México ya tiene hub
+// propio en CDMX con dos contactos directos; Perú sigue fuera.)
 
 import type { HubOption } from "@/app/contact/hubs";
 
 /**
- * Map de país → email destino. Mantener sincronizado con
- * `content/knowledge/about-shift-pn.compact.yaml` → `hubs_12_paises`.
+ * Map de país → email(s) destino. Mantener sincronizado con
+ * `content/knowledge/about-shift-latam.compact.yaml` → `hubs_12_paises`.
+ *
+ * Un país puede tener más de un destinatario: el aviso del lead se
+ * envía a todos a la vez (México llega a sus dos contactos).
  *
  * Fuente: General Managers / Senior VPs verificados públicamente.
- * Última verificación: 2026-05.
+ * Última verificación: 2026-09.
  */
-export const HUB_EMAILS: Record<HubOption, string> = {
+export const HUB_EMAILS: Record<HubOption, string | string[]> = {
   "Costa Rica (Hub)": "gpiedra@shiftpn.co.cr",          // Gabriela Piedra (Sr VP Shift Latam)
-  Guatemala: "andreagan@shiftpn.gt",                     // Andrea Gandara (GM Shift Guatemala)
+  Guatemala: "veronicap@shiftpn.gt",                     // Verónica Pineda (Shift Guatemala)
   "El Salvador": "cferreiro@shiftpn.sv",                 // Camila Ferreiro (GM Shift El Salvador)
   Honduras: "maria.calvo@shift-pn.hn",                   // María Calvo
   Nicaragua: "rmontenegro@shiftpn.com.ni",               // Rosario Montenegro (GM Shift Nicaragua)
   Panamá: "jjaltmann@omgcr.com",                         // JJ Altmann
+  México: [                                              // hub CDMX — ambas reciben el lead
+    "Karen.Ovseyevitz@shiftlatam.agency",
+    "sandra.kleinburg@shiftlatam.agency",
+  ],
   Colombia: "gonzalo.pineros@shiftpn.co",                // Gonzalo Piñeros (GM Shift Colombia)
   Ecuador: "angelica.moreno@shiftpn.ec",                 // Angélica Moreno (GM Shift Ecuador)
   Venezuela: "holahola@shiftpn.com",                     // Valentina Rosas Godoy — pendiente email corp

@@ -58,3 +58,31 @@ export async function getDirectusToken(): Promise<string | undefined> {
 
   return undefined;
 }
+
+/**
+ * Lectura autenticada server-side de items de Directus. El rol público de
+ * Directus no tiene permiso de lectura sobre news_articles, así que las
+ * páginas públicas (server components) deben leer con el token de servicio.
+ * NO usar desde componentes cliente — filtraría el token al bundle.
+ *
+ * @param query  Path + querystring, ej: "/items/news_articles?filter[...]"
+ * @param revalidate  Segundos de ISR para el fetch (default 60).
+ */
+export async function directusItems<T = unknown>(
+  query: string,
+  revalidate = 60
+): Promise<T[]> {
+  const token = await getDirectusToken();
+  const headers: Record<string, string> = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const res = await fetch(`${DIRECTUS_URL}${query}`, {
+    headers,
+    next: { revalidate },
+  });
+  if (!res.ok) {
+    throw new Error(`Directus read failed (${res.status}) for ${query}`);
+  }
+  const json = await res.json().catch(() => ({ data: [] }));
+  return (json.data ?? []) as T[];
+}

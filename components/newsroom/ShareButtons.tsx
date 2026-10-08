@@ -26,7 +26,7 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#111A31]/40 [font-family:var(--font-figtree)]">
+      <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#111A31]/70 [font-family:var(--font-figtree)]">
         Compartir
       </span>
 

@@ -124,7 +124,7 @@ export default function GradientIntroSection({ variant }: GradientIntroSectionPr
               />
             )}
 
-            <h2
+            <h1
               className={
                 isHome
                   ? "mt-6 sm:mt-8 text-2xl sm:text-4xl md:text-[50px] [font-family:var(--font-glitz-local)] font-medium leading-[1.08] bg-[linear-gradient(96.73deg,#002E6D_19.07%,#1534DC_57.2%,#F540FF_100%)] bg-clip-text text-transparent"
@@ -144,7 +144,7 @@ export default function GradientIntroSection({ variant }: GradientIntroSectionPr
                   <GradientText text="en Latinoamérica" className="md:bg-[linear-gradient(94.15deg,_#0E1745_-9.8%,_#1534DC_43.51%,_#F540FF_80.34%)]!" />
                 </>
               )}
-            </h2>
+            </h1>
 
             {isHome ? (
               <>

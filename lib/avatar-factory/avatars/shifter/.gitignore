@@ -1,0 +1,24 @@
+# --- Memoria episódica cruda / binaria (buffer, NO se versiona) ---
+memory/articles-seen.db
+memory/source-coverage.db
+memory/*.db-journal
+memory/*.db-wal
+memory/cost-ledger.json
+memory/heartbeat-state.json
+
+# --- Dumps volátiles del think (auditoría efímera, regenerables) ---
+memory/last-think-prompt-*.txt
+memory/last-think-raw-*.json
+memory/think-*.md
+
+# --- Output de research (regenerable, ~33M) ---
+stages/*/output/
+
+# --- Scratch por-run ---
+runs/
+
+# --- Estado de workspace de OpenClaw ---
+.openclaw/workspace-state.json
+
+# lock de instancia única (flock)
+memory/.think.lock

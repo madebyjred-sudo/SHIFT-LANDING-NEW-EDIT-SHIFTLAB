@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Bot, User, ArrowRight, Terminal, Activity, Cpu, Database, Radio, FileText, X, Zap, Brain, Telescope, Newspaper, Clock, TrendingUp, RefreshCw, Lightbulb } from "lucide-react";
+import { Send, Bot, User, ArrowRight, Terminal, Activity, Cpu, Database, Radio, FileText, X, Zap, Brain, Telescope, Newspaper, Clock, TrendingUp, RefreshCw, Lightbulb, History, Search, Plus } from "lucide-react";
 import { LabTerminalFrame, LabCursor, LabSectionLabel, LabStatusPill } from "@/components/ui/lab-primitives";
+import { ShifterThinkingRow, DelegationIndicator } from "./ShifterActivity";
 import type { ModelOption } from "./ShifterShell";
 import type { ShifterMemory } from "@/lib/shifter-icm";
 import type { OpenClawStatus } from "@/lib/shifter-system";
@@ -21,6 +22,17 @@ interface Message {
   model?: string;
   latencyMs?: number;
   status?: "sending" | "done";
+  // La respuesta se cortó por límite de tokens (finish_reason === "length").
+  // Se muestra aviso + botón para continuar: el chat es stateless, así que
+  // continuar reenvía la cola de este texto como contexto.
+  truncated?: boolean;
+  // URLs reales recuperadas por Sonar en modo investigación.
+  sources?: string[];
+  // Marcador de contexto compactado (se pinta como separador, no como burbuja).
+  compaction?: { turns: number };
+  // Dorminte hasta que se cablee la delegación (#18): si presente, la burbuja
+  // renderiza DelegationIndicator en vez del texto. Nada lo emite hoy.
+  activity?: { kind: "delegating"; task: string; deliverable?: string; microState?: string; status?: "running" | "done" };
 }
 
 function formatTime(iso?: string) {
@@ -40,11 +52,17 @@ export default function CommsTab({
   system,
   memory,
   status,
+  apiBase = "/api/shifter",
+  agentId = "shifter",
+  agentName = "Shifter",
 }: {
   selectedModel: ModelOption;
   system: OpenClawStatus;
   memory: ShifterMemory;
   status: ShifterStatus;
+  apiBase?: string;
+  agentId?: string;
+  agentName?: string;
 }) {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -57,6 +75,14 @@ export default function CommsTab({
   ]);
   const [input, setInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  // Modo investigación: recupera fuentes reales (Sonar) ANTES de que Shifter
+  // escriba, y lo restringe a citar solo esas URLs. Apagado, tiene prohibido
+  // escribir enlaces (así dejó de fabricarlos).
+  const [research, setResearch] = useState(false);
+  // Contexto conversacional: el resumen del tramo ya compactado y cuántos
+  // turnos quedaron dentro de él (esos ya no se reenvían literales).
+  const [summary, setSummary] = useState<string>("");
+  const [foldedCount, setFoldedCount] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [devMode, setDevMode] = useState(false);
   const [userName, setUserName] = useState<string>("TÚ");
@@ -64,6 +90,131 @@ export default function CommsTab({
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [insights, setInsights] = useState<{ id: number; title: string; confidence: string; status: string }[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // ── Historial por usuario+agente (persistido en Postgres, buscable) ──
+  const newSessionId = () =>
+    typeof crypto !== "undefined" && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `s_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  const [sessionId, setSessionId] = useState<string>(newSessionId);
+  const [token, setToken] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
+  const [sessions, setSessions] = useState<
+    { sessionId: string; started: string; last: string; count: number; preview: string }[]
+  >([]);
+  const [histLoading, setHistLoading] = useState(false);
+  const [searchQ, setSearchQ] = useState("");
+  const [searchResults, setSearchResults] = useState<
+    { sessionId: string; role: string; snippet: string; ts: string }[]
+  >([]);
+
+  const historyBase = `/api/agents/${agentId}/history`;
+  const authHeaders = (): Record<string, string> =>
+    token
+      ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
+      : { "Content-Type": "application/json" };
+
+  useEffect(() => {
+    const sb = createClient();
+    sb.auth.getSession().then(({ data }) => setToken(data.session?.access_token ?? null));
+  }, []);
+
+  const persistTurn = async (userMessage: string, agentMessage: string, model?: string) => {
+    if (!token) return;
+    try {
+      await fetch(historyBase, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ sessionId, userMessage, agentMessage, model }),
+      });
+    } catch {
+      /* persistencia best-effort: no rompe el chat */
+    }
+  };
+
+  const loadSessions = async () => {
+    if (!token) return;
+    setHistLoading(true);
+    try {
+      const r = await fetch(historyBase, { headers: authHeaders() });
+      const d = await r.json();
+      if (d.success) setSessions(d.sessions || []);
+    } catch {
+      /* noop */
+    } finally {
+      setHistLoading(false);
+    }
+  };
+
+  const openSession = async (sid: string) => {
+    if (!token) return;
+    try {
+      const r = await fetch(`${historyBase}?session=${encodeURIComponent(sid)}`, { headers: authHeaders() });
+      const d = await r.json();
+      if (d.success && Array.isArray(d.messages)) {
+        setSessionId(sid);
+        setMessages(
+          d.messages.map((m: { role: string; content: string; model: string | null; ts: string }, i: number) => ({
+            id: `h${i}`,
+            role: (m.role === "user" ? "oscar" : "shifter") as MessageRole,
+            content: m.content,
+            timestamp: new Date(m.ts).toLocaleTimeString("es-CR", { hour12: false, hour: "2-digit", minute: "2-digit" }),
+            model: m.model || undefined,
+            status: "done" as const,
+          })),
+        );
+        // Cada hilo tiene su propio contexto compactado: al cambiar de sesión
+        // el resumen anterior no debe filtrarse.
+        setSummary("");
+        setFoldedCount(0);
+        setShowHistory(false);
+        setSearchResults([]);
+        setSearchQ("");
+      }
+    } catch {
+      /* noop */
+    }
+  };
+
+  const doSearch = async (q: string) => {
+    setSearchQ(q);
+    if (!q.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    if (!token) return;
+    try {
+      const r = await fetch(`${historyBase}?q=${encodeURIComponent(q)}`, { headers: authHeaders() });
+      const d = await r.json();
+      if (d.success) setSearchResults(d.results || []);
+    } catch {
+      /* noop */
+    }
+  };
+
+  const newChat = () => {
+    setSessionId(newSessionId());
+    setSummary("");
+    setFoldedCount(0);
+    setMessages([
+      {
+        id: "m0",
+        role: "shifter",
+        content: "Sistemas iniciados. Memoria base cargada. Estoy listo para procesar inputs.",
+        timestamp: new Date().toLocaleTimeString("es-CR", { hour12: false, hour: "2-digit", minute: "2-digit" }),
+        status: "done",
+      },
+    ]);
+    setShowHistory(false);
+    setSearchResults([]);
+    setSearchQ("");
+  };
+
+  const toggleHistory = () => {
+    const n = !showHistory;
+    setShowHistory(n);
+    if (n) loadSessions();
+  };
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -82,7 +233,7 @@ export default function CommsTab({
   }, []);
 
   useEffect(() => {
-    fetch("/api/shifter/memory?type=insights")
+    fetch(`${apiBase}/memory?type=insights`)
       .then((r) => r.json())
       .then((data) => {
         if (data.success) {
@@ -99,7 +250,7 @@ export default function CommsTab({
         }
       })
       .catch(() => {});
-  }, [actionLoading]);
+  }, [actionLoading, apiBase]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth" });
@@ -109,6 +260,26 @@ export default function CommsTab({
     const trimmed = text.trim();
     if (!trimmed || isProcessing) return;
 
+    // Historial = el hilo visible ANTES de este mensaje (este `messages` es el
+    // del render actual, así que todavía no incluye el turno que estamos por
+    // mandar). Sirve igual en sesiones restauradas, porque `openSession`
+    // reconstruye el array con los mismos roles.
+    // Se excluyen el saludo de arranque, las burbujas de actividad y los
+    // errores de canal: no son conversación y ensucian el contexto.
+    // `foldedCount` salta los turnos que ya viven dentro del resumen: solo
+    // viajan literales los posteriores a la última compactación.
+    const history = messages
+      .filter((m) => m.id !== "m0" && !m.activity && !m.compaction)
+      .filter(
+        (m) =>
+          !(m.role === "shifter" && /^(Error de canal:|Fallo de conexión:)/.test(m.content)),
+      )
+      .map((m) => ({
+        role: m.role === "oscar" ? ("user" as const) : ("assistant" as const),
+        content: m.content,
+      }))
+      .slice(foldedCount);
+
     const now = new Date().toLocaleTimeString("es-CR", { hour12: false, hour: "2-digit", minute: "2-digit" });
     const userMsg: Message = { id: Date.now().toString(), role: "oscar", content: trimmed, timestamp: now };
     setMessages((prev) => [...prev, userMsg]);
@@ -116,13 +287,15 @@ export default function CommsTab({
     setIsProcessing(true);
 
     try {
-      const res = await fetch("/api/shifter", {
+      const res = await fetch(apiBase, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: trimmed,
           modelId: selectedModel.id,
-          traceLabel: "shifter-ai-dashboard",
+          research,
+          history,
+          summary,
         }),
       });
 
@@ -140,8 +313,27 @@ export default function CommsTab({
           },
         ]);
       } else {
+        // El resumen vuelve al cliente para reenviarlo: así la compactación
+        // corre solo cuando se cruza el umbral, no en cada turno.
+        if (typeof data.summary === "string" && data.summary) setSummary(data.summary);
+        const folded: number =
+          data.compacted && typeof data.compactedTurns === "number" ? data.compactedTurns : 0;
+        if (folded > 0) setFoldedCount((c) => c + folded);
+
         setMessages((prev) => [
           ...prev,
+          ...(folded > 0
+            ? [
+                {
+                  id: `c${Date.now()}`,
+                  role: "shifter" as MessageRole,
+                  content: "",
+                  timestamp: "",
+                  status: "done" as const,
+                  compaction: { turns: folded },
+                },
+              ]
+            : []),
           {
             id: (Date.now() + 1).toString(),
             role: "shifter",
@@ -150,8 +342,11 @@ export default function CommsTab({
             model: data.model,
             latencyMs: data.latencyMs,
             status: "done",
+            truncated: data.truncated === true,
+            sources: Array.isArray(data.sources) ? data.sources : undefined,
           },
         ]);
+        void persistTurn(trimmed, data.text || "Sin respuesta", data.model);
       }
     } catch (err) {
       setMessages((prev) => [
@@ -169,11 +364,19 @@ export default function CommsTab({
     }
   };
 
+  // Con historial ya no hace falta devolverle su propia cola: la respuesta
+  // cortada viaja como turno previo, así que alcanza con pedirle que siga.
+  const handleContinue = () => {
+    void handleSend(
+      "Tu respuesta anterior se cortó por límite de tokens. Continuá EXACTAMENTE desde donde quedó: no repitas nada de lo ya escrito, no reintroduzcas el tema, no saludes. Seguí la frase en curso.",
+    );
+  };
+
   const runAction = async (action: string, topic?: string) => {
     setActionLoading(action);
     setActionMessage(null);
     try {
-      const res = await fetch("/api/shifter/actions", {
+      const res = await fetch(`${apiBase}/actions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, topic }),
@@ -211,31 +414,139 @@ export default function CommsTab({
     .slice(0, 5);
 
   return (
-    <div className="flex h-full flex-col lg:flex-row">
+    <div className="flex h-full min-h-0 flex-col lg:flex-row">
       {/* Chat area */}
-      <div className="flex flex-1 flex-col">
+      <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
         <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-3">
           <LabSectionLabel index="04" name="Comms" />
-          <button
-            onClick={() => setDevMode((v) => !v)}
-            aria-pressed={devMode}
-            className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F540FF]/50 ${
-              devMode
-                ? "border-[#F540FF]/40 bg-[#F540FF]/10 text-[#F540FF]"
-                : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-white/20 hover:text-white"
-            }`}
-          >
-            <Terminal size={14} />
-            <span className="[font-family:var(--font-fira-mono)] text-[10px] uppercase tracking-[0.1em]">Dev</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={newChat}
+              title="Nueva conversación"
+              className="flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1.5 text-white/60 transition-colors hover:border-white/20 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+            >
+              <Plus size={14} />
+              <span className="hidden sm:inline [font-family:var(--font-fira-mono)] text-[10px] uppercase tracking-[0.1em]">Nueva</span>
+            </button>
+            <button
+              onClick={toggleHistory}
+              aria-pressed={showHistory}
+              className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5BE9FF]/50 ${
+                showHistory
+                  ? "border-[#5BE9FF]/40 bg-[#5BE9FF]/10 text-[#5BE9FF]"
+                  : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-white/20 hover:text-white"
+              }`}
+            >
+              <History size={14} />
+              <span className="hidden sm:inline [font-family:var(--font-fira-mono)] text-[10px] uppercase tracking-[0.1em]">Historial</span>
+            </button>
+            <button
+              onClick={() => setDevMode((v) => !v)}
+              aria-pressed={devMode}
+              className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F540FF]/50 ${
+                devMode
+                  ? "border-[#F540FF]/40 bg-[#F540FF]/10 text-[#F540FF]"
+                  : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-white/20 hover:text-white"
+              }`}
+            >
+              <Terminal size={14} />
+              <span className="[font-family:var(--font-fira-mono)] text-[10px] uppercase tracking-[0.1em]">Dev</span>
+            </button>
+          </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-5 md:px-6" aria-live="polite" aria-atomic="false">
+        {/* Panel de Historial (overlay, por usuario+agente, buscable) */}
+        {showHistory && (
+          <div className="absolute inset-0 z-30 flex flex-col bg-[#0A0E27]/98 backdrop-blur-sm">
+            <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-3">
+              <div className="flex items-center gap-2 text-white/80">
+                <History size={15} className="text-[#5BE9FF]" />
+                <span className="[font-family:var(--font-figtree)] text-[13px] font-semibold">Historial · {agentName}</span>
+              </div>
+              <button onClick={() => setShowHistory(false)} className="rounded-lg p-1.5 text-white/50 hover:bg-white/[0.06] hover:text-white focus:outline-none">
+                <X size={16} />
+              </button>
+            </div>
+            <div className="border-b border-white/[0.06] px-4 py-3">
+              <div className="relative">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                <input
+                  value={searchQ}
+                  onChange={(e) => doSearch(e.target.value)}
+                  placeholder={`Buscar en tus chats con ${agentName}…`}
+                  className="w-full rounded-lg border border-white/[0.08] bg-white/[0.03] py-2 pl-8 pr-3 [font-family:var(--font-fira-mono)] text-[12px] text-white placeholder-white/30 focus:border-[#5BE9FF]/40 focus:outline-none"
+                />
+              </div>
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto p-3">
+              {!token ? (
+                <p className="p-4 text-center [font-family:var(--font-fira-mono)] text-[12px] text-white/40">Iniciá sesión para ver tu historial.</p>
+              ) : searchQ.trim() ? (
+                searchResults.length === 0 ? (
+                  <p className="p-4 text-center [font-family:var(--font-fira-mono)] text-[12px] text-white/40">Sin resultados.</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {searchResults.map((h, i) => (
+                      <button
+                        key={i}
+                        onClick={() => openSession(h.sessionId)}
+                        className="block w-full rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 text-left transition-colors hover:border-[#5BE9FF]/30"
+                      >
+                        <p className="[font-family:var(--font-figtree)] text-[12px] leading-snug text-white/80" dangerouslySetInnerHTML={{ __html: h.snippet }} />
+                        <p className="mt-1 [font-family:var(--font-fira-mono)] text-[10px] text-white/30">
+                          {h.role === "user" ? "vos" : agentName} · {new Date(h.ts).toLocaleDateString("es-CR")}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                )
+              ) : histLoading ? (
+                <p className="p-4 text-center [font-family:var(--font-fira-mono)] text-[12px] text-white/40">Cargando…</p>
+              ) : sessions.length === 0 ? (
+                <p className="p-4 text-center [font-family:var(--font-fira-mono)] text-[12px] text-white/40">Todavía no hay conversaciones. Escribile a {agentName} y quedará acá.</p>
+              ) : (
+                <div className="space-y-1.5">
+                  {sessions.map((s) => (
+                    <button
+                      key={s.sessionId}
+                      onClick={() => openSession(s.sessionId)}
+                      className={`block w-full rounded-lg border p-3 text-left transition-colors ${
+                        s.sessionId === sessionId
+                          ? "border-[#5BE9FF]/40 bg-[#5BE9FF]/[0.06]"
+                          : "border-white/[0.06] bg-white/[0.02] hover:border-white/20"
+                      }`}
+                    >
+                      <p className="truncate [font-family:var(--font-figtree)] text-[12px] text-white/90">{s.preview || "(sin texto)"}</p>
+                      <p className="mt-1 [font-family:var(--font-fira-mono)] text-[10px] text-white/30">
+                        {new Date(s.last).toLocaleDateString("es-CR")} · {s.count} mensajes
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5 md:px-6" aria-live="polite" aria-atomic="false">
           <div className="mx-auto max-w-3xl space-y-5">
             {!devMode ? (
               <>
                 <AnimatePresence initial={false}>
-                  {messages.map((msg) => (
+                  {messages.map((msg) =>
+                    msg.compaction ? (
+                      // Marcador de compactación: separador, no burbuja.
+                      <div key={msg.id} className="flex items-center gap-3 py-1">
+                        <div className="h-px flex-1 bg-white/[0.08]" />
+                        <span
+                          title="Los turnos más viejos se resumieron para que quepan en el contexto. El resumen sigue disponible para el agente."
+                          className="[font-family:var(--font-fira-mono)] text-[10px] uppercase tracking-[0.12em] text-white/35"
+                        >
+                          Contexto compactado · {msg.compaction.turns} turnos resumidos
+                        </span>
+                        <div className="h-px flex-1 bg-white/[0.08]" />
+                      </div>
+                    ) : (
                     <motion.div
                       key={msg.id}
                       initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
@@ -256,7 +567,7 @@ export default function CommsTab({
                       <div className={`max-w-[80%] min-w-0 ${msg.role === "oscar" ? "items-end" : "items-start"} flex flex-col`}>
                         <div className="mb-1 flex items-center gap-2">
                           <span className="[font-family:var(--font-figtree)] text-[11px] font-semibold text-white/80">
-                            {msg.role === "shifter" ? "SHIFTER" : userName}
+                            {msg.role === "shifter" ? agentName.toUpperCase() : userName}
                           </span>
                           <span className="[font-family:var(--font-fira-mono)] text-[10px] text-white/30">{msg.timestamp}</span>
                           {msg.model && (
@@ -264,10 +575,15 @@ export default function CommsTab({
                               {msg.model.split("/").pop()}
                             </span>
                           )}
+                          {msg.latencyMs != null && (
+                            <span className="[font-family:var(--font-fira-mono)] text-[9px] text-[#00FF88]/50">
+                              {(msg.latencyMs / 1000).toFixed(1)}s
+                            </span>
+                          )}
                         </div>
 
                         <div
-                          className={`rounded-2xl border px-4 py-3 ${
+                          className={`min-w-0 max-w-full break-words rounded-2xl border px-4 py-3 ${
                             msg.role === "shifter"
                               ? "rounded-tl-none border-white/[0.08] bg-[#141A36]/80 text-white/90"
                               : "rounded-tr-none border-[#5BE9FF]/20 bg-[#5BE9FF]/8 text-white"
@@ -282,14 +598,62 @@ export default function CommsTab({
                               <span className="[font-family:var(--font-fira-mono)] text-[12px]">Enviando...</span>
                               {!reducedMotion && <LabCursor color="#00FF88" />}
                             </div>
+                          ) : msg.activity?.kind === "delegating" ? (
+                            <DelegationIndicator
+                              task={msg.activity.task}
+                              deliverable={msg.activity.deliverable}
+                              microState={msg.activity.microState}
+                              status={msg.activity.status}
+                              reducedMotion={reducedMotion}
+                            />
                           ) : (
-                            <ChatMarkdown text={msg.content} />
+                            <>
+                              <ChatMarkdown text={msg.content} />
+                              {msg.sources && msg.sources.length > 0 && (
+                                <div className="mt-3 border-t border-white/[0.08] pt-2">
+                                  <p className="[font-family:var(--font-fira-mono)] text-[10px] uppercase tracking-[0.12em] text-[#5BE9FF]/70">
+                                    Fuentes verificadas · {msg.sources.length}
+                                  </p>
+                                  <ul className="mt-1 space-y-0.5">
+                                    {msg.sources.map((s) => (
+                                      <li key={s}>
+                                        <a
+                                          href={s}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="[font-family:var(--font-fira-mono)] text-[11px] break-all text-white/50 underline-offset-2 hover:text-[#5BE9FF] hover:underline"
+                                        >
+                                          {s}
+                                        </a>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              {msg.truncated && (
+                                <div className="mt-3 flex flex-wrap items-center gap-2 rounded-lg border border-[#F5A524]/30 bg-[#F5A524]/[0.07] px-3 py-2">
+                                  <span className="[font-family:var(--font-fira-mono)] text-[11px] text-[#F5A524]">
+                                    Respuesta cortada por límite de tokens.
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={handleContinue}
+                                    disabled={isProcessing}
+                                    className="rounded-md border border-[#F5A524]/40 px-2 py-0.5 [font-family:var(--font-fira-mono)] text-[11px] text-[#F5A524] transition-colors hover:bg-[#F5A524]/15 disabled:opacity-50"
+                                  >
+                                    Continuar
+                                  </button>
+                                </div>
+                              )}
+                            </>
                           )}
                         </div>
                       </div>
                     </motion.div>
-                  ))}
+                    ),
+                  )}
                 </AnimatePresence>
+                {isProcessing && <ShifterThinkingRow reducedMotion={reducedMotion} />}
                 <div ref={bottomRef} />
               </>
             ) : (
@@ -378,6 +742,24 @@ export default function CommsTab({
                 />
               </div>
               <button
+                type="button"
+                onClick={() => setResearch((v) => !v)}
+                aria-pressed={research}
+                title={
+                  research
+                    ? "Modo investigación ACTIVO: recupera fuentes reales antes de responder (tarda más)"
+                    : "Modo investigación: recupera fuentes reales para que pueda citar enlaces verificables"
+                }
+                className={`flex h-12 shrink-0 items-center gap-2 rounded-xl border px-3 [font-family:var(--font-fira-mono)] text-[11px] uppercase tracking-[0.1em] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 ${
+                  research
+                    ? "border-[#5BE9FF]/50 bg-[#5BE9FF]/15 text-[#5BE9FF]"
+                    : "border-white/[0.08] bg-white/[0.03] text-white/40 hover:text-white/70"
+                }`}
+              >
+                <Telescope size={16} />
+                <span className="hidden sm:inline">Investigar</span>
+              </button>
+              <button
                 type="submit"
                 disabled={!input.trim() || isProcessing}
                 aria-label="Enviar mensaje"
@@ -387,13 +769,15 @@ export default function CommsTab({
               </button>
             </form>
             <p className="mx-auto mt-2 max-w-3xl text-center [font-family:var(--font-fira-mono)] text-[10px] text-white/25">
-              CONECTADO A CEREBRO · AGENTE SHIFTAI
+              {research
+                ? "MODO INVESTIGACIÓN · RECUPERA FUENTES REALES ANTES DE ESCRIBIR · TARDA MÁS"
+                : "CONECTADO A CEREBRO · AGENTE SHIFTAI · SIN ENLACES (ACTIVÁ INVESTIGAR PARA CITAS)"}
             </p>
           </div>
         )}
       </div>
       {/* Right panel: Signals + Toolkit */}
-      <div className="hidden w-80 border-l border-white/[0.08] bg-[#0A0E27]/60 xl:flex xl:flex-col">
+      <div className="hidden w-80 min-h-0 border-l border-white/[0.08] bg-[#0A0E27]/60 xl:flex xl:flex-col">
         {/* ── Señales ── */}
         <div className="flex-1 overflow-y-auto p-4">
           {/* Scan Status */}
