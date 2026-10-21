@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { ChatEco, ChatSentinel } from "./ChatProducto";
 import { useEffect, useRef, useState } from "react";
 import { HERRAMIENTAS } from "@/lib/escucha/herramientas";
 
@@ -26,21 +27,6 @@ const MOMENTOS = [
   { t: "Responde", d: "Le preguntas como a un colega y contesta con tus datos, citando de dónde salió cada cosa." },
 ];
 
-const CHAT: Record<Exclude<Tema, "integral">, { p: string; r: string; fuentes: string[]; memoria: string }> = {
-  eco: {
-    p: "¿En qué preguntas la IA recomienda a mi competencia y no a nosotros?",
-    r: "En las de precio y en las de comparación directa, sobre todo en las IA que buscan en internet. Las fuentes que citan en esas respuestas son dos portales de reseñas donde tu marca no aparece.",
-    fuentes: ["Corrida semanal · 7 IA", "Preguntas de precio", "Fuentes citadas"],
-    memoria: "Recuerda cada corrida desde que se activó",
-  },
-  sentinel: {
-    p: "¿Qué encendió la conversación del martes?",
-    r: "Un video en TikTok sobre la espera en tus tiendas, que dos medios retomaron en la tarde. De ahí salió la mayor parte de las menciones del día y el tono se volvió negativo. Te avisé en cuanto empezó a crecer.",
-    fuentes: ["TikTok", "Medios digitales", "Alerta enviada"],
-    memoria: "Recuerda cada mención desde que se activó",
-  },
-};
-
 export default function Copiloto({ tema }: { tema: Tema }) {
   const c = PIEL[tema];
   const ref = useRef<HTMLDivElement>(null);
@@ -62,7 +48,7 @@ export default function Copiloto({ tema }: { tema: Tema }) {
   const bajada =
     tema === "integral"
       ? "Cada plataforma trae su copiloto: el de Eco aprende lo que la IA dice de ti; el de Sentinel, lo que dice la gente. Con las dos activas, conversan entre ellos y llegan a tus herramientas por MCP, el estándar con el que hoy se conectan los asistentes de IA."
-      : "Detrás del tablero hay un copiloto que es también un cerebro. No es un chat genérico: aprende de cada dato que la plataforma extrae, lo recuerda y te responde con eso. Un compañero de trabajo que no descansa.";
+      : "Detrás del tablero hay un copiloto que es también un cerebro. Aprende de cada dato que la plataforma extrae, lo recuerda y te responde con eso. Un compañero de trabajo que no descansa.";
 
   return (
     <section ref={ref} className="relative overflow-hidden py-20 md:py-28" style={{ background: c.fondo, color: c.tinta, fontFamily: c.fuente }}>
@@ -105,6 +91,10 @@ export default function Copiloto({ tema }: { tema: Tema }) {
           })}
         </div>
             <Conexion c={c} />
+            <div className="mt-16 grid gap-6 lg:grid-cols-2">
+              <ChatEco vivo={enVista} />
+              <ChatSentinel vivo={enVista} />
+            </div>
           </>
         ) : (
           <div className="mt-14 grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-stretch">
@@ -126,99 +116,11 @@ export default function Copiloto({ tema }: { tema: Tema }) {
                 );
               })}
             </ol>
-            <Conversacion c={c} chat={CHAT[tema]} vivo={enVista} nombre={tema === "eco" ? "Eco" : "Sentinel"} />
+            {tema === "eco" ? <ChatEco vivo={enVista} /> : <ChatSentinel vivo={enVista} />}
           </div>
         )}
       </div>
     </section>
-  );
-}
-
-function Conversacion({ c, chat, vivo, nombre }: { c: (typeof PIEL)["eco"]; chat: { p: string; r: string; fuentes: string[]; memoria: string }; vivo: boolean; nombre: string }) {
-  const [paso, setPaso] = useState(0);
-  useEffect(() => {
-    if (!vivo) return;
-    setPaso(0);
-    const a = setTimeout(() => setPaso(1), 600);
-    const b = setTimeout(() => setPaso(2), 1900);
-    const d = setTimeout(() => setPaso(3), 2700);
-    return () => [a, b, d].forEach(clearTimeout);
-  }, [vivo]);
-  const mono = (
-    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[13px] font-bold text-white" style={{ background: c.acento }}>
-      {nombre[0]}
-    </span>
-  );
-  return (
-    <div className="flex min-h-[460px] flex-col overflow-hidden rounded-[10px] border shadow-[0_24px_60px_-40px_rgba(0,0,0,0.35)]" style={{ background: c.tarjeta, borderColor: c.regla }}>
-      {/* Barra del copiloto */}
-      <div className="flex items-center gap-3 border-b px-5 py-3.5" style={{ borderColor: c.regla }}>
-        {mono}
-        <div className="min-w-0 flex-1">
-          <p className="text-[15px] font-semibold leading-tight">Copiloto de {nombre}</p>
-          <p className="text-[12px]" style={{ color: c.suave }}>{chat.memoria}</p>
-        </div>
-        <span className="flex items-center gap-1.5 text-[12px]" style={{ color: c.suave }}>
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-50" style={{ background: c.acento }} />
-            <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: c.acento }} />
-          </span>
-          Despierto
-        </span>
-      </div>
-
-      {/* Conversación */}
-      <div className="flex flex-1 flex-col justify-end gap-4 px-5 py-6">
-        <AnimatePresence>
-          {paso >= 1 && (
-            <motion.p key="p" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="ml-auto max-w-[78%] rounded-[14px] rounded-br-[4px] px-4 py-2.5 text-[15px] leading-relaxed text-white" style={{ background: c.acento }}>
-              {chat.p}
-            </motion.p>
-          )}
-          {paso === 1 && (
-            <motion.div key="e" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-3">
-              {mono}
-              <span className="flex gap-1">
-                {[0, 1, 2].map((k) => (
-                  <motion.span key={k} className="h-1.5 w-1.5 rounded-full" style={{ background: c.suave }} animate={{ opacity: [0.2, 1, 0.2] }} transition={{ duration: 1, repeat: Infinity, delay: k * 0.15 }} />
-                ))}
-              </span>
-              <span className="text-[13px]" style={{ color: c.suave }}>Buscando en su memoria</span>
-            </motion.div>
-          )}
-          {paso >= 2 && (
-            <motion.div key="r" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3">
-              {mono}
-              <div className="min-w-0 max-w-[86%]">
-                <p className="rounded-[14px] rounded-tl-[4px] px-4 py-3 text-[15px] leading-relaxed" style={{ background: c.fondo }}>
-                  {chat.r}
-                </p>
-                {paso >= 3 && (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 flex flex-wrap gap-1.5">
-                    {chat.fuentes.map((f) => (
-                      <span key={f} className="rounded-[6px] border px-2 py-0.5 text-[12px]" style={{ borderColor: c.regla, color: c.suave }}>
-                        {f}
-                      </span>
-                    ))}
-                  </motion.div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Campo de pregunta (ilustrativo) */}
-      <div className="border-t px-4 py-3" style={{ borderColor: c.regla }}>
-        <div className="flex items-center gap-3 rounded-[8px] border px-3.5 py-2.5" style={{ borderColor: c.regla, background: c.fondo }}>
-          <span className="flex-1 text-[14px]" style={{ color: c.suave }}>Pregúntale lo que quieras sobre tu marca</span>
-          <span className="grid h-7 w-7 place-items-center rounded-[6px] text-white" style={{ background: c.acento }} aria-hidden>
-            ↑
-          </span>
-        </div>
-        <p className="mt-2 px-1 text-[11px]" style={{ color: c.suave }}>Conversación de ejemplo. En tu plataforma responde con tus datos y cita la fuente de cada cifra.</p>
-      </div>
-    </div>
   );
 }
 
