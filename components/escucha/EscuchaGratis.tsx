@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Confirmacion, useSolicitud } from "./PedirReporte";
+import { useCampoMarca } from "./CampoMarca";
 import { createPortal } from "react-dom";
 import FondoGlobo from "./FondoGlobo";
 import { CASAS } from "@/lib/escucha/casas";
@@ -22,7 +23,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 const TOTAL_CASAS = CASAS.length;
 
 export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pagina" | "seccion" }) {
-  const [marca, setMarca] = useState("");
+  const campo = useCampoMarca();
   const [cc, setCc] = useState("cr");
   const [correo, setCorreo] = useState("");
   const sol = useSolicitud("integral");
@@ -36,8 +37,8 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
     const ini = escuchaInicial();
     const valido = ini ? PAISES.some((x) => x.cc === ini.cc) : false;
     setCc(valido && ini ? ini.cc : paisDelNavegador());
-    if (ini?.desde === "url") setMarca(ini.marca);
-  }, []);
+    if (ini?.desde === "url") campo.prellenar(ini.marca);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pais = paisPorCc(cc);
   const medios = MEDIOS[cc] ?? [];
@@ -54,9 +55,8 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
 
   function escuchar(e: React.FormEvent) {
     e.preventDefault();
-    const m = marca.trim();
-    if (m.length < 2 || sol.estado.fase === "enviando") return;
-    void sol.pedir(m, cc, correo);
+    if (!campo.valido || sol.estado.fase === "enviando") return;
+    void sol.pedir(campo.datos(), cc, correo);
   }
 
   return (
@@ -65,12 +65,10 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
       <form onSubmit={escuchar} className="relative rounded-[22px] border border-white/10 bg-[#0B1030]/90 p-4 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)] md:p-5">
         <div className="grid gap-3 md:grid-cols-[1fr_200px]">
           <label className="block">
-            <span className="sr-only">Tu marca</span>
+            <span className="sr-only">{campo.etiqueta}</span>
             <input
-              value={marca}
-              onChange={(e) => setMarca(e.target.value)}
-              maxLength={60}
-              placeholder="Tu marca, por ejemplo Dos Pinos"
+              {...campo.inputProps}
+              placeholder={campo.modo === "sitio" ? "Sitio web de tu marca: tuempresa.com" : "Nombre de tu marca o tu nombre"}
               className="h-14 w-full rounded-[14px] border border-white/15 bg-[#0A0E27] px-5 text-[16px] text-white placeholder:text-white/40 outline-none transition focus:border-[#5BE9FF]/70 [font-family:var(--font-figtree)]"
             />
           </label>
@@ -103,13 +101,14 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
           </label>
           <button
             type="submit"
-            disabled={sol.estado.fase === "enviando" || marca.trim().length < 2}
+            disabled={sol.estado.fase === "enviando" || !campo.valido}
             className="h-14 rounded-[14px] bg-[#1534DC] px-7 text-[16px] font-semibold text-white transition hover:bg-[#2a47f0] disabled:opacity-50 [font-family:var(--font-figtree)]"
           >
             {sol.estado.fase === "enviando" ? "Pidiendo…" : "Recibir mi reporte"}
           </button>
         </div>
-        <p className="mt-3 px-1 text-[13px] text-white/55">
+        <button type="button" onClick={campo.alternar} className="mt-3 px-1 text-[13px] text-[#5BE9FF] underline underline-offset-2">{campo.textoAlternar}</button>
+        <p className="mt-2 px-1 text-[13px] text-white/55">
           Gratis y sin tarjeta, solo con correo de empresa. Consultamos {TOTAL_CASAS} IA y 30 días de redes y medios de {pais.nombre}, y te enviamos el reporte en unos minutos.
           {slotGlobo && <span className="hidden md:inline"> También puedes elegir tu país en el globo.</span>}
         </p>

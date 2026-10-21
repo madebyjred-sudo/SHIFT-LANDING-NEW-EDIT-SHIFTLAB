@@ -134,7 +134,7 @@ function PantallaMedios() {
           {m.tipo !== "Prensa" && (
             <div className="mt-2 flex h-[14px] items-center gap-[2px]" aria-hidden>
               {Array.from({ length: 46 }, (_, k) => (
-                <span key={k} className="w-[3px] rounded-full" style={{ height: `${25 + Math.abs(Math.sin(k * 1.7 + i)) * 75}%`, background: k > 18 && k < 30 ? S.morado : "#D9D9D3" }} />
+                <span key={k} className="w-[3px] rounded-full" style={{ height: `${Math.round(25 + Math.abs(Math.sin(k * 1.7 + i)) * 75)}%`, backgroundColor: k > 18 && k < 30 ? S.morado : "#D9D9D3" }} />
               ))}
             </div>
           )}

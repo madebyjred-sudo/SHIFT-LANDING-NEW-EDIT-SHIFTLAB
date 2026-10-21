@@ -7,6 +7,7 @@ import Copiloto from "@/components/escucha/Copiloto";
 import Peaje from "./Peaje";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Confirmacion, useSolicitud } from "@/components/escucha/PedirReporte";
+import { useCampoMarca } from "@/components/escucha/CampoMarca";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
@@ -54,7 +55,7 @@ const btn = "inline-flex h-12 items-center justify-center rounded-[4px] bg-[#924
 
 export default function SentinelEscucha() {
   const [cc, setCc] = useState("cr");
-  const [marca, setMarca] = useState("");
+  const campoMarca = useCampoMarca();
   const [correo, setCorreo] = useState("");
   const sol = useSolicitud("digital");
   const pais = paisPorCc(cc);
@@ -62,8 +63,8 @@ export default function SentinelEscucha() {
     const ini = escuchaInicial();
     const valido = ini ? PAISES.some((x) => x.cc === ini.cc) : false;
     setCc(valido && ini ? ini.cc : paisDelNavegador());
-    if (ini?.desde === "url") setMarca(ini.marca);
-  }, []);
+    if (ini?.desde === "url") campoMarca.prellenar(ini.marca);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // Los píxeles caen rápido y sin orden mientras se pide y unos segundos después: la escucha ya arrancó.
   const [ocupado, setOcupado] = useState(false);
   useEffect(() => {
@@ -77,8 +78,8 @@ export default function SentinelEscucha() {
 
   const enviar = (e: FormEvent) => {
     e.preventDefault();
-    if (!marca.trim() || sol.estado.fase === "enviando") return;
-    void sol.pedir(marca.trim(), cc, correo);
+    if (!campoMarca.valido || sol.estado.fase === "enviando") return;
+    void sol.pedir(campoMarca.datos(), cc, correo);
   };
   const campo = "mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3.5 text-[16px] outline-none transition-colors placeholder:text-[#8A8B92] focus:border-[#9244D8]";
 
@@ -102,8 +103,9 @@ export default function SentinelEscucha() {
             <form onSubmit={enviar} className={`${tarjeta} mt-6 max-w-[560px] p-4 sm:mt-8 md:p-5`}>
               <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_170px]">
                 <div className="min-w-0">
-                  <label htmlFor="marca" className={etiqueta}>Marca</label>
-                  <input id="marca" value={marca} onChange={(e) => setMarca(e.target.value)} placeholder="Escribe el nombre de tu marca" maxLength={60} required className={campo} />
+                  <label htmlFor="marca" className={etiqueta}>{campoMarca.etiqueta}</label>
+                  <input id="marca" {...campoMarca.inputProps} className={campo} />
+                  <button type="button" onClick={campoMarca.alternar} className="mt-1.5 text-[12px] text-[#9244D8] underline underline-offset-2">{campoMarca.textoAlternar}</button>
                 </div>
                 <div>
                   <label htmlFor="pais" className={etiqueta}>País</label>
@@ -119,7 +121,7 @@ export default function SentinelEscucha() {
                 <input id="correo" type="email" autoComplete="email" value={correo} onChange={(e) => setCorreo(e.target.value)} placeholder="nombre@tuempresa.com" required className={campo} aria-invalid={sol.estado.campo === "correo"} />
               </div>
               <div className="mt-4 flex flex-col gap-2.5">
-                <button type="submit" disabled={sol.estado.fase === "enviando" || !marca.trim()} className={`${btn} w-full whitespace-nowrap`}>
+                <button type="submit" disabled={sol.estado.fase === "enviando" || !campoMarca.valido} className={`${btn} w-full whitespace-nowrap`}>
                   {sol.estado.fase === "enviando" ? "Pidiendo el reporte" : "Recibir mi reporte"}
                 </button>
                 <p className="text-[13px] text-[#8A8B92]">Gratis y sin cuenta. Solo correos de empresa: te enviamos un enlace privado al reporte.</p>

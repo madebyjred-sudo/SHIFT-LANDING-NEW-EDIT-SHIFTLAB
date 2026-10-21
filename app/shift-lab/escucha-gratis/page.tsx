@@ -1,4 +1,8 @@
 import type { Metadata } from "next";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import EcoPorDentro from "../escucha-ia/_/EcoPorDentro";
+import SentinelPorDentro from "../escucha-digital/_/SentinelPorDentro";
+import "../escucha-ia/_/eco.css";
 import AjustesMovil from "@/components/escucha/AjustesMovil";
 import { FAQ_INTEGRAL } from "@/lib/escucha/faq";
 import { createPageMetadata } from "@/app/seo";
@@ -14,6 +18,9 @@ import { ECO_REAL, FECHA_DATOS, SENTINEL_REAL } from "@/lib/escucha/datos-reales
  * El reporte se centra en lo que solo aparece con las dos herramientas activas
  * a la vez. Las dos tarjetas de producto llevan a la landing de cada una:
  * /shift-lab/escucha-ia (Eco) y /shift-lab/escucha-digital (Sentinel). */
+
+const plex = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-plex", display: "swap" });
+const plexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono", display: "swap" });
 
 const TITULO = "Escucha gratis lo que dicen de tu marca la IA, las redes y los medios";
 const DESCRIPCION =
@@ -100,6 +107,14 @@ export default function EscuchaGratisPage() {
             </div>
           </div>
         </section>
+
+        {/* Por dentro: las dos plataformas con su interfaz agrandada, cada una en su tema. */}
+        <div className="eco-page border-t border-white/10 bg-white">
+          <EcoPorDentro />
+        </div>
+        <div className={`${plex.variable} ${plexMono.variable} bg-[#F4F4F2] text-[#17171B] [font-family:var(--font-plex)]`}>
+          <SentinelPorDentro />
+        </div>
 
         <div className="border-t border-white/10">
           <Copiloto tema="integral" />

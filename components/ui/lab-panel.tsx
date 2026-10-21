@@ -75,8 +75,8 @@ export function LabPanel({ open, isLight, onClose }: { open: boolean; isLight: b
                   value={marca}
                   onChange={(e) => setMarca(e.target.value)}
                   maxLength={60}
-                  placeholder="Tu marca"
-                  aria-label="Tu marca"
+                  placeholder="tuempresa.com o tu marca"
+                  aria-label="Sitio web o marca"
                   className={`h-10 min-w-0 flex-1 bg-transparent px-3 text-[15px] outline-none [font-family:var(--font-figtree,inherit)] ${isLight ? "text-[#0E1745] placeholder:text-[#4A5488]/60" : "text-white placeholder:text-white/40"}`}
                 />
                 <button type="submit" disabled={marca.trim().length < 2} className="h-10 shrink-0 rounded-[10px] bg-[#1534DC] px-4 text-[14px] font-semibold text-white transition hover:bg-[#2A47F0] disabled:opacity-50 [font-family:var(--font-figtree,inherit)]">

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Confirmacion, useSolicitud } from "@/components/escucha/PedirReporte";
+import { useCampoMarca } from "@/components/escucha/CampoMarca";
 import { CASAS } from "@/lib/escucha/casas";
 import { enlaceDossier, escuchaInicial, registrarLead, type ResIA } from "@/lib/escucha/cliente";
 import { alternativasNombradas, datosEnDisputa } from "@/lib/escucha/lectura";
@@ -532,21 +533,20 @@ function PorQueImporta() {
 
 export default function EcoEscucha() {
   const sol = useSolicitud("ia");
-  const [marca, setMarca] = useState("");
+  const campo = useCampoMarca();
   const [cc, setCc] = useState("cr");
   const [correo, setCorreo] = useState("");
   useEffect(() => {
     const ini = escuchaInicial();
     const valido = ini ? PAISES.some((x) => x.cc === ini.cc) : false;
     setCc(valido && ini ? ini.cc : paisDelNavegador());
-    if (ini?.desde === "url") setMarca(ini.marca);
-  }, []);
+    if (ini?.desde === "url") campo.prellenar(ini.marca);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function enviar(e: React.FormEvent) {
     e.preventDefault();
-    const m = marca.trim();
-    if (m.length < 2 || sol.estado.fase === "enviando") return;
-    void sol.pedir(m, cc, correo);
+    if (!campo.valido || sol.estado.fase === "enviando") return;
+    void sol.pedir(campo.datos(), cc, correo);
   }
   // El radar gira mientras se pide y unos segundos después de confirmar: la escucha ya arrancó.
   const [girando, setGirando] = useState(false);
@@ -578,8 +578,8 @@ export default function EcoEscucha() {
 
             <form onSubmit={enviar} className="eco-form2 mt-9">
               <label className="eco-field">
-                <span>Tu marca</span>
-                <input value={marca} onChange={(e) => setMarca(e.target.value)} placeholder="Ej.: Dos Pinos" maxLength={60} required className="eco-input" />
+                <span>{campo.etiqueta}</span>
+                <input {...campo.inputProps} className="eco-input" />
               </label>
               <label className="eco-field">
                 <span>País</span>
@@ -597,6 +597,7 @@ export default function EcoEscucha() {
                 {sol.estado.fase === "enviando" ? "Pidiendo…" : "Recibir mi reporte"}
               </button>
             </form>
+            <button type="button" onClick={campo.alternar} className="mt-2 text-[13px] text-[#1534dc] underline underline-offset-2">{campo.textoAlternar}</button>
             <Confirmacion estado={sol.estado} tono="eco" onOtro={sol.reiniciar} />
             <p className="mt-3 text-[13px] text-[#858eb4]">Gratis y sin cuenta. Solo correos de empresa: te enviamos un enlace privado al reporte.</p>
           </div>

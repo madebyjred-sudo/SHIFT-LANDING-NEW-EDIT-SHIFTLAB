@@ -16,6 +16,7 @@ export type Reporte = {
   id: string;
   tipo: Tipo;
   marca: string;
+  sitio?: string;
   cc: string;
   pais: string;
   correo: string;
@@ -65,13 +66,13 @@ async function reciente(correo: string, marca: string, cc: string, tipo: Tipo): 
   return null;
 }
 
-export async function crearSolicitud(o: { tipo: Tipo; marca: string; cc: string; correo: string; ip: string }): Promise<{ id: string; repetido: boolean }> {
+export async function crearSolicitud(o: { tipo: Tipo; marca: string; sitio?: string; cc: string; correo: string; ip: string }): Promise<{ id: string; repetido: boolean }> {
   const previo = await reciente(o.correo, o.marca, o.cc, o.tipo);
   if (previo) {
     if (previo.estado === "listo") void enviarEnlace(previo);
     return { id: previo.id, repetido: true };
   }
-  const r: Reporte = { id: randomUUID(), tipo: o.tipo, marca: o.marca, cc: o.cc, pais: paisPorCc(o.cc).nombre, correo: o.correo, creado: Date.now(), estado: "en_proceso" };
+  const r: Reporte = { id: randomUUID(), tipo: o.tipo, marca: o.marca, sitio: o.sitio, cc: o.cc, pais: paisPorCc(o.cc).nombre, correo: o.correo, creado: Date.now(), estado: "en_proceso" };
   await guardar(r);
   void correr(r, o.ip);
   return { id: r.id, repetido: false };

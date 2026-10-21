@@ -8,19 +8,19 @@ import { tokenHumano } from "@/lib/escucha/cliente";
  * debajo del formulario aparece la confirmación «te llega en X minutos». */
 
 export type TipoReporte = "ia" | "digital" | "integral";
-type Estado = { fase: "idle" | "enviando" | "enviado" | "error"; mensaje?: string; campo?: string; correo?: string; minutos?: string; repetido?: boolean };
+type Estado = { fase: "idle" | "enviando" | "enviado" | "error"; mensaje?: string; campo?: string; correo?: string; minutos?: string; repetido?: boolean; marca?: string; sitio?: string };
 
 export function useSolicitud(tipo: TipoReporte) {
   const [estado, setEstado] = useState<Estado>({ fase: "idle" });
   const pedir = useCallback(
-    async (marca: string, cc: string, correo: string) => {
+    async (quien: { marca?: string; sitio?: string }, cc: string, correo: string) => {
       setEstado({ fase: "enviando" });
       try {
         const token = await tokenHumano();
-        const r = await fetch("/api/escucha/solicitud", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tipo, marca, cc, correo, token }) });
+        const r = await fetch("/api/escucha/solicitud", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tipo, ...quien, cc, correo, token }) });
         const j = await r.json();
         if (!j.ok) return setEstado({ fase: "error", mensaje: j.mensaje ?? "No pudimos pedir el reporte.", campo: j.campo });
-        setEstado({ fase: "enviado", correo: j.correo, minutos: j.minutos, repetido: j.repetido });
+        setEstado({ fase: "enviado", correo: j.correo, minutos: j.minutos, repetido: j.repetido, marca: j.marca, sitio: j.sitio });
       } catch {
         setEstado({ fase: "error", mensaje: "No pudimos pedir el reporte. Revisa tu conexión." });
       }
@@ -52,7 +52,8 @@ export function Confirmacion({ estado, tono, onOtro }: { estado: Estado; tono: T
               <rect x="8" y="36" width="16" height="2.6" rx="1.3" fill={e.icono} opacity=".3" />
             </motion.svg>
             <div className="min-w-0">
-              <p className={`text-[16px] font-semibold ${e.titulo}`}>{estado.repetido ? "Ya tenías este reporte: te lo reenviamos" : "Tu reporte va en camino"}</p>
+              <p className={`text-[16px] font-semibold ${e.titulo}`}>{estado.repetido ? "Ya tenías este reporte: te lo reenviamos" : `El reporte de ${estado.marca ?? "tu marca"} va en camino`}</p>
+              {estado.sitio && <p className={`text-[12px] ${e.texto}`}>Leído desde {estado.sitio}</p>}
               <p className={`mt-1 text-[14px] leading-relaxed ${e.texto}`}>
                 {estado.repetido ? "Revisa tu correo en" : `Te llega en ${estado.minutos} minutos a`} <b className={e.titulo}>{estado.correo}</b>, con un enlace privado que dura 30 días. Si no aparece, mira en spam.
               </p>
