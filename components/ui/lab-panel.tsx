@@ -15,7 +15,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 const HERRAMIENTAS = [
   { href: "/shift-lab/escucha-gratis", t: "Escucha integral", d: "IA, redes y medios en una sola lectura", icono: "/escucha/sentinel/iconos/redes.svg" },
-  { href: "/shift-lab/escucha-ia", t: "Qué dice la IA de tu marca", d: "Siete IA, en menos de un minuto", icono: "/escucha/eco/iconos/lectura.webp" },
+  { href: "/shift-lab/escucha-ia", t: "Qué dice la IA de tu marca", d: "Siete IA, en menos de un minuto", icono: "/escucha/eco/iconos/verbatim.webp" },
   { href: "/shift-lab/escucha-digital", t: "Qué se dice en redes y medios", d: "30 días de conversación de tu país", icono: "/escucha/sentinel/iconos/escucha.svg" },
 ];
 

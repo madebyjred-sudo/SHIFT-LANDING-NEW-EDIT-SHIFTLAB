@@ -100,6 +100,13 @@ export default function ShiftLabHeroSection() {
               trabaja al servicio de la estrategia y del criterio del
               equipo.
             </p>
+            <a
+              href="#pruebalo"
+              className="mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-[#F540FF] px-6 text-[14px] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(245,64,255,0.8)] transition hover:bg-[#FF5BFF] [font-family:var(--font-figtree)]"
+            >
+              Escucha tu marca gratis
+              <span aria-hidden>↓</span>
+            </a>
           </div>
         </div>
       </div>
