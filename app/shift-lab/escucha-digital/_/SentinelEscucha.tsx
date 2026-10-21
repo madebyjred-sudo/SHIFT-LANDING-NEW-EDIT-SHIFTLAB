@@ -9,6 +9,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react
 import { Confirmacion, useSolicitud } from "@/components/escucha/PedirReporte";
 import { useCampoMarca } from "@/components/escucha/CampoMarca";
 import { SentinelMarca } from "@/components/escucha/SentinelMarca";
+import { SelectorPais } from "@/components/escucha/SelectorPais";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
@@ -109,12 +110,8 @@ export default function SentinelEscucha() {
                   <button type="button" onClick={campoMarca.alternar} className="mt-1.5 text-[12px] text-[#9244D8] underline underline-offset-2">{campoMarca.textoAlternar}</button>
                 </div>
                 <div>
-                  <label htmlFor="pais" className={etiqueta}>País</label>
-                  <select id="pais" value={cc} onChange={(e) => setCc(e.target.value)} className="mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3 text-[15px] outline-none focus:border-[#9244D8]">
-                    {PAISES.map((p) => (
-                      <option key={p.cc} value={p.cc}>{p.nombre}</option>
-                    ))}
-                  </select>
+                  <span className={etiqueta}>País</span>
+                  <SelectorPais cc={cc} onCc={setCc} tono="sentinel" className="mt-1.5 h-12 rounded-[4px] border border-[#CFCFC9] bg-white px-3 text-[15px] outline-none transition-colors focus-visible:border-[#9244D8] aria-expanded:border-[#9244D8]" />
                 </div>
               </div>
               <div className="mt-3">

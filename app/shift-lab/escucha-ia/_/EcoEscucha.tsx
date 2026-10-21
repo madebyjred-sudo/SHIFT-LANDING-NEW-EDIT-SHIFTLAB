@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Confirmacion, useSolicitud } from "@/components/escucha/PedirReporte";
 import { useCampoMarca } from "@/components/escucha/CampoMarca";
+import { SelectorPais } from "@/components/escucha/SelectorPais";
 import { CASAS } from "@/lib/escucha/casas";
 import { enlaceDossier, escuchaInicial, registrarLead, type ResIA } from "@/lib/escucha/cliente";
 import { alternativasNombradas, datosEnDisputa } from "@/lib/escucha/lectura";
@@ -581,14 +582,10 @@ export default function EcoEscucha() {
                 <span>{campo.etiqueta}</span>
                 <input {...campo.inputProps} className="eco-input" />
               </label>
-              <label className="eco-field">
+              <div className="eco-field">
                 <span>País</span>
-                <select value={cc} onChange={(e) => setCc(e.target.value)} className="eco-input">
-                  {PAISES.map((p) => (
-                    <option key={p.cc} value={p.cc}>{p.nombre}</option>
-                  ))}
-                </select>
-              </label>
+                <SelectorPais cc={cc} onCc={setCc} tono="eco" className="eco-input" />
+              </div>
               <label className="eco-field eco-field--correo">
                 <span>Correo de trabajo</span>
                 <input type="email" autoComplete="email" value={correo} onChange={(e) => setCorreo(e.target.value)} placeholder="nombre@tuempresa.com" required className="eco-input" aria-invalid={sol.estado.campo === "correo"} />

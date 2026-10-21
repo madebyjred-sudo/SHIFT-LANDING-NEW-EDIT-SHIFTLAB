@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Confirmacion, useSolicitud } from "./PedirReporte";
 import { useCampoMarca } from "./CampoMarca";
+import { SelectorPais } from "./SelectorPais";
 import { createPortal } from "react-dom";
 import FondoGlobo from "./FondoGlobo";
 import { CASAS } from "@/lib/escucha/casas";
@@ -72,20 +73,12 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
               className="h-14 w-full rounded-[14px] border border-white/15 bg-[#0A0E27] px-5 text-[16px] text-white placeholder:text-white/40 outline-none transition focus:border-[#5BE9FF]/70 [font-family:var(--font-figtree)]"
             />
           </label>
-          <label className="block">
-            <span className="sr-only">País</span>
-            <select
-              value={cc}
-              onChange={(e) => setCc(e.target.value)}
-              className="h-14 w-full rounded-[14px] border border-white/15 bg-[#0A0E27] px-4 text-[15px] text-white outline-none focus:border-[#5BE9FF]/70 [font-family:var(--font-figtree)]"
-            >
-              {PAISES.map((p) => (
-                <option key={p.cc} value={p.cc}>
-                  {p.nombre}
-                </option>
-              ))}
-            </select>
-          </label>
+          <SelectorPais
+            cc={cc}
+            onCc={setCc}
+            tono="integral"
+            className="h-14 rounded-[14px] border border-white/15 bg-[#0A0E27] px-4 text-[15px] text-white outline-none transition focus-visible:border-[#5BE9FF]/70 aria-expanded:border-[#5BE9FF]/70 [font-family:var(--font-figtree)]"
+          />
           <label className="block">
             <span className="sr-only">Correo de trabajo</span>
             <input
