@@ -8,7 +8,6 @@ import { enlaceDossier, registrarLead, useEscuchaIA, type ResIA } from "@/lib/es
 import { alternativasNombradas, datosEnDisputa } from "@/lib/escucha/lectura";
 import { ECO_REAL, EJEMPLO_MEMORIA_VS_BUSQUEDA, FECHA_DATOS } from "@/lib/escucha/datos-reales";
 import { PAISES, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
-import { MEDIOS } from "@/lib/escucha/medios";
 import "./eco.css";
 
 const pct = (a: number, b: number) => (b ? ((a / b) * 100).toLocaleString("es-CR", { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : "0");
@@ -540,30 +539,6 @@ export default function EcoEscucha() {
           <Radar fase={estado.fase} resultados={estado.resultados} />
         </div>
       </section>
-
-      {/* Medios del país del visitante: cambian con el selector. Es lo que la IA
-          lee cuando busca antes de responder; aquí no se afirma que te citen. */}
-      <div className="eco-wrap pb-14">
-        <div className="flex flex-col gap-4 border-t border-[#e3e5f1] pt-6 md:flex-row md:items-center md:gap-10">
-          <p className="shrink-0 text-[13px] leading-snug text-[#4a5488] md:w-[230px]">
-            Cuando la IA busca antes de responder, lee medios de {paisPorCc(cc).nombre} como estos
-          </p>
-          <AnimatePresence mode="wait">
-            <motion.div key={cc} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.35, ease }} className="flex flex-wrap items-center gap-x-7 gap-y-4">
-              {(MEDIOS[cc] ?? []).map((m) =>
-                m.logo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img key={m.dominio} src={m.logo} alt={m.nombre} title={m.nombre} className="h-[20px] w-auto max-w-[120px] object-contain opacity-60 [filter:brightness(0)_saturate(100%)] transition-opacity hover:opacity-90" />
-                ) : (
-                  <span key={m.dominio} className="text-[14px] font-semibold text-[#0e1745]/60 [font-family:var(--font-figtree)]">
-                    {m.nombre}
-                  </span>
-                ),
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
 
       {estado.fase === "listo" && estado.resultados && consultada && (
         <div className="eco-wrap pb-24">
