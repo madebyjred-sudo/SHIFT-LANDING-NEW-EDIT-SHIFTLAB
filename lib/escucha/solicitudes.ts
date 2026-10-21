@@ -1,4 +1,5 @@
 import { gancho } from "./gancho";
+import { correoFallo, correoListo } from "./correo";
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -201,22 +202,13 @@ export function enlace(r: Pick<Reporte, "id">) {
 }
 
 async function enviarEnlace(r: Reporte): Promise<boolean> {
-  const url = enlace(r);
-  const c = COLOR[r.tipo];
-  const html = `<div style="font-family:Arial,Helvetica,sans-serif;background:#f4f5fb;padding:32px 12px"><div style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:16px;padding:36px 32px;color:#0e1745">
-  <p style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:${c};font-weight:700;margin:0">Shift LAB · ${NOMBRE[r.tipo]}</p>
-  <h1 style="font-size:24px;line-height:1.2;margin:14px 0 10px">Tu reporte de ${escapar(r.marca)} está listo</h1>
-  <p style="font-size:15px;line-height:1.6;color:#4a5488;margin:0 0 24px">Lo que dicen de ${escapar(r.marca)} en ${escapar(r.pais)}${r.tipo === "digital" ? " las redes y los medios" : r.tipo === "ia" ? " las inteligencias artificiales" : " la IA, las redes y los medios"}, y las palabras calientes de tu marca. El enlace queda activo 30 días.</p>
-  <p style="font-size:16px;line-height:1.45;font-weight:700;margin:0 0 22px">${escapar(gancho(r).titulo)}</p>
-  <a href="${url}" style="display:inline-block;background:${c};color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:14px 24px;border-radius:10px">Ver mi reporte</a>
-  <p style="font-size:14px;line-height:1.6;color:#4a5488;margin:26px 0 0">Un especialista de Shift en ${escapar(r.pais)} te va a escribir para leer el reporte contigo y mostrarte cómo se ve con monitoreo continuo. Si prefieres hablar hoy, responde este correo.</p>
-  <p style="font-size:12px;color:#858eb4;margin:28px 0 0">Si el botón no abre, copia este enlace: ${url}</p></div></div>`;
-  return mandar(r.correo, `Tu reporte de ${r.marca} está listo · Shift LAB`, html, `Tu reporte de ${r.marca} está listo: ${url}`, VENTAS());
+  const c = correoListo(r, enlace(r));
+  return mandar(r.correo, c.asunto, c.html, c.texto, VENTAS());
 }
 
 async function enviarAviso(r: Reporte) {
-  const html = `<div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;color:#0e1745"><h1 style="font-size:20px">No pudimos terminar tu reporte de ${escapar(r.marca)}</h1><p style="font-size:15px;color:#4a5488">Las fuentes no respondieron a tiempo. Vuelve a pedirlo en unos minutos desde ${BASE()}/shift-lab.</p></div>`;
-  await mandar(r.correo, `No pudimos terminar tu reporte de ${r.marca}`, html, `No pudimos terminar tu reporte de ${r.marca}. Vuelve a pedirlo en unos minutos.`);
+  const c = correoFallo(r, BASE());
+  await mandar(r.correo, c.asunto, c.html, c.texto, VENTAS());
 }
 
 const escapar = (s: string) => s.replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[m]!);
