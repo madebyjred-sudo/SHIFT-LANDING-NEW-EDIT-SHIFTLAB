@@ -12,7 +12,8 @@ import { Reporte as ReporteEco } from "../../escucha-ia/_/EcoEscucha";
 import EscenaEco from "../../escucha-ia/_/EscenaEco";
 import { Reporte as ReporteSentinel } from "../../escucha-digital/_/SentinelEscucha";
 import EscenaSentinel from "../../escucha-digital/_/EscenaSentinel";
-import { DemoCompleta, LecturaIntegral } from "@/components/escucha/EscuchaGratis";
+import { LecturaIntegral } from "@/components/escucha/EscuchaGratis";
+import CierreVentas from "@/components/escucha/CierreVentas";
 import "../../escucha-ia/_/eco.css";
 
 type Publico = Omit<ReporteData, "correo">;
@@ -96,10 +97,11 @@ export default function VistaReporte({ reporte: r }: { reporte: Publico }) {
       <div className="eco-page">
         <div className="eco-wrap text-[#0e1745]">
           <Encabezado r={r} tono="eco" />
-          {ia.fase === "listo" && ia.resultados ? <ReporteEco marca={r.marca} cc={r.cc} resultados={ia.resultados} crudo={ia.crudo} /> : <p className="py-10 text-[#4a5488]">Las IA no respondieron a tiempo esta vez.</p>}
+          {ia.fase === "listo" && ia.resultados ? <ReporteEco marca={r.marca} cc={r.cc} resultados={ia.resultados} crudo={ia.crudo} enReporte /> : <p className="py-10 text-[#4a5488]">Las IA no respondieron a tiempo esta vez.</p>}
           <PalabrasCalientes marca={r.marca} pais={r.pais} calientes={calientes} tono="eco" />
         </div>
         {ia.fase === "listo" && <EscenaEco marca={r.marca} pais={r.pais} resultados={ia.resultados} />}
+        <CierreVentas r={r} tono="eco" />
       </div>
     );
 
@@ -109,11 +111,12 @@ export default function VistaReporte({ reporte: r }: { reporte: Publico }) {
         <div className="mx-auto w-full max-w-[1200px] px-5 md:px-10">
           <Encabezado r={r} tono="sentinel" />
         </div>
-        {dig.fase === "listo" && dig.resumen ? <ReporteSentinel r={dig.resumen} hub={pais.hub} nombrePais={pais.nombre} /> : <p className="mx-auto max-w-[1200px] px-10 py-10 text-[#5F6068]">Las fuentes de redes y medios no respondieron a tiempo esta vez.</p>}
+        {dig.fase === "listo" && dig.resumen ? <ReporteSentinel r={dig.resumen} hub={pais.hub} nombrePais={pais.nombre} enReporte /> : <p className="mx-auto max-w-[1200px] px-10 py-10 text-[#5F6068]">Las fuentes de redes y medios no respondieron a tiempo esta vez.</p>}
         <div className="mx-auto w-full max-w-[1200px] px-5 md:px-10">
           <PalabrasCalientes marca={r.marca} pais={r.pais} calientes={calientes} tono="sentinel" />
         </div>
         {dig.fase === "listo" && <EscenaSentinel marca={r.marca} pais={r.pais} resumen={dig.resumen} />}
+        <CierreVentas r={r} tono="sentinel" />
       </div>
     );
 
@@ -123,7 +126,7 @@ export default function VistaReporte({ reporte: r }: { reporte: Publico }) {
         <Encabezado r={r} tono="integral" />
         <LecturaIntegral marca={r.marca} cc={r.cc} ia={ia} dig={dig} />
         <PalabrasCalientes marca={r.marca} pais={r.pais} calientes={calientes} tono="integral" />
-        <DemoCompleta marca={r.marca} cc={r.cc} ia={ia} dig={dig} />
+        <CierreVentas r={r} tono="integral" />
         <div className="h-20" />
       </div>
     </div>

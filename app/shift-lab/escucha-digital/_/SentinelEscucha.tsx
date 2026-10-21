@@ -123,7 +123,7 @@ export default function SentinelEscucha() {
                 <button type="submit" disabled={sol.estado.fase === "enviando" || !campoMarca.valido} className={`${btn} w-full whitespace-nowrap`}>
                   {sol.estado.fase === "enviando" ? "Pidiendo el reporte" : "Recibir mi reporte"}
                 </button>
-                <p className="text-[13px] text-[#8A8B92]">Gratis y sin cuenta. Solo correos de empresa: te enviamos un enlace privado al reporte.</p>
+                <p className="text-[13px] text-[#8A8B92]">Gratis y sin cuenta. Con tu correo de empresa te enviamos el enlace privado al reporte y aceptas que un especialista de Shift te escriba sobre los resultados.</p>
               </div>
             </form>
             <div className="max-w-[560px]"><Confirmacion estado={sol.estado} tono="sentinel" onOtro={sol.reiniciar} /></div>
@@ -236,7 +236,7 @@ function FranjaMedios({ cc, nombrePais }: { cc: string; nombrePais: string }) {
 /* ------------------------------------------------------------------ */
 /* EL REPORTE                                                          */
 
-export function Reporte({ r, hub, nombrePais }: { r: Resumen; hub: string; nombrePais: string }) {
+export function Reporte({ r, hub, nombrePais, enReporte }: { r: Resumen; hub: string; nombrePais: string; enReporte?: boolean }) {
   const pico = picoDeConversacion(r);
   const dom = redDominante(r);
   const nomRed = (k: string) => REDES.find((x) => x.key === k)?.nombre ?? k;
@@ -360,7 +360,8 @@ export function Reporte({ r, hub, nombrePais }: { r: Resumen; hub: string; nombr
             )}
           </div>
 
-          {/* Lo que haría Sentinel completo */}
+          {/* Lo que haría Sentinel completo (fuera del reporte por correo: ahí cierra CierreVentas) */}
+          {!enReporte && (
           <div className="grid gap-6 border-t border-[#DCDCD6] bg-[#FAFAF8] px-5 py-8 md:px-8 lg:grid-cols-[1fr_1fr] lg:items-start lg:gap-12">
             <div>
               <p className="text-[20px] font-semibold leading-snug md:text-[22px]">Esto es una foto. Sentinel completo es la película.</p>
@@ -370,6 +371,7 @@ export function Reporte({ r, hub, nombrePais }: { r: Resumen; hub: string; nombr
             </div>
             <PanelDemo hub={hub} idea={`Escucha digital gratis (Sentinel): ${r.marca}, ${nombrePais}. ${r.total} menciones en 30 días${pico ? `, pico el ${pico.dia}` : ""}. Pide la demo completa.`} />
           </div>
+          )}
         </div>
       </div>
     </section>

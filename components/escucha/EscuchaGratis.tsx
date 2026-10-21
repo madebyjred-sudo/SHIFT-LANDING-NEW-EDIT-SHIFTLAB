@@ -102,7 +102,7 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
         </div>
         <button type="button" onClick={campo.alternar} className="mt-3 px-1 text-[13px] text-[#5BE9FF] underline underline-offset-2">{campo.textoAlternar}</button>
         <p className="mt-2 px-1 text-[13px] text-white/55">
-          Gratis y sin tarjeta, solo con correo de empresa. Consultamos {TOTAL_CASAS} IA y 30 días de redes y medios de {pais.nombre}, y te enviamos el reporte en unos minutos.
+          Gratis y sin tarjeta, solo con correo de empresa (aceptas que un especialista de Shift te escriba sobre los resultados). Consultamos {TOTAL_CASAS} IA y 30 días de redes y medios de {pais.nombre}, y te enviamos el reporte en unos minutos.
           {slotGlobo && <span className="hidden md:inline"> También puedes elegir tu país en el globo.</span>}
         </p>
       </form>

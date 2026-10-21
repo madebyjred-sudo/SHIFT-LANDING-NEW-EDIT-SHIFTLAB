@@ -117,7 +117,7 @@ function Corriendo({ marca }: { marca: string }) {
 }
 
 /* ---------- El reporte ---------- */
-export function Reporte({ marca, cc, resultados, crudo }: { marca: string; cc: string; resultados: ResIA[]; crudo?: { key: string; answer: string; error?: boolean }[] }) {
+export function Reporte({ marca, cc, resultados, crudo, enReporte }: { marca: string; cc: string; resultados: ResIA[]; crudo?: { key: string; answer: string; error?: boolean }[]; enReporte?: boolean }) {
   const pais = paisPorCc(cc);
   const validos = resultados.filter((r) => !r.error);
   const conocen = validos.filter((r) => r.conoce);
@@ -259,7 +259,7 @@ export function Reporte({ marca, cc, resultados, crudo }: { marca: string; cc: s
         </div>
       )}
 
-      <ConEcoCompleto marca={marca} pais={pais} crudo={crudo} conocen={conocen.length} total={validos.length} alternativas={alternativas.map((a) => a.nombre)} disputas={disputa.length} />
+      {!enReporte && <ConEcoCompleto marca={marca} pais={pais} crudo={crudo} conocen={conocen.length} total={validos.length} alternativas={alternativas.map((a) => a.nombre)} disputas={disputa.length} />}
     </motion.section>
   );
 }
@@ -596,7 +596,7 @@ export default function EcoEscucha() {
             </form>
             <button type="button" onClick={campo.alternar} className="mt-2 text-[13px] text-[#1534dc] underline underline-offset-2">{campo.textoAlternar}</button>
             <Confirmacion estado={sol.estado} tono="eco" onOtro={sol.reiniciar} />
-            <p className="mt-3 text-[13px] text-[#858eb4]">Gratis y sin cuenta. Solo correos de empresa: te enviamos un enlace privado al reporte.</p>
+            <p className="mt-3 text-[13px] text-[#858eb4]">Gratis y sin cuenta. Con tu correo de empresa te enviamos el enlace privado al reporte y aceptas que un especialista de Shift te escriba sobre los resultados.</p>
           </div>
           <Radar fase={girando ? "corriendo" : "idle"} />
         </div>
