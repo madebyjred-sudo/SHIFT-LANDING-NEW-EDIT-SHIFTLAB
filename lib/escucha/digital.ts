@@ -206,7 +206,11 @@ function resumir(c: Crudo, marca: string, cc: string): Resumen {
       const m = a.medio.replace(/^www\./, "");
       medios.set(m, (medios.get(m) ?? 0) + 1);
       // Titular solo si la nota nombra a la marca (Talkwalker trae notas que la citan de pasada o por homónimo).
-      const nombra = norm((a.titulo ?? "") + " " + (a.texto ?? "")).includes(norm(marca));
+      // En Centroamérica una marca también es una dirección («frente a la Dos Pinos»): esa nota no habla de la marca.
+      const cuerpo = norm((a.titulo ?? "") + " " + (a.texto ?? ""));
+      const mn = norm(marca);
+      const comoDireccion = new RegExp(`(frente a(l| la| el)?|diagonal a(l| la)?|costado (norte|sur|este|oeste) de(l| la)?|\\d+ ?(metros|m) (al )?(norte|sur|este|oeste) de(l| la)?|contiguo a(l| la)?|cerca de(l| la)?) ${mn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`).test(cuerpo);
+      const nombra = cuerpo.includes(mn) && !comoDireccion;
       if (a.titulo && nombra && a.tipo === "onlinenews" && !vistos.has(a.titulo) && titulares.length < 4) {
         vistos.add(a.titulo);
         titulares.push({ medio: m, titulo: a.titulo.slice(0, 160), url: a.url, fecha: dia });

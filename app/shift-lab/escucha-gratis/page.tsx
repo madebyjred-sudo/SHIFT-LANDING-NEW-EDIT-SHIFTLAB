@@ -3,6 +3,7 @@ import { createPageMetadata, createWebPageSchema } from "@/app/seo";
 import { LabDotGrid } from "@/components/ui/lab-primitives";
 import EscuchaGratis from "@/components/escucha/EscuchaGratis";
 import TarjetaSentinel from "@/components/escucha/TarjetaSentinel";
+import FondoGlobo from "@/components/escucha/FondoGlobo";
 import ShiftLabEcoCard from "@/app/shift-lab/_/ShiftLabEcoCard";
 import { ECO_REAL, FECHA_DATOS, SENTINEL_REAL } from "@/lib/escucha/datos-reales";
 
@@ -65,7 +66,8 @@ export default function EscuchaGratisPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <div className="overflow-x-clip bg-[#0A0E27] text-white">
         <section className="relative isolate overflow-hidden pt-36 pb-20 md:pt-44">
-          <LabDotGrid opacity={0.25} />
+          <LabDotGrid opacity={0.2} />
+          <FondoGlobo />
           <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 md:px-10">
             <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[#5BE9FF] [font-family:var(--font-figtree)]">Shift LAB · Eco + Sentinel · gratis</p>
             <h1 className="mt-4 max-w-4xl text-[38px] font-bold leading-[1.04] md:text-[64px] [font-family:var(--font-zilla-slab)]">

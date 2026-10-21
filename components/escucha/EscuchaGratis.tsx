@@ -50,7 +50,7 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
 
   return (
     <div className={variante === "pagina" ? "" : "mx-auto w-full max-w-[1380px]"}>
-      <form onSubmit={escuchar} className="rounded-[22px] border border-white/10 bg-white/[0.04] p-4 md:p-5">
+      <form onSubmit={escuchar} className="relative rounded-[22px] border border-white/10 bg-[#0B1030]/90 p-4 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)] md:p-5">
         <div className="grid gap-3 md:grid-cols-[1fr_220px_auto]">
           <label className="block">
             <span className="sr-only">Tu marca</span>
