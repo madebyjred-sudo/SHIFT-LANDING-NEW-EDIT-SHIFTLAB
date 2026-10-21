@@ -412,7 +412,9 @@ const CARD_HTML = `<style>
     </div>
   </section>`;
 
-export default function ShiftLabEcoCard() {
+/** `href`/`cta` permiten reusar la tarjeta como puerta a otra página (p. ej. la
+ * landing de la escucha en IA); sin props queda igual que en /shift-lab. */
+export default function ShiftLabEcoCard({ href, cta }: { href?: string; cta?: string } = {}) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -487,5 +489,12 @@ export default function ShiftLabEcoCard() {
     return () => cleanups.forEach((fn) => fn());
   }, []);
 
-  return <div ref={ref} dangerouslySetInnerHTML={{ __html: CARD_HTML }} />;
+  const html =
+    href || cta
+      ? CARD_HTML.replace(
+          /href="https:\/\/eco\.shiftlabdev\.space\/dossier" target="_blank" rel="noopener">\s*Conocé más/,
+          `href="${href ?? "https://eco.shiftlabdev.space/dossier"}"${href?.startsWith("/") ? "" : ' target="_blank" rel="noopener"'}>\n          ${cta ?? "Conocé más"}`,
+        )
+      : CARD_HTML;
+  return <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />;
 }

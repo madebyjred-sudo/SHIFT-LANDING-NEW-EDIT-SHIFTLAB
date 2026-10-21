@@ -142,6 +142,7 @@ type Articulo = {
   medio: string;
   pais: string | null;
   titulo: string | null;
+  texto?: string | null;
   url: string;
   sentimiento: string;
   engagement?: number;
@@ -177,6 +178,7 @@ function correrQuickSearch(marca: string, cc: string): Promise<Crudo> {
   });
 }
 
+const norm = (x: string) => x.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 const ES_MEDIO = new Set(["onlinenews", "news", "print", "tv", "radio", "blog"]);
 
 function resumir(c: Crudo, marca: string, cc: string): Resumen {
@@ -203,7 +205,9 @@ function resumir(c: Crudo, marca: string, cc: string): Resumen {
     if (ES_MEDIO.has(a.tipo) && a.medio) {
       const m = a.medio.replace(/^www\./, "");
       medios.set(m, (medios.get(m) ?? 0) + 1);
-      if (a.titulo && a.tipo === "onlinenews" && !vistos.has(a.titulo) && titulares.length < 4) {
+      // Titular solo si la nota nombra a la marca (Talkwalker trae notas que la citan de pasada o por homónimo).
+      const nombra = norm((a.titulo ?? "") + " " + (a.texto ?? "")).includes(norm(marca));
+      if (a.titulo && nombra && a.tipo === "onlinenews" && !vistos.has(a.titulo) && titulares.length < 4) {
         vistos.add(a.titulo);
         titulares.push({ medio: m, titulo: a.titulo.slice(0, 160), url: a.url, fecha: dia });
       }
