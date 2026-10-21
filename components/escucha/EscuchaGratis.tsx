@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import FondoGlobo from "./FondoGlobo";
 import { CASAS } from "@/lib/escucha/casas";
-import { enlaceDossier, registrarLead, useEscuchaDigital, useEscuchaIA, type EstadoDig, type EstadoIA } from "@/lib/escucha/cliente";
+import { anotarUltima, enlaceDossier, escuchaInicial, registrarLead, useEscuchaDigital, useEscuchaIA, type EstadoDig, type EstadoIA } from "@/lib/escucha/cliente";
+import { avisarFase } from "./Esqueleto";
 import { alternativasNombradas, cuadrante, loQueLaIANoSabe, picoDeConversacion } from "@/lib/escucha/lectura";
 import { MEDIOS } from "@/lib/escucha/medios";
 import { PAISES, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
@@ -34,22 +35,36 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
   }, [variante]);
 
   useEffect(() => {
-    const q = new URLSearchParams(window.location.search);
-    const p = q.get("pais");
-    setCc(p && PAISES.some((x) => x.cc === p) ? p : paisDelNavegador());
-    const m = q.get("marca");
-    if (m) setMarca(m.slice(0, 60));
-  }, []);
+    const ini = escuchaInicial();
+    const valido = ini ? PAISES.some((x) => x.cc === ini.cc) : false;
+    setCc(valido && ini ? ini.cc : paisDelNavegador());
+    // En la página integral se restaura la última escucha (refrescar no la borra; viene de caché).
+    if (ini && valido && variante === "pagina") {
+      setMarca(ini.marca);
+      setEnviada({ marca: ini.marca, cc: ini.cc });
+      void ia.correr(ini.marca, ini.cc);
+      void dig.correr(ini.marca, ini.cc);
+    } else if (ini?.desde === "url") setMarca(ini.marca);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pais = paisPorCc(cc);
   const medios = MEDIOS[cc] ?? [];
   const corriendo = ia.estado.fase === "corriendo" || dig.estado.fase === "en_cola" || dig.estado.fase === "corriendo";
+
+  // Avisa al resto de la página: nada antes de lanzar, todo cuando las dos escuchas terminaron.
+  const terminoIA = enviada && ia.estado.fase !== "corriendo" && ia.estado.fase !== "idle";
+  const terminoDig = enviada && !["idle", "en_cola", "corriendo"].includes(dig.estado.fase);
+  useEffect(() => {
+    if (variante !== "pagina") return;
+    avisarFase(!enviada ? "idle" : terminoIA && terminoDig ? "listo" : "corriendo");
+  }, [variante, enviada, terminoIA, terminoDig]);
 
   function escuchar(e: React.FormEvent) {
     e.preventDefault();
     const m = marca.trim();
     if (m.length < 2 || corriendo) return;
     setEnviada({ marca: m, cc });
+    anotarUltima(m, cc);
     void ia.correr(m, cc);
     void dig.correr(m, cc);
     setTimeout(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);

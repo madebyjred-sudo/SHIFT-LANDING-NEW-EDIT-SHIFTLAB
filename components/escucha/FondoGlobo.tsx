@@ -44,13 +44,13 @@ export default function FondoGlobo({ cc, onCc, corriendo = false }: { cc: string
             if (p) onCc(p.cc);
           }}
           vista={[84, -14]}
-          spin={corriendo ? 0.03 : 0}
+          latiendo={corriendo}
           size={1200}
           className="sl-globe-fade"
         />
       </div>
       <div aria-hidden className="absolute right-[-640px] top-[-120px] opacity-80 md:hidden">
-        <AmericasGlobe mercados={MERCADOS} seleccionado={sel} vista={[84, -14]} size={1200} className="sl-globe-fade" />
+        <AmericasGlobe mercados={MERCADOS} seleccionado={sel} latiendo={corriendo} vista={[84, -14]} size={1200} className="sl-globe-fade" />
       </div>
     </div>
   );

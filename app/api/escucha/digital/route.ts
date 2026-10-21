@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { esHumano, ipDe } from "@/lib/escucha/humano";
 import { iniciar, consultar, limpiarMarca } from "@/lib/escucha/digital";
 import { PAISES } from "@/lib/escucha/paises";
 import { rateLimit } from "@/lib/rate-limit";
@@ -13,7 +14,7 @@ function ip(req: Request) {
 export async function POST(req: Request) {
   const lim = rateLimit(`escucha-digital:${ip(req)}`);
   if (!lim.ok) return NextResponse.json({ ok: false, error: "limite" }, { status: 429 });
-  let body: { marca?: string; cc?: string };
+  let body: { marca?: string; cc?: string; token?: string };
   try {
     body = await req.json();
   } catch {
@@ -24,6 +25,7 @@ export async function POST(req: Request) {
   if (marca.length < 2 || !PAISES.some((p) => p.cc === cc)) {
     return NextResponse.json({ ok: false, error: "datos" }, { status: 400 });
   }
+  if (!(await esHumano(body.token, ipDe(req)))) return NextResponse.json({ ok: false, error: "verificacion" }, { status: 403 });
   const r = iniciar(marca, cc);
   if (!r.ok) return NextResponse.json(r, { status: r.error === "apagado" ? 503 : 429 });
   return NextResponse.json(r);

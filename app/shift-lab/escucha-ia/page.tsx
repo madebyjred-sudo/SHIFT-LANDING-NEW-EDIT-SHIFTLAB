@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import { createPageMetadata, createWebPageSchema } from "@/app/seo";
+import AjustesMovil from "@/components/escucha/AjustesMovil";
+import { createPageMetadata } from "@/app/seo";
+import { schemaHerramienta } from "@/lib/escucha/seo";
+import { FAQ_ECO } from "@/lib/escucha/faq";
 import EcoEscucha from "./_/EcoEscucha";
 
 /* Herramienta gratis de Eco: qué responden siete IA sobre tu marca.
@@ -17,9 +20,10 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function EscuchaIAPage() {
-  const schema = createWebPageSchema({ pathname: "/shift-lab/escucha-ia", title: TITULO, description: DESCRIPCION });
+  const schema = schemaHerramienta({ ruta: "/shift-lab/escucha-ia", titulo: TITULO, descripcion: DESCRIPCION, nombreApp: "Escucha gratis en IA · Eco", faq: FAQ_ECO, funciones: ["Pregunta a siete IA por tu marca: ChatGPT, Claude, Gemini, Perplexity, DeepSeek, Grok y Meta AI","Cuántas IA conocen tu marca y cuántas la nombran","A quién recomiendan en tu lugar","Respuesta completa de cada IA","Dossier de Eco personalizado"] });
   return (
     <>
+      <AjustesMovil />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <EcoEscucha />
     </>

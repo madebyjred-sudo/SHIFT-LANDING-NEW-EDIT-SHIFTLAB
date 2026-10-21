@@ -25,6 +25,9 @@ export const ECO_REAL = {
   marcas: 30, // espacios de trabajo en Eco
   corridas: 76, // corridas completas
   respuestasTotales: 17018, // eco_responses
+  // accuracy_violations: respuestas con al menos un dato que no coincide con la verdad cargada de la marca (29 espacios con verdad).
+  conError: 3552,
+  erroresDetectados: 7556,
 };
 
 export const SENTINEL_REAL = {

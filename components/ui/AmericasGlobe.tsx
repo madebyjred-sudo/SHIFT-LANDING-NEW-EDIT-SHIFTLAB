@@ -35,6 +35,8 @@ interface Props {
   vista?: [number, number];
   /** Grados por frame. >0 lo pone a girar solo (uso decorativo). */
   spin?: number;
+  /** Ondas que salen del país seleccionado (la escucha está corriendo ahí). */
+  latiendo?: boolean;
   size?: number;
   className?: string;
   /**
@@ -86,6 +88,7 @@ export default function AmericasGlobe({
   onSeleccionar,
   vista,
   spin = 0,
+  latiendo = false,
   size = 1000,
   className = "",
   shadowRef,
@@ -110,6 +113,8 @@ export default function AmericasGlobe({
   const proyRef = useRef<ReturnType<typeof geoOrthographic> | null>(null);
   const mercadosRef = useRef(mercados);
   const selRef = useRef(seleccionado);
+  const latRef = useRef(latiendo);
+  latRef.current = latiendo;
 
   mercadosRef.current = mercados;
   selRef.current = seleccionado;
@@ -292,6 +297,22 @@ export default function AmericasGlobe({
           ctx.strokeStyle = `rgba(${base},0.55)`;
           ctx.lineWidth = 1.2;
           ctx.stroke();
+          if (latRef.current) {
+            // tres ondas desfasadas que crecen y se apagan
+            const ahora = performance.now() / 1000;
+            for (let o = 0; o < 3; o++) {
+              const f = (ahora * 0.55 + o / 3) % 1;
+              ctx.beginPath();
+              ctx.arc(p[0], p[1], 16 + f * 90, 0, 2 * Math.PI);
+              ctx.strokeStyle = `rgba(${base},${0.6 * (1 - f)})`;
+              ctx.lineWidth = 1.6;
+              ctx.stroke();
+            }
+            ctx.beginPath();
+            ctx.arc(p[0], p[1], 34, 0, 2 * Math.PI);
+            ctx.fillStyle = `rgba(${base},${0.12 + 0.08 * Math.sin(ahora * 4)})`;
+            ctx.fill();
+          }
         }
 
         const rad = esSel ? 6 : m.activo ? 4.6 : 3.2;

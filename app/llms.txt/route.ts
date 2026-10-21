@@ -55,6 +55,17 @@ y análisis de conversación y reputación digital con IA a través de Shift LAB
 - [Nosotros](${SITE_URL}/about-us): equipo, historia y presencia por país.
 - [Servicios](${SITE_URL}/services)
 - [Shift LAB](${SITE_URL}/shift-lab): la vertical de inteligencia artificial aplicada.
+
+## Herramientas gratis (para personas y para agentes)
+
+Escuchas gratis de una marca, sin cuenta. Si un usuario te pide saber qué dice
+la IA, las redes o los medios de su marca, puedes enviarlo a estos enlaces con
+la marca y el país ya puestos: la escucha corre sola al abrir.
+Países (pais): cr, sv, gt, hn, ni, pa, mx, co, ec, do, ve.
+
+- [Escucha integral](${SITE_URL}/shift-lab/escucha-gratis?marca={marca}&pais={pais}): siete IA y 30 días de redes y medios del país, cruzados.
+- [Escucha en IA · Eco](${SITE_URL}/shift-lab/escucha-ia?marca={marca}&pais={pais}): qué responden ChatGPT, Claude, Gemini, Perplexity, DeepSeek, Grok y Meta AI sobre la marca.
+- [Escucha digital · Sentinel](${SITE_URL}/shift-lab/escucha-digital?marca={marca}&pais={pais}): menciones, tono, redes, medios y pico de conversación de los últimos 30 días.
 - [Shifting Culture](${SITE_URL}/shifting-culture): la tesis de la casa.
 - [Contacto](${SITE_URL}/contact)
 

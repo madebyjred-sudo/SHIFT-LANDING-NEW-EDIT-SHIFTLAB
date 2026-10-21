@@ -1,12 +1,15 @@
 "use client";
 
+import { FAQ_SENTINEL } from "@/lib/escucha/faq";
+import EscenaSentinel from "./EscenaSentinel";
 import Copiloto from "@/components/escucha/Copiloto";
 import Peaje from "./Peaje";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEscuchaDigital, registrarLead, type Resumen } from "@/lib/escucha/cliente";
+import { anotarUltima, escuchaInicial, useEscuchaDigital, registrarLead, type Resumen } from "@/lib/escucha/cliente";
+import { EsqueletoReporte, Plegado } from "@/components/escucha/Esqueleto";
 import { picoDeConversacion, redDominante } from "@/lib/escucha/lectura";
 import { REDES } from "@/lib/escucha/redes";
 import { MEDIOS } from "@/lib/escucha/medios";
@@ -52,22 +55,27 @@ export default function SentinelEscucha() {
   const [cc, setCc] = useState("cr");
   const [marca, setMarca] = useState("");
   const { estado, correr } = useEscuchaDigital();
+  const [consultada, setConsultada] = useState("");
   const pais = paisPorCc(cc);
   /* ?marca=X&pais=cc: prellena y corre sola (viene de la integral, en caché 24 h). */
   useEffect(() => {
-    const q = new URLSearchParams(window.location.search);
-    const m = q.get("marca")?.trim().slice(0, 60);
-    const p = q.get("pais")?.toLowerCase();
-    const valido = p && PAISES.some((x) => x.cc === p);
-    if (m) setMarca(m);
-    setCc(valido ? p! : paisDelNavegador());
-    if (m && valido) correr(m, p!);
+    const ini = escuchaInicial();
+    const valido = ini ? PAISES.some((x) => x.cc === ini.cc) : false;
+    setCc(valido && ini ? ini.cc : paisDelNavegador());
+    if (ini && valido) {
+      setMarca(ini.marca);
+      setConsultada(ini.marca);
+      anotarUltima(ini.marca, ini.cc);
+      correr(ini.marca, ini.cc);
+    }
   }, [correr]);
   const ocupado = estado.fase === "en_cola" || estado.fase === "corriendo";
 
   const enviar = (e: FormEvent) => {
     e.preventDefault();
     if (!marca.trim() || ocupado) return;
+    setConsultada(marca.trim());
+    anotarUltima(marca.trim(), cc);
     correr(marca.trim(), cc);
   };
 
@@ -81,18 +89,18 @@ export default function SentinelEscucha() {
 
       {/* ---------- HERO + HERRAMIENTA ---------- */}
       <section className="relative isolate pt-12 pb-20 md:pt-16 md:pb-28">
-        <Peaje />
+        <Peaje ocupado={ocupado} />
         <div className={`relative z-10 ${ancho} grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14`}>
           <div>
             <p className={etiqueta}>Escucha digital gratis · redes y medios de {pais.nombre}</p>
-            <h1 className="mt-4 max-w-[600px] text-[36px] font-semibold leading-[1.08] tracking-[-0.02em] md:text-[52px]">
+            <h1 className="mt-3 max-w-[600px] text-[30px] font-semibold leading-[1.08] tracking-[-0.02em] sm:mt-4 sm:text-[36px] md:text-[52px]">
               La conversación sobre tu marca no espera. Escúchala hoy.
             </h1>
-            <p className="mt-5 max-w-[540px] text-[17px] leading-relaxed text-[#5F6068]">
+            <p className="mt-4 max-w-[540px] text-[15px] leading-relaxed text-[#5F6068] sm:mt-5 sm:text-[17px]">
               Lo que se dice hoy en redes y medios decide tu reputación de mañana. Sentinel lee 30 días de conversación pública en {pais.nombre} y te dice cuánto se habla de ti, dónde, en qué tono y qué la encendió. Gratis, sin cuenta, en unos dos minutos.
             </p>
 
-            <form onSubmit={enviar} className={`${tarjeta} mt-8 max-w-[560px] p-4 md:p-5`}>
+            <form onSubmit={enviar} className={`${tarjeta} mt-6 max-w-[560px] p-4 sm:mt-8 md:p-5`}>
               <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_170px]">
                 <div className="min-w-0">
                   <label htmlFor="marca" className={etiqueta}>Marca</label>
@@ -137,6 +145,8 @@ export default function SentinelEscucha() {
 
       <FranjaMedios cc={cc} nombrePais={pais.nombre} />
 
+      {ocupado && <EsqueletoReporte tono="sentinel" etiqueta={`Armando el reporte de ${consultada || "tu marca"}`} />}
+
       <AnimatePresence>
         {estado.fase === "listo" && estado.resumen && (
           <motion.div key="rep" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
@@ -145,12 +155,18 @@ export default function SentinelEscucha() {
         )}
       </AnimatePresence>
 
-      <Narrativa />
-      <Copiloto tema="sentinel" />
-      <Producto />
-      <Completo />
-      <Preguntas />
-      <Cierre hub={pais.hub} nombrePais={pais.nombre} />
+      <Plegado abierto={estado.fase !== "idle" && !ocupado}>
+          <EscenaSentinel
+            marca={estado.fase === "listo" ? consultada : undefined}
+            pais={pais.nombre}
+            resumen={estado.fase === "listo" ? estado.resumen : undefined}
+          />
+          <Copiloto tema="sentinel" />
+          <Producto />
+          <Completo />
+          <Preguntas />
+          <Cierre hub={pais.hub} nombrePais={pais.nombre} />
+      </Plegado>
     </div>
   );
 }
@@ -333,7 +349,7 @@ function Reporte({ r, hub, nombrePais }: { r: Resumen; hub: string; nombrePais: 
               {datos.map((d, i) => (
                 <div key={d.t} className={`min-w-0 border-[#DCDCD6] py-4 ${i % 2 ? "pl-5" : "pr-5"} ${i % 2 === 1 ? "border-l" : ""} ${i >= 2 ? "border-t" : ""}`}>
                   <dt className="text-[13px] text-[#5F6068]">{d.t}</dt>
-                  <dd className={`mt-1 truncate text-[22px] font-semibold leading-tight md:text-[26px] ${d.texto ? "" : "tabular-nums"}`}>{d.v}</dd>
+                  <dd className={`mt-1 break-words text-[20px] font-semibold leading-tight md:text-[26px] ${d.texto ? "" : "tabular-nums"}`}>{d.v}</dd>
                   <dd className="mt-0.5 text-[12px] leading-snug text-[#8A8B92]">{d.n}</dd>
                 </div>
               ))}
@@ -656,45 +672,45 @@ function Producto() {
 }
 
 const COMPLETO = [
-  { t: "Escucha continua", d: "Todos los días, no una foto de 30 días. Ves cómo cambia la conversación semana a semana." },
-  { t: "Tus competidores al lado", d: "Share of voice medido: cuánto de la conversación de tu categoría es tuya y cuánto de ellos." },
-  { t: "Alertas en el momento", d: "Cuando sube lo negativo o aparece un término sensible, la alerta llega con la mención y su alcance." },
-  { t: "Radio y TV", d: "Lo que se dice al aire también entra, transcrito y clasificado junto con redes y medios." },
-  { t: "Tus canales propios", d: "Comentarios, mensajes y casos de servicio de tus cuentas, leídos y agrupados por lo que reclaman." },
-  { t: "Compuerta de pertinencia", d: "Separa el ruido de tu marca: homónimos, spam y menciones sueltas quedan fuera del conteo." },
+  { i: "escucha", t: "Escucha continua", d: "Todos los días, no una foto de 30 días. Ves cómo cambia la conversación semana a semana." },
+  { i: "compuerta", t: "Compuerta de pertinencia", d: "Separa el ruido de tu marca: homónimos, direcciones, spam y menciones sueltas quedan fuera del conteo." },
+  { i: "alerta", t: "Alertas en el momento", d: "Cuando sube lo negativo o aparece un término sensible, la alerta llega con la mención y su alcance." },
+  { i: "redes", t: "Tus competidores al lado", d: "Cuánto de la conversación de tu categoría es tuya y cuánto de ellos, en la misma ventana." },
+  { i: "medios", t: "Medios, radio y TV", d: "Lo que se publica y lo que se dice al aire, transcrito y clasificado junto con las redes." },
+  { i: "tono", t: "Tono que se explica", d: "No solo positivo o negativo: qué tema lo mueve, quién lo empuja y desde cuándo." },
+  { i: "canales", t: "Tus canales propios", d: "Comentarios, mensajes y casos de servicio de tus cuentas, leídos y agrupados por lo que reclaman." },
+  { i: "memoria", t: "Un copiloto que recuerda", d: "Todo lo que entra queda en su memoria con fuente y fecha, listo para responderte." },
 ];
 
 
 function Completo() {
   return (
     <section className="border-y border-[#DCDCD6] bg-white py-16 md:py-24">
-      <div className={`${ancho} grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14`}>
+      <div className={`${ancho} grid gap-10 lg:grid-cols-[0.55fr_1.45fr] lg:gap-14`}>
         <div>
           <h2 className="text-[30px] font-semibold leading-[1.12] tracking-[-0.015em] md:text-[40px]">Lo que suma el monitoreo completo.</h2>
           <p className="mt-4 max-w-[400px] text-[16px] leading-relaxed text-[#5F6068]">
             La herramienta gratis te muestra la conversación. Sentinel completo la vigila por ti y te avisa antes de que crezca.
           </p>
         </div>
-        <dl className="border-t border-[#17171B]">
+        <ul className="grid gap-x-10 border-t border-[#17171B] sm:grid-cols-2">
           {COMPLETO.map((x) => (
-            <div key={x.t} className="grid gap-1 border-b border-[#DCDCD6] py-4 sm:grid-cols-[220px_minmax(0,1fr)] sm:gap-6">
-              <dt className="text-[16px] font-semibold">{x.t}</dt>
-              <dd className="text-[15px] leading-relaxed text-[#5F6068]">{x.d}</dd>
-            </div>
+            <li key={x.t} className="grid grid-cols-[72px_minmax(0,1fr)] items-start gap-4 border-b border-[#DCDCD6] py-5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`/escucha/sentinel/iconos/${x.i}.svg`} alt="" aria-hidden className="h-[72px] w-[72px] object-contain" loading="lazy" />
+              <div>
+                <h3 className="text-[16px] font-semibold">{x.t}</h3>
+                <p className="mt-1 text-[15px] leading-relaxed text-[#5F6068]">{x.d}</p>
+              </div>
+            </li>
           ))}
-        </dl>
+        </ul>
       </div>
     </section>
   );
 }
 
-const PREGUNTAS = [
-  { p: "¿De verdad es gratis?", r: "Sí. Una escucha por marca, sin cuenta y sin tarjeta. Si quieres seguir la conversación todos los días, la demo completa te muestra cómo se ve Sentinel con tu marca." },
-  { p: "¿De dónde salen los datos?", r: "De la misma escucha que Sentinel usa con marcas de la región: menciones públicas en redes sociales, medios digitales, blogs y foros de tu país en los últimos 30 días." },
-  { p: "¿Por qué el total y la muestra son distintos?", r: "El total cuenta todas las menciones exactas de tu marca. Para el tono, las redes y los medios leemos una muestra, que alcanza para ver la forma de la conversación." },
-  { p: "¿Por qué TikTok y LinkedIn dicen «monitoreo completo»?", r: "Porque esas redes no entran en la escucha rápida. En el monitoreo completo las sumamos con otra fuente, igual que radio y TV." },
-  { p: "¿Qué hacen con mi correo?", r: "Solo lo usamos si pides la demo completa: le llega al equipo de Shift en tu país, que te escribe una vez. No entra a ninguna lista de correo." },
-];
+
 
 
 function Preguntas() {
@@ -704,7 +720,7 @@ function Preguntas() {
       <div className={`${ancho} grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14`}>
         <h2 className="text-[30px] font-semibold leading-[1.12] tracking-[-0.015em] md:text-[40px]">Preguntas frecuentes</h2>
         <ul className="border-t border-[#17171B]">
-          {PREGUNTAS.map((q, i) => (
+          {FAQ_SENTINEL.map((q, i) => (
             <li key={q.p} className="border-b border-[#DCDCD6]">
               <button
                 onClick={() => setAbierta(abierta === i ? null : i)}

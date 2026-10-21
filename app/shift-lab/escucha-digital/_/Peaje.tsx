@@ -14,8 +14,10 @@ import { useEffect, useRef } from "react";
 const COLOR = [146, 68, 216] as const; // #9244D8
 const N = 3200;
 
-export default function Peaje() {
+export default function Peaje({ ocupado = false }: { ocupado?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const ocupadoRef = useRef(ocupado);
+  ocupadoRef.current = ocupado;
 
   useEffect(() => {
     const canvas = ref.current;
@@ -98,8 +100,9 @@ export default function Peaje() {
 
     function paso() {
       const rx = raton.x, ry = raton.y, act = raton.activo;
+      const lluvia = ocupadoRef.current;
       for (let i = 0; i < N; i++) {
-        let acel = 1;
+        let acel = lluvia ? 3.2 : 1;
         if (act) {
           const dx = x[i] - rx, dy = y[i] - ry, d2 = dx * dx + dy * dy;
           if (d2 < 140 * 140) {
@@ -111,7 +114,9 @@ export default function Peaje() {
         vx[i] *= 0.92;
         x[i] += vx[i];
         y[i] += vy[i] * acel * (1 + Math.max(0, (y[i] - linea * 0.7) / (linea * 0.3)) * 1.2);
+        if (lluvia) x[i] += Math.sin(y[i] * 0.03 + i) * 0.6; // sin orden: tiemblan mientras se leen
         if (y[i] >= linea) {
+          if (lluvia) { nacer(i, true); continue; }
           const k = Math.max(0, Math.min(brillo.length - 1, Math.round(x[i] / 2)));
           brillo[k] = Math.min(2.5, brillo[k] + 0.5 * t[i]);
           if (k > 0) brillo[k - 1] += 0.12;

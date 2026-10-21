@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { esHumano, ipDe } from "@/lib/escucha/humano";
 import { limpiarMarca } from "@/lib/escucha/digital";
 import { PAISES } from "@/lib/escucha/paises";
 
@@ -69,7 +70,7 @@ async function completarLocal(crudo: Crudo, marca: string, pais: string): Promis
 const sinAcentos = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 
 export async function POST(req: Request) {
-  let body: { marca?: string; cc?: string };
+  let body: { marca?: string; cc?: string; token?: string };
   try {
     body = await req.json();
   } catch {
@@ -78,6 +79,7 @@ export async function POST(req: Request) {
   const marca = limpiarMarca(String(body.marca ?? ""));
   const pais = PAISES.find((p) => p.cc === body.cc);
   if (marca.length < 2 || !pais) return NextResponse.json({ ok: false, error: "datos" }, { status: 400 });
+  if (!(await esHumano(body.token, ipDe(req)))) return NextResponse.json({ ok: false, error: "verificacion" }, { status: 403 });
 
   const clave = `${marca.toLowerCase()}|${pais.cc}`;
   let crudo: Crudo | null = null;

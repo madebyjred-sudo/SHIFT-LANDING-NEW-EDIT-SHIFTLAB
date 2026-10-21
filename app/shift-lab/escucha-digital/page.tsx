@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import AjustesMovil from "@/components/escucha/AjustesMovil";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
-import { createPageMetadata, createWebPageSchema } from "@/app/seo";
+import { createPageMetadata } from "@/app/seo";
+import { schemaHerramienta } from "@/lib/escucha/seo";
+import { FAQ_SENTINEL } from "@/lib/escucha/faq";
 import SentinelEscucha from "./_/SentinelEscucha";
 
 /* Herramienta gratis de Sentinel: escucha digital de redes sociales y medios.
@@ -22,9 +25,10 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function EscuchaDigitalPage() {
-  const schema = createWebPageSchema({ pathname: RUTA, title: TITULO, description: DESCRIPCION });
+  const schema = schemaHerramienta({ ruta: RUTA, titulo: TITULO, descripcion: DESCRIPCION, nombreApp: "Escucha digital gratis · Sentinel", faq: FAQ_SENTINEL, funciones: ["30 días de conversación pública en redes y medios del país","Menciones por red social y medio","Tono positivo, neutral y negativo","Pico de conversación y titulares de prensa","Medios de 11 países de América Latina"] });
   return (
     <>
+      <AjustesMovil />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <div className={`${plex.variable} ${plexMono.variable}`}>
         <SentinelEscucha />

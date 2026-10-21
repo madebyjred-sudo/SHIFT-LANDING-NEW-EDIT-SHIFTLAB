@@ -1,11 +1,14 @@
 "use client";
 
+import { FAQ_ECO } from "@/lib/escucha/faq";
+import EscenaEco from "./EscenaEco";
 import Copiloto from "@/components/escucha/Copiloto";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CASAS } from "@/lib/escucha/casas";
-import { enlaceDossier, registrarLead, useEscuchaIA, type ResIA } from "@/lib/escucha/cliente";
+import { anotarUltima, enlaceDossier, escuchaInicial, registrarLead, useEscuchaIA, type ResIA } from "@/lib/escucha/cliente";
+import { EsqueletoReporte, Plegado } from "@/components/escucha/Esqueleto";
 import { alternativasNombradas, datosEnDisputa } from "@/lib/escucha/lectura";
 import { ECO_REAL, EJEMPLO_MEMORIA_VS_BUSQUEDA, FECHA_DATOS } from "@/lib/escucha/datos-reales";
 import { PAISES, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
@@ -351,6 +354,92 @@ function ConEcoCompleto(p: { marca: string; pais: ReturnType<typeof paisPorCc>; 
 }
 
 /* ---------- Datos reales de Eco ---------- */
+/* ---------- Lo que Eco ve a fondo: brechas y el resto del producto ---------- */
+const MODULOS = [
+  { i: "lectura", t: "Exactitud", d: "Lo que la IA dice de ti, contrastado con tus fuentes. Cada dato equivocado queda marcado con la respuesta y la IA que lo dijo.", cifra: () => `${pct(ECO_REAL.conError, ECO_REAL.respuestasTotales)}%`, pie: "de las respuestas trae al menos un dato que no coincide con la marca" },
+  { i: "pin", t: "Fuentes", d: "Qué sitios lee la IA para hablar de tu categoría y cuáles te mencionan. Ahí se gana o se pierde la respuesta.", cifra: () => `${pct(ECO_REAL.citada, ECO_REAL.respuestas)}%`, pie: "de las respuestas enlaza al sitio de la marca" },
+  { i: "nodos", t: "Competidores", d: "Pregunta por pregunta, quién aparece contigo, quién en tu lugar y en qué IA cada uno es más fuerte." },
+  { i: "percepcion", t: "Percepción", d: "Con qué palabras te describe cada IA, en qué tono y qué atributos te asigna frente a tu competencia." },
+  { i: "riesgo", t: "Riesgos", d: "Temas sensibles, datos viejos o afirmaciones peligrosas que la IA repite de tu marca, ordenados por gravedad." },
+  { i: "checklist", t: "Acciones", d: "El agente propone qué publicar y dónde para cerrar cada brecha; tu equipo lo ejecuta con un clic." },
+];
+
+const PREGUNTAS_EJEMPLO = [
+  { q: "¿Cuál es la mejor opción en mi ciudad?", tu: false, otro: "Competidor A" },
+  { q: "¿Qué marca es más barata?", tu: false, otro: "Competidor B" },
+  { q: "¿Es confiable [tu marca]?", tu: true, otro: "" },
+  { q: "¿Qué alternativas hay a [tu marca]?", tu: true, otro: "Competidor A" },
+  { q: "¿Dónde compro con envío a domicilio?", tu: false, otro: "Competidor C" },
+];
+
+function LoQueEcoVe() {
+  return (
+    <section className="eco-section border-t border-[#e3e5f1]" aria-labelledby="fondo">
+      <div className="eco-wrap">
+        <p className="eco-kicker">Eco completo</p>
+        <h2 id="fondo" className="eco-h2 mt-4 max-w-4xl">Una pregunta es una foto. Eco mide todas las preguntas de tu categoría.</h2>
+
+        {/* Brechas: el corazón */}
+        <div className="mt-16 grid items-center gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+          <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/escucha/eco/iconos/brecha.webp" alt="" aria-hidden className="h-[150px] w-auto" loading="lazy" />
+            <h3 className="eco-h3 mt-6">Brechas de contenido</h3>
+            <p className="mt-3 max-w-md text-[16px] leading-relaxed text-[#4a5488]">
+              Las preguntas donde la IA no te nombra, quién ocupa tu lugar y qué fuente le dio esa respuesta. Cada brecha viene con lo que habría que publicar para cerrarla.
+            </p>
+            <p className="eco-stat eco-stat--sm eco-stat--mag mt-8">{pct(ECO_REAL.noNombradaConCompetidor, ECO_REAL.noNombrada)}<span>%</span></p>
+            <p className="mt-2 max-w-md text-[15px] leading-relaxed text-[#4a5488]">de las respuestas sin la marca recomiendan a un competidor. Esas son brechas que alguien más está aprovechando.</p>
+            <p className="mt-2 text-[13px] text-[#858eb4]">{FUENTE}</p>
+          </div>
+          <div className="border-t border-[#0e1745]">
+            <div className="hidden grid-cols-[minmax(0,1fr)_86px_130px] gap-4 border-b border-[#e3e5f1] py-3 text-[12px] sm:grid font-semibold uppercase tracking-[0.1em] text-[#858eb4] [font-family:var(--font-figtree)]">
+              <span>Pregunta</span>
+              <span>Tu marca</span>
+              <span>En tu lugar</span>
+            </div>
+            {PREGUNTAS_EJEMPLO.map((x, i) => (
+              <motion.div
+                key={x.q}
+                initial={{ opacity: 0, x: 12 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, ease, delay: i * 0.07 }}
+                className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-1 border-b border-[#e3e5f1] py-4 text-[15px] sm:grid-cols-[minmax(0,1fr)_86px_130px]"
+              >
+                <span className="col-span-2 text-[#0e1745] sm:col-span-1">{x.q}</span>
+                <span className={x.tu ? "font-semibold text-[#1534dc]" : "font-semibold text-[#f540ff]"}>{x.tu ? "Aparece" : "Brecha"}</span>
+                <span className="text-[#4a5488]"><span className="sm:hidden">En tu lugar: </span>{x.otro || "Nadie"}</span>
+              </motion.div>
+            ))}
+            <p className="mt-3 text-[13px] text-[#858eb4]">Ejemplo del módulo de brechas. En Eco son cientos de preguntas, medidas cada semana en las 7 IA.</p>
+          </div>
+        </div>
+
+        {/* El resto del producto */}
+        <ul className="mt-24 grid gap-x-14 border-t border-[#e3e5f1] md:grid-cols-2">
+          {MODULOS.map((m) => (
+            <li key={m.t} className="grid grid-cols-[88px_minmax(0,1fr)] items-start gap-5 border-b border-[#e3e5f1] py-7">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`/escucha/eco/iconos/${m.i}.webp`} alt="" aria-hidden className="h-[80px] w-[88px] object-contain" loading="lazy" />
+              <div>
+                <h3 className="text-[19px] font-bold text-[#0e1745] [font-family:var(--font-figtree)]">{m.t}</h3>
+                <p className="mt-1.5 text-[15px] leading-relaxed text-[#4a5488]">{m.d}</p>
+                {m.cifra && (
+                  <p className="mt-3 text-[14px] text-[#4a5488]">
+                    <b className="text-[22px] font-extrabold text-[#0e1745] [font-family:var(--font-figtree)]">{m.cifra()}</b> {m.pie}
+                  </p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 text-[13px] text-[#858eb4]">Cifras sobre {ECO_REAL.respuestasTotales.toLocaleString("es-CR")} respuestas de IA en {ECO_REAL.marcas} marcas de la región · {FUENTE}</p>
+      </div>
+    </section>
+  );
+}
+
 function PorQueImporta() {
   const casas = Object.entries(ECO_REAL.porCasa)
     .filter(([k]) => k !== "grok")
@@ -438,13 +527,7 @@ function PorQueImporta() {
   );
 }
 
-const PREGUNTAS = [
-  ["¿De verdad es gratis?", "Sí. Una escucha por marca al día, sin cuenta y sin tarjeta. La demo completa es el siguiente paso si quieres medir cada semana."],
-  ["¿Qué le preguntan a la IA?", "Le pedimos a cada una que te describa como lo haría un cliente de tu país, con búsqueda web cuando la tiene. Es una sola pregunta: sirve para ver si te conoce, no para medir tu categoría."],
-  ["¿Qué significa «te conoce»?", "Que la IA responde con información sobre tu marca en vez de decir que no la encuentra o confundirla con otra. «Te nombra» quiere decir que además usa tu nombre en la respuesta."],
-  ["¿De dónde salen los números de la región?", `De las mediciones de Eco: ${ECO_REAL.respuestas.toLocaleString("es-CR")} respuestas de IA sobre ${ECO_REAL.marcas} marcas, agregadas y sin nombrar a ninguna. ${FUENTE}.`],
-  ["¿Qué hacen con mi correo?", "Solo lo usamos si pides la demo completa. Le llega al equipo de Shift en tu país, que te escribe una vez. No entra a ninguna lista."],
-];
+
 
 export default function EcoEscucha() {
   const { estado, correr } = useEscuchaIA();
@@ -455,15 +538,14 @@ export default function EcoEscucha() {
   useEffect(() => {
     if (auto.current) return;
     auto.current = true;
-    const q = new URLSearchParams(window.location.search);
-    const m = (q.get("marca") ?? "").trim().slice(0, 60);
-    const p = (q.get("pais") ?? "").toLowerCase();
-    const valido = PAISES.some((x) => x.cc === p);
-    if (m) setMarca(m);
-    setCc(valido ? p : paisDelNavegador());
-    if (m.length >= 2 && valido) {
-      setConsultada({ marca: m, cc: p });
-      correr(m, p);
+    const ini = escuchaInicial();
+    const valido = ini ? PAISES.some((x) => x.cc === ini.cc) : false;
+    setCc(valido && ini ? ini.cc : paisDelNavegador());
+    if (ini && valido && ini.marca.length >= 2) {
+      setMarca(ini.marca);
+      setConsultada({ marca: ini.marca, cc: ini.cc });
+      anotarUltima(ini.marca, ini.cc);
+      correr(ini.marca, ini.cc);
     }
   }, [correr]);
 
@@ -472,6 +554,7 @@ export default function EcoEscucha() {
     const m = marca.trim();
     if (m.length < 2 || estado.fase === "corriendo") return;
     setConsultada({ marca: m, cc });
+    anotarUltima(m, cc);
     correr(m, cc);
   }
 
@@ -479,6 +562,8 @@ export default function EcoEscucha() {
     if (estado.fase === "listo") document.getElementById("reporte")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [estado.fase]);
 
+  // Terminada (bien o con aviso): ahí aparece el resto de la página.
+  const lanzada = estado.fase !== "idle" && estado.fase !== "corriendo";
   const aviso =
     estado.fase === "usado"
       ? "Ya hiciste tu escucha gratis de hoy. Pide la demo completa y la corremos con tu equipo."
@@ -541,13 +626,19 @@ export default function EcoEscucha() {
         </div>
       </section>
 
+      {/* El resto de la landing no existe hasta que se lanza la escucha: esqueleto mientras corre, todo al terminar. */}
+      {estado.fase === "corriendo" && <EsqueletoReporte tono="eco" etiqueta={`Armando el reporte de ${consultada?.marca ?? "tu marca"}`} />}
+
       {estado.fase === "listo" && estado.resultados && consultada && (
-        <div className="eco-wrap pb-24">
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease }} className="eco-wrap pb-24">
           <Reporte marca={consultada.marca} cc={consultada.cc} resultados={estado.resultados} crudo={estado.crudo} />
-        </div>
+        </motion.div>
       )}
 
+      <Plegado abierto={lanzada}>
+      <EscenaEco marca={estado.fase === "listo" ? consultada?.marca : undefined} pais={consultada ? paisPorCc(consultada.cc).nombre : undefined} resultados={estado.fase === "listo" ? estado.resultados : undefined} />
       <PorQueImporta />
+      <LoQueEcoVe />
       <Copiloto tema="eco" />
 
       {/* ---------- Preguntas y caminos ---------- */}
@@ -567,7 +658,7 @@ export default function EcoEscucha() {
             </div>
           </div>
           <div>
-            {PREGUNTAS.map(([q, r]) => (
+            {FAQ_ECO.map(([q, r]) => (
               <details key={q} className="eco-faq group">
                 <summary>
                   {q}
@@ -579,6 +670,7 @@ export default function EcoEscucha() {
           </div>
         </div>
       </section>
+      </Plegado>
     </div>
   );
 }
