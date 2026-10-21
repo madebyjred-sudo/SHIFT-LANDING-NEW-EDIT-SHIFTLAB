@@ -329,7 +329,7 @@ function Apertura({ i, titulo, escena }: { i: number; titulo: string; escena: (p
           {NUM[i]}
         </motion.span>
         <motion.img aria-hidden src={`/escucha/eco/iconos/${ICONO[i]}.webp`} alt="" style={{ y: iconoY }} className="pointer-events-none absolute right-[4vw] top-[12vh] w-[22vw] max-w-[260px] opacity-[0.16] md:opacity-25" />
-        <div className="relative z-10 mx-auto grid w-full max-w-[1180px] items-center gap-8 px-6 pt-20 md:gap-12 md:px-10 lg:grid-cols-[1fr_1fr] lg:pt-0">
+        <div className="relative z-10 mx-auto grid w-full max-w-[1180px] items-center gap-8 px-6 pt-28 md:gap-12 md:px-10 lg:grid-cols-[1fr_1fr] lg:pt-0">
           <motion.div style={{ y: tituloY, opacity: tituloOp }}>
             <p className="text-[13px] font-semibold uppercase tracking-[0.22em] text-[#F540FF] [font-family:var(--font-figtree)]">Capítulo {NUM[i]}</p>
             <h2 className="mt-4 text-[30px] font-extrabold leading-[1.04] tracking-[-0.03em] text-white sm:text-[38px] md:mt-5 md:text-[64px] [font-family:var(--font-figtree)]">{sinNumero(titulo)}</h2>
