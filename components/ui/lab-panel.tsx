@@ -25,6 +25,7 @@ const PLATAFORMAS = [
   { href: "https://brandhub.shiftlatam.agency/dossier", t: "Brandhub", d: "El sistema de marca, en un solo lugar", color: "#F540FF", fuera: true },
 ];
 
+const GUIA = { href: "/shift-lab/guia-ia", t: "Guía de marca en IA" };
 const SERVICIOS = ["Auditoría de madurez en IA", "IA integrada a tus flujos", "Automatización de tareas", "Productos digitales a medida", "Dashboards e inteligencia de datos"];
 
 export function LabPanel({ open, isLight, onClose }: { open: boolean; isLight: boolean; onClose: () => void }) {
@@ -132,6 +133,11 @@ export function LabPanel({ open, isLight, onClose }: { open: boolean; isLight: b
 
             {/* 3 · Lo que construimos */}
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.4, ease }} className={`md:border-l md:pl-8 ${isLight ? "border-[#1534DC]/10" : "border-white/10"}`}>
+              <Link href={GUIA.href} onClick={onClose} className={`mb-5 block rounded-[12px] border p-3 transition-colors ${isLight ? "border-[#1534DC]/12 hover:bg-[#1534DC]/[0.05]" : "border-white/10 hover:bg-white/[0.05]"}`}>
+                <span className={rotulo}>Guía gratis</span>
+                <span className={`mt-1 block text-[14px] font-semibold ${tinta}`}>{GUIA.t} →</span>
+                <span className={`block text-[12px] ${suave}`}>AEO, GEO y palabras calientes</span>
+              </Link>
               <p className={rotulo}>Lo que construimos</p>
               <ul className="mt-4 space-y-2.5">
                 {SERVICIOS.map((s) => (

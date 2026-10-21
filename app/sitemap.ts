@@ -15,6 +15,7 @@ const ROUTES = [
   "/shift-lab/escucha-gratis",
   "/shift-lab/escucha-ia",
   "/shift-lab/escucha-digital",
+  "/shift-lab/guia-ia",
   "/newsroom",
   "/awards",
   "/purpose",

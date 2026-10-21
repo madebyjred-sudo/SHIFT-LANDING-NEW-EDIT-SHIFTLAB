@@ -65,6 +65,7 @@ Países (pais): cr, sv, gt, hn, ni, pa, mx, co, ec, do, ve.
 
 - [Escucha integral](${SITE_URL}/shift-lab/escucha-gratis?marca={marca}&pais={pais}): siete IA y 30 días de redes y medios del país, cruzados.
 - [Escucha en IA · Eco](${SITE_URL}/shift-lab/escucha-ia?marca={marca}&pais={pais}): qué responden ChatGPT, Claude, Gemini, Perplexity, DeepSeek, Grok y Meta AI sobre la marca.
+- [Guía de visibilidad de marca en IA](${SITE_URL}/shift-lab/guia-ia): AEO, GEO, palabras calientes, auditoría y programa, con datos de Eco en América Latina.
 - [Escucha digital · Sentinel](${SITE_URL}/shift-lab/escucha-digital?marca={marca}&pais={pais}): menciones, tono, redes, medios y pico de conversación de los últimos 30 días.
 - [Shifting Culture](${SITE_URL}/shifting-culture): la tesis de la casa.
 - [Contacto](${SITE_URL}/contact)
