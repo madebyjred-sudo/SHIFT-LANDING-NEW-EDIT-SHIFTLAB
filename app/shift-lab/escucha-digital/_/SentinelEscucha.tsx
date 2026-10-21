@@ -5,6 +5,7 @@ import { FAQ_SENTINEL } from "@/lib/escucha/faq";
 import EscenaSentinel from "./EscenaSentinel";
 import Copiloto from "@/components/escucha/Copiloto";
 import Peaje from "./Peaje";
+import Compuerta from "./Compuerta";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Confirmacion, useSolicitud } from "@/components/escucha/PedirReporte";
 import { useCampoMarca } from "@/components/escucha/CampoMarca";
@@ -128,7 +129,7 @@ export default function SentinelEscucha() {
             <div className="max-w-[560px]"><Confirmacion estado={sol.estado} tono="sentinel" onOtro={sol.reiniciar} /></div>
           </div>
 
-          <Superficies ocupado={ocupado} />
+          <Compuerta ocupado={ocupado} />
         </div>
       </section>
 
@@ -197,51 +198,6 @@ function Estado({ fase, enCola }: { fase: string; enCola?: number }) {
 }
 
 /* Tabla de superficies: las 11 siempre visibles. Con reporte muestra la muestra por superficie. */
-function Superficies({ ocupado, resumen }: { ocupado: boolean; resumen?: Resumen }) {
-  const total = resumen ? Math.max(1, Object.values(resumen.porRed).reduce((a, b) => a + b, 0)) : 1;
-  const estado = ocupado ? "Leyendo" : resumen ? "Listo" : "En espera";
-  return (
-    <div className={`${tarjeta} self-start`}>
-      <div className="flex items-baseline justify-between border-b border-[#DCDCD6] px-5 py-3.5">
-        <h2 className="text-[15px] font-semibold">Dónde escucha Sentinel</h2>
-        <span className={`text-[13px] ${resumen ? "text-[#1E874B]" : "text-[#8A8B92]"}`}>{estado}</span>
-      </div>
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] border-b border-[#ECECE8] px-5 py-2 text-[12px] text-[#8A8B92]">
-        <span>Superficie</span>
-        <span>{resumen ? "Menciones en la muestra" : "Cobertura"}</span>
-      </div>
-      <ul>
-        {REDES.map((r) => {
-          const n = resumen?.porRed[r.key] ?? 0;
-          return (
-            <li key={r.key} className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-3 border-b border-[#ECECE8] px-5 py-[9px] last:border-0">
-              {r.icono ? (
-                <Image src={r.icono} alt="" width={16} height={16} className="h-4 w-4 opacity-70 [filter:brightness(0)]" />
-              ) : (
-                <span className="h-1.5 w-1.5 justify-self-center rounded-full bg-[#8A8B92]" />
-              )}
-              <span className={`truncate text-[14px] ${r.soloCompleto ? "text-[#8A8B92]" : ""}`}>{r.nombre}</span>
-              {r.soloCompleto ? (
-                <span className="text-right text-[13px] text-[#9244D8]">Entra en el monitoreo completo</span>
-              ) : resumen ? (
-                <span className="flex items-baseline gap-3 text-right">
-                  <span className={`${num} text-[14px]`}>{fmt(n)}</span>
-                  <span className={`${num} w-10 text-[12px] text-[#8A8B92]`}>{n ? pct(n / total) : "0 %"}</span>
-                </span>
-              ) : (
-                <span className="text-right text-[13px] text-[#8A8B92]">{ocupado ? "leyendo" : "incluida"}</span>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-      <p className="border-t border-[#DCDCD6] bg-[#FAFAF8] px-5 py-3 text-[12px] leading-relaxed text-[#8A8B92]">
-        {resumen ? `Conteo sobre una muestra de ${fmt(resumen.muestra)} menciones.` : "Las 11 superficies, siempre. Radio y TV entran en el monitoreo completo."}
-      </p>
-    </div>
-  );
-}
-
 function FranjaMedios({ cc, nombrePais }: { cc: string; nombrePais: string }) {
   const lista = MEDIOS[cc] ?? [];
   if (!lista.length) return null;
