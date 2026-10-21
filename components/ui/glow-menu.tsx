@@ -1,5 +1,6 @@
 "use client";
 
+import { LabPanel } from "./lab-panel";
 import * as React from "react";
 import Link from "next/link";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
@@ -230,10 +231,38 @@ function HighlightItem({
   isLight: boolean;
 }) {
   const reduce = useReducedMotion();
+  // Panel de Shift LAB: se abre al pasar el cursor o con foco de teclado; el
+  // clic en la etiqueta sigue llevando a /shift-lab.
+  const [open, setOpen] = React.useState(false);
+  const timer = React.useRef<number | null>(null);
+  const liRef = React.useRef<HTMLLIElement | null>(null);
+  const abrir = () => {
+    if (timer.current) window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setOpen(true), 90);
+  };
+  const cerrar = () => {
+    if (timer.current) window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setOpen(false), 220);
+  };
+  React.useEffect(() => {
+    if (!open) return;
+    const k = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", k);
+    return () => document.removeEventListener("keydown", k);
+  }, [open]);
   return (
-    <li className={item.hideOnMobile ? "hidden sm:block" : ""}>
+    <li
+      ref={liRef}
+      className={item.hideOnMobile ? "hidden sm:block" : ""}
+      onMouseEnter={abrir}
+      onMouseLeave={cerrar}
+      onFocus={abrir}
+      onBlur={(e) => { if (!liRef.current?.contains(e.relatedTarget as Node)) cerrar(); }}
+    >
       <Link
         href={item.href}
+        onClick={() => setOpen(false)}
+        aria-expanded={open}
         aria-current={isActive ? "page" : undefined}
         className={[
           "group relative inline-flex items-center gap-[3px] rounded-full px-4 py-2.5",
@@ -275,7 +304,11 @@ function HighlightItem({
           SHIFT
         </span>
         <span className="text-[#F540FF]">LAB</span>
+        <svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`ml-1 h-3 w-3 transition-transform duration-300 ${open ? "rotate-180" : ""} ${isLight ? "text-[#1534DC]" : "text-white/80"}`}>
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
       </Link>
+      <LabPanel open={open} isLight={isLight} onClose={() => setOpen(false)} />
     </li>
   );
 }
