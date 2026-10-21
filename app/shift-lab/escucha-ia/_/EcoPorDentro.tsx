@@ -123,8 +123,8 @@ function PantallaPreguntas() {
             <span className="text-[13.5px] leading-snug" style={{ color: T.tinta }}>{p.q}</span>
             <span className="flex items-center gap-1.5">
               {orden.map((k) => (
-                <span key={k} className="grid h-[20px] w-[20px] place-items-center rounded-full" style={{ background: p.ias[k] ? "#eef1ff" : "#f6f6f9", opacity: p.ias[k] ? 1 : 0.35 }}>
-                  <Ia k={k} s={11} />
+                <span key={k} className="grid h-[16px] w-[16px] place-items-center" style={{ opacity: p.ias[k] ? 1 : 0.22, filter: p.ias[k] ? "none" : "grayscale(1)" }}>
+                  <Ia k={k} s={14} />
                 </span>
               ))}
               <span className={`ml-1 text-[11px] ${mono}`} style={{ color: n === 0 ? T.mag : T.tenue }}>{n}/5</span>

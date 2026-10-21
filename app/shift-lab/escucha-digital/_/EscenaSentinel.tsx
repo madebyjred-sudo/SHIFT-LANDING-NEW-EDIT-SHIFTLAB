@@ -18,7 +18,7 @@ const N = 1800;
 
 const beatsPara = (marca: string | undefined, pais: string | undefined, r: Resumen | undefined) => [
   { t: `Cada día se dicen miles de cosas que suenan a ${marca ?? "tu marca"}.`, s: "Homónimos, direcciones, spam, notas que te nombran de pasada. Contarlo todo es contar ruido." },
-  { t: "La compuerta deja pasar solo lo que es tuyo.", s: "Cada mención se lee y se decide: si no habla de tu marca, no entra al conteo." },
+  { t: "Sentinel es una compuerta que deja pasar solo lo importante.", s: "Cada mención se lee y se decide: si no habla de tu marca, no entra al conteo." },
   r
     ? { t: "Lo que pasa se ordena, se mide y te avisa.", s: `${r.total.toLocaleString("es-CR")} menciones de ${marca} en ${pais} en los últimos 30 días. Así se reparten por fuente en la muestra que leímos.` }
     : BEATS_BASE[2],
@@ -178,8 +178,7 @@ export default function EscenaSentinel({ marca, pais, resumen }: { marca?: strin
           <div className="relative min-h-[240px] w-full max-w-[460px]">
             {BEATS.map((b, i) => (
               <motion.div key={i} className="absolute inset-0" initial={false} animate={{ opacity: beat === i ? 1 : 0, y: beat === i ? 0 : beat > i ? -24 : 24 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
-                <p className="text-[13px] font-medium text-[#B98AEB]">{i + 1} de 3</p>
-                <h2 className="mt-3 text-[32px] font-semibold leading-[1.08] tracking-[-0.02em] text-[#F4F4F2] md:text-[46px]">{b.t}</h2>
+                <h2 className="text-[32px] font-semibold leading-[1.08] tracking-[-0.02em] text-[#F4F4F2] md:text-[46px]">{b.t}</h2>
                 <p className="mt-4 text-[16px] leading-relaxed text-[#F4F4F2]/65">{b.s}</p>
               </motion.div>
             ))}

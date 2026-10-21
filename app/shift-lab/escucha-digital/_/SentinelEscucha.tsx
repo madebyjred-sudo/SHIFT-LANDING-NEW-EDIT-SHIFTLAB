@@ -8,6 +8,7 @@ import Peaje from "./Peaje";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Confirmacion, useSolicitud } from "@/components/escucha/PedirReporte";
 import { useCampoMarca } from "@/components/escucha/CampoMarca";
+import { SentinelMarca } from "@/components/escucha/SentinelMarca";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
@@ -152,7 +153,7 @@ export default function SentinelEscucha() {
 function Wordmark() {
   return (
     <span className="flex items-baseline gap-1.5">
-      <span className="text-[19px] font-bold tracking-[0.04em] text-[#9244D8]">Sentinel</span>
+      <SentinelMarca className="text-[19px]" />
       <span className="text-[13px] text-[#8A8B92]">by Shift</span>
     </span>
   );
@@ -252,25 +253,27 @@ function FranjaMedios({ cc, nombrePais }: { cc: string; nombrePais: string }) {
       <div className={`${ancho} flex flex-col gap-4 md:flex-row md:items-center md:gap-10`}>
         <p className="shrink-0 text-[13px] text-[#5F6068]">Medios que escuchamos en {nombrePais}</p>
         <AnimatePresence mode="wait">
-          <motion.ul
+          <motion.div
             key={cc}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="flex flex-wrap items-center gap-x-8 gap-y-4"
+            className="relative min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]"
           >
-            {lista.slice(0, 9).map((m) => (
-              <li key={m.dominio} className="flex h-7 items-center" title={m.nombre}>
-                {m.logo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={m.logo} alt={m.nombre} className="h-5 w-auto max-w-[120px] opacity-55 [filter:grayscale(1)_brightness(0)]" />
-                ) : (
-                  <span className="text-[15px] font-semibold tracking-tight text-[#5F6068]">{m.nombre}</span>
-                )}
-              </li>
-            ))}
-          </motion.ul>
+            <motion.ul className="flex w-max flex-nowrap items-center gap-x-10" animate={{ x: ["0%", "-50%"] }} transition={{ duration: Math.max(18, lista.length * 3), repeat: Infinity, ease: "linear" }}>
+              {[...lista, ...lista].map((m, i) => (
+                <li key={m.dominio + i} className="flex h-7 shrink-0 items-center whitespace-nowrap" title={m.nombre} aria-hidden={i >= lista.length}>
+                  {m.logo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={m.logo} alt={m.nombre} className="h-5 w-auto max-w-[120px] opacity-55 [filter:grayscale(1)_brightness(0)]" />
+                  ) : (
+                    <span className="text-[15px] font-semibold tracking-tight text-[#5F6068]">{m.nombre}</span>
+                  )}
+                </li>
+              ))}
+            </motion.ul>
+          </motion.div>
         </AnimatePresence>
       </div>
     </section>

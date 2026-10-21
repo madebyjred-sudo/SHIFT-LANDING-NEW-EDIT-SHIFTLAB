@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { EJEMPLO_SENTINEL as EJ, LOGO_NIKE, foto } from "@/components/escucha/MarcaEjemplo";
 import { CreditosFotos } from "@/components/escucha/CreditosFotos";
+import { SentinelMarca } from "@/components/escucha/SentinelMarca";
 import { FECHA_DATOS, SENTINEL_REAL } from "@/lib/escucha/datos-reales";
 
 /* Sentinel por dentro, con una marca que todos reconocen y que además es un
@@ -22,7 +23,7 @@ function Ventana({ titulo, estado, children }: { titulo: string; estado?: ReactN
         <div className="flex items-center justify-between border-b px-4 py-2.5" style={{ borderColor: S.linea }}>
           <span className="flex items-center gap-2 text-[12px] font-semibold" style={{ color: S.tinta }}>
             <span className="h-2 w-2 rounded-[2px]" style={{ background: S.morado }} />
-            Sentinel
+            <SentinelMarca className="text-[11px]" />
             <span className="h-3.5 w-px" style={{ background: S.linea }} />
             <img src={LOGO_NIKE} alt={EJ.marca} className="h-3 w-auto" />
             <span className="font-normal" style={{ color: S.tenue }}>· {titulo}</span>
@@ -44,11 +45,11 @@ const Vivo = () => (
 
 /* 1 · La compuerta: cada mención se lee y se decide. */
 const MENCIONES = [
-  { t: "Nike amplía su sede de Beaverton y suma 2.000 puestos de trabajo", f: "Prensa digital", entra: true, por: "Habla de la empresa", img: "sede" },
-  { t: "La Victoria de Samotracia, la Nike del Louvre, vuelve a exhibirse tras su restauración", f: "Prensa digital", entra: false, por: "Homónimo: la diosa griega", img: "samotracia" },
-  { t: "Corrí mi primera media maratón con las Pegasus y cero ampollas 🙌", f: "Instagram", entra: true, por: "Experiencia de cliente", img: "corredores" },
+  { t: "Nike amplía su sede y suma 2.000 empleos", f: "Prensa digital", entra: true, por: "Habla de la empresa", img: "sede" },
+  { t: "La Nike de Samotracia vuelve al Louvre", f: "Prensa digital", entra: false, por: "Homónimo: la diosa griega", img: "samotracia" },
+  { t: "Mi primera media maratón con las Pegasus 🙌", f: "Instagram", entra: true, por: "Experiencia de cliente", img: "corredores" },
   { t: "Vendo botines Nike originales, talla 42, poco uso", f: "Facebook", entra: false, por: "Reventa particular", img: "botines" },
-  { t: "¿Alguien sabe si la chaqueta de la Selección sale en diciembre?", f: "Reddit", entra: true, por: "Producto de la marca", img: "chaqueta" },
+  { t: "¿La chaqueta de la Selección sale en diciembre?", f: "Reddit", entra: true, por: "Producto de la marca", img: "chaqueta" },
 ];
 function PantallaCompuerta() {
   return (
@@ -68,7 +69,7 @@ function PantallaCompuerta() {
           <motion.li key={m.t} initial={{ opacity: 0, y: -8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.15 + i * 0.12, ease }} className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 border-b px-4 py-2.5 last:border-0" style={{ borderColor: S.fina }}>
             <img src={foto(m.img)} alt="" className="h-10 w-10 rounded-[4px] object-cover" style={{ filter: m.entra ? "none" : "grayscale(1)", opacity: m.entra ? 1 : 0.55 }} />
             <span className="min-w-0">
-              <span className="block text-[13px] leading-snug" style={{ color: m.entra ? S.tinta : S.tenue, textDecoration: m.entra ? "none" : "line-through", textDecorationColor: "#C9C9C3" }}>{m.t}</span>
+              <span className="block text-[13px] leading-snug sm:truncate" style={{ color: m.entra ? S.tinta : S.tenue, textDecoration: m.entra ? "none" : "line-through", textDecorationColor: "#C9C9C3" }}>{m.t}</span>
               <span className="mt-0.5 block text-[11px]" style={{ color: S.tenue }}>{m.f} · {m.por}</span>
             </span>
             <motion.span initial={{ scale: 0.6, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.45 + i * 0.12, type: "spring", stiffness: 300, damping: 18 }} className="rounded-[3px] px-2 py-0.5 text-[11px] font-medium" style={m.entra ? { background: "#F1E7FB", color: S.morado } : { background: S.papel, color: S.tenue }}>
@@ -130,11 +131,11 @@ function PantallaMedios() {
       {MEDIOS.map((m, i) => (
         <motion.div key={m.donde} initial={{ opacity: 0, x: 10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.15 + i * 0.12, ease }} className="border-b px-4 py-3 last:border-0" style={{ borderColor: S.fina }}>
           <div className="flex items-center justify-between gap-3">
-            <span className="flex items-center gap-2 text-[12px]">
-              <span className="rounded-[3px] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-white" style={{ background: S.tinta }}>{m.tipo}</span>
-              <span style={{ color: S.suave }}>{m.donde}</span>
+            <span className="flex min-w-0 items-center gap-2 whitespace-nowrap text-[12px]">
+              <span className="shrink-0 rounded-[3px] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-white" style={{ background: S.tinta }}>{m.tipo}</span>
+              <span className="truncate" style={{ color: S.suave }}>{m.donde}</span>
             </span>
-            <span className="text-[11px] font-medium" style={{ color: color(m.tono) }}>{m.tono}</span>
+            <span className="shrink-0 text-[11px] font-medium" style={{ color: color(m.tono) }}>{m.tono}</span>
           </div>
           <p className="mt-1.5 text-[13px] italic leading-relaxed" style={{ color: S.tinta }}>
             {m.cita}
@@ -153,7 +154,7 @@ function PantallaMedios() {
 }
 
 const FILAS = [
-  { t: "Una compuerta que separa el ruido", d: "Contar todo lo que dice «Nike» es contar también la diosa griega, el museo y la reventa. Sentinel lee cada mención y decide si habla de tu marca antes de sumarla. Por eso sus números se pueden presentar en una junta.", P: PantallaCompuerta },
+  { t: "Sentinel es una compuerta que deja pasar solo lo importante", d: "Contar todo lo que dice «Nike» es contar también la diosa griega, el museo y la reventa. Sentinel lee cada mención y decide si habla de tu marca antes de sumarla. Por eso sus números se pueden presentar en una junta.", P: PantallaCompuerta },
   { t: "Alertas en el momento, con la razón", d: "No un correo diario con un gráfico. Cuando la conversación cambia de golpe, para bien o para mal, la alerta llega con qué pasó, cuánta gente lo ve, de dónde viene y lo que más se está compartiendo.", P: PantallaAlerta },
   { t: "Radio y televisión, no solo redes", d: "Lo que se dice al aire se transcribe y se clasifica junto con redes y prensa. Ves en una sola línea cómo una nota de TV de la noche se convierte en conversación al día siguiente.", P: PantallaMedios },
 ];
@@ -164,7 +165,7 @@ export default function SentinelPorDentro() {
       <style>{`.sen-zoom{--z:1.1;zoom:var(--z)}@media(min-width:1024px){.sen-zoom{--z:1.4}}`}</style>
       <div className={ancho}>
         <div className="max-w-3xl">
-          <p className="text-[13px] font-medium" style={{ color: S.morado }}>Sentinel por dentro</p>
+          <p className="flex items-center gap-2 text-[13px] font-medium" style={{ color: S.morado }}><SentinelMarca className="text-[13px]" /> por dentro</p>
           <h2 className="mt-3 text-[30px] font-semibold leading-[1.1] tracking-[-0.015em] md:text-[44px]">No solo cuántas menciones. Cuáles importan.</h2>
           <p className="mt-4 max-w-2xl text-[17px] leading-relaxed" style={{ color: S.suave }}>
             La mayoría de las herramientas de escucha te entrega un conteo. Sentinel te entrega la conversación que es tuya, te avisa cuando cambia y suma lo que se dice al aire.

@@ -622,7 +622,7 @@ export default function EcoEscucha() {
                 IA, redes y medios en una sola escucha
               </Link>
               <Link href="/shift-lab/escucha-digital" className="eco-route">
-                <span>Sentinel</span>
+                <span className="uppercase tracking-[0.14em]">Sentinel</span>
                 Lo que dicen de ti en redes y medios
               </Link>
             </div>
