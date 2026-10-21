@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { LabDotGrid } from "@/components/ui/lab-primitives";
 import ShiftLabEcoCard from "./ShiftLabEcoCard";
 import ShiftLabBrandhubCard from "./ShiftLabBrandhubCard";
+import EscuchaGratis from "@/components/escucha/EscuchaGratis";
 
 /**
  * Shift LAB · Banner — la familia de apps de Shift Lab conviviendo como
@@ -42,6 +43,25 @@ export default function ShiftLabBannerSection() {
             <ShiftLabBrandhubCard />
           </motion.div>
         </div>
+
+        {/* Escucha gratis: la parte interactiva del dossier, aquí mismo.
+            La misma herramienta vive sola en /shift-lab/escucha-gratis (pauta). */}
+        <motion.div
+          id="escucha-gratis"
+          className="mx-auto mt-20 w-full max-w-[1380px] scroll-mt-28 md:mt-28"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.7 }}
+        >
+          <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[#5BE9FF] [font-family:var(--font-figtree)]">Pruébalo con tu marca</p>
+          <h2 className="mt-3 max-w-4xl text-[32px] font-bold leading-[1.08] text-white md:text-[48px] [font-family:var(--font-zilla-slab)]">
+            Escucha gratis lo que dicen de ti <span className="text-[#F540FF]">la IA</span>, las redes y los medios.
+          </h2>
+          <div className="mt-8">
+            <EscuchaGratis variante="seccion" />
+          </div>
+        </motion.div>
       </div>
     </section>
   );
