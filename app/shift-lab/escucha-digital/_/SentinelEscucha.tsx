@@ -11,6 +11,7 @@ import { Confirmacion, useSolicitud } from "@/components/escucha/PedirReporte";
 import { useCampoMarca } from "@/components/escucha/CampoMarca";
 import { SentinelMarca } from "@/components/escucha/SentinelMarca";
 import { SelectorPais } from "@/components/escucha/SelectorPais";
+import CierreSinReporte from "@/components/escucha/CierreSinReporte";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
@@ -141,7 +142,7 @@ export default function SentinelEscucha() {
       <Copiloto tema="sentinel" />
       <Completo />
       <Preguntas />
-      <Cierre hub={pais.hub} nombrePais={pais.nombre} />
+      <Cierre />
     </div>
   );
 }
@@ -657,26 +658,19 @@ function Preguntas() {
   );
 }
 
-function Cierre({ hub, nombrePais }: { hub: string; nombrePais: string }) {
-  const idea = useMemo(() => `Demo completa de Sentinel desde la escucha digital gratis (${nombrePais}).`, [nombrePais]);
+function Cierre() {
   return (
-    <section className="border-t border-[#DCDCD6] bg-[#ECECE8] pt-14 pb-8 md:pt-20">
-      <div className={`${ancho} grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-end lg:gap-14`}>
-        <h2 className="max-w-[620px] text-[30px] font-semibold leading-[1.12] tracking-[-0.015em] md:text-[40px]">
-          Mañana se va a hablar de tu marca. Decide si te enteras a tiempo.
-        </h2>
-        <div>
-          <p className="mb-4 text-[16px] leading-relaxed text-[#5F6068]">El equipo de Shift en {nombrePais} te muestra Sentinel con tu marca, tus competidores y tus canales.</p>
-          <PanelDemo hub={hub} idea={idea} oscuro />
+    <CierreSinReporte
+      tono="sentinel"
+      conPie={
+        <div className={`${ancho} flex flex-wrap items-center justify-between gap-4 border-t border-white/10 py-5 text-[13px] text-white/55`}>
+          <SentinelMarca color="#B98AEB" />
+          <span className="flex gap-5">
+            <Link href="/shift-lab/escucha-gratis" className="hover:text-white">Escucha integral</Link>
+            <Link href="/shift-lab/escucha-ia" className="hover:text-white">Escucha de IA · Eco</Link>
+          </span>
         </div>
-      </div>
-      <div className={`${ancho} mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#CFCFC9] pt-5 text-[13px] text-[#5F6068]`}>
-        <Wordmark />
-        <span className="flex gap-5">
-          <Link href="/shift-lab/escucha-gratis" className="hover:text-[#17171B]">Escucha integral</Link>
-          <Link href="/shift-lab/escucha-ia" className="hover:text-[#17171B]">Escucha de IA · Eco</Link>
-        </span>
-      </div>
-    </section>
+      }
+    />
   );
 }

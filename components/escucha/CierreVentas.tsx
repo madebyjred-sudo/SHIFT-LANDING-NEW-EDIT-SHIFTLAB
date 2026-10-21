@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { gancho } from "@/lib/escucha/gancho";
+import { TarjetaFabiana } from "./CierreSinReporte";
 import type { Reporte as ReporteData } from "@/lib/escucha/solicitudes";
 
 /* Cierre del reporte: el hallazgo más fuerte de SU reporte, el aviso de que un
@@ -56,14 +57,8 @@ export default function CierreVentas({ r, tono }: { r: Omit<ReporteData, "correo
             </button>
             <span className="text-[13px]" style={{ color: t.suave }}>Este reporte vence el {vence}.</span>
           </div>
-          <div className="mt-8 flex max-w-[520px] items-center gap-4 border-t pt-6" style={{ borderColor: t.linea }}>
-            <span className="block h-16 w-16 shrink-0 overflow-hidden rounded-full">
-              <img src="/assets/images/aboutus/persona-11.jpg" alt="Fabiana Martínez" width={64} height={64} className="h-full w-full scale-[1.7] object-cover [transform-origin:50%_34%]" />
-            </span>
-            <p className="text-[14px] leading-snug" style={{ color: t.suave }}>
-              <span className="block text-[15px] font-semibold" style={{ color: t.tinta }}>Fabiana Martínez</span>
-              Directora de Desarrollo de Negocio, Shift Latam. Ella o alguien de su equipo te escribe con este reporte en la mano, no con una presentación genérica.
-            </p>
+          <div className="mt-8">
+            <TarjetaFabiana tono={tono} texto="Directora de Desarrollo de Negocio, Shift Latam. Ella o alguien de su equipo te escribe con este reporte en la mano, no con una presentación genérica." />
           </div>
           <AnimatePresence>
             {estado === "ok" && (

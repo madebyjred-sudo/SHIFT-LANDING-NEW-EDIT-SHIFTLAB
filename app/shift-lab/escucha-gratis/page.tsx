@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import CierreSinReporte from "@/components/escucha/CierreSinReporte";
 import EcoPorDentro from "../escucha-ia/_/EcoPorDentro";
 import SentinelPorDentro from "../escucha-digital/_/SentinelPorDentro";
 import "../escucha-ia/_/eco.css";
@@ -118,6 +119,9 @@ export default function EscuchaGratisPage() {
 
         <div className="border-t border-white/10">
           <Copiloto tema="integral" />
+        </div>
+        <div className="border-t border-white/10">
+          <CierreSinReporte tono="integral" />
         </div>
 
         <section className="relative border-t border-white/10 py-24">

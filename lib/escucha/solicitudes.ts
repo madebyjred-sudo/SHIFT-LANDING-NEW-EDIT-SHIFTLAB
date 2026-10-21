@@ -151,6 +151,18 @@ async function avisarVentas(r: Reporte, urgente = false): Promise<boolean> {
   return res.every(Boolean);
 }
 
+/** Lead que llegó al final de una landing sin pedir el reporte. */
+export async function avisarVentasSinReporte(o: { correo: string; tipo: Tipo; pais: string }): Promise<boolean> {
+  const asunto = `Lead ${NOMBRE[o.tipo].split(" · ")[1] ?? ""} · sin reporte · ${o.pais} · ${o.correo}`;
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;padding:28px 24px;color:#0e1745">
+  <p style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:${COLOR[o.tipo]};font-weight:700;margin:0">Lead nuevo · Shift LAB</p>
+  <h1 style="font-size:20px;line-height:1.3;margin:12px 0 14px">Quiere que le escriban (no pidió el reporte)</h1>
+  <table style="font-size:14px;border-collapse:collapse;width:100%"><tr><td style="padding:6px 0;color:#858eb4;width:90px">Correo</td><td><b>${escapar(o.correo)}</b></td></tr><tr><td style="padding:6px 0;color:#858eb4">Landing</td><td><b>${NOMBRE[o.tipo]}</b></td></tr><tr><td style="padding:6px 0;color:#858eb4">País</td><td><b>${escapar(o.pais)}</b> (por la zona horaria del navegador)</td></tr></table>
+  <p style="font-size:12px;color:#858eb4;margin-top:20px">Dejó su correo de trabajo en el cierre de la landing para que un especialista de Shift le escriba. Responder a ${escapar(o.correo)}.</p></div>`;
+  const res = await Promise.all(VENTAS().map((v) => mandar(v, asunto, html, `${asunto}`, o.correo)));
+  return res.every(Boolean);
+}
+
 /** El visitante pide desde el cierre que lo contacten hoy. */
 export async function pedirContactoHoy(id: string): Promise<"ok" | "repetido" | "no"> {
   const r = await leerVigente(id);

@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Confirmacion, useSolicitud } from "@/components/escucha/PedirReporte";
 import { useCampoMarca } from "@/components/escucha/CampoMarca";
+import CierreSinReporte from "@/components/escucha/CierreSinReporte";
 import { SelectorPais } from "@/components/escucha/SelectorPais";
 import { CASAS } from "@/lib/escucha/casas";
 import { enlaceDossier, escuchaInicial, registrarLead, type ResIA } from "@/lib/escucha/cliente";
@@ -637,6 +638,7 @@ export default function EcoEscucha() {
           </div>
         </div>
       </section>
+      <CierreSinReporte tono="eco" />
     </div>
   );
 }
