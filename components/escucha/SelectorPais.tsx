@@ -37,6 +37,12 @@ export function SelectorPais({ cc, onCc, tono, className = "", etiqueta = "País
     return () => removeEventListener("pointerdown", fuera);
   }, [abierto, cc]);
 
+  // Con la lista abierta, la burbuja flotante de Shifty se aparta para no tapar países.
+  useEffect(() => {
+    document.documentElement.toggleAttribute("data-lista-abierta", abierto);
+    return () => document.documentElement.removeAttribute("data-lista-abierta");
+  }, [abierto]);
+
   useEffect(() => {
     if (abierto) lista.current?.querySelector<HTMLElement>(`[data-i="${foco}"]`)?.scrollIntoView({ block: "nearest" });
   }, [foco, abierto]);
@@ -74,6 +80,7 @@ export function SelectorPais({ cc, onCc, tono, className = "", etiqueta = "País
 
   return (
     <div ref={raiz} className="relative">
+      <style>{`html[data-lista-abierta] .shifty-agent-island{opacity:0;pointer-events:none;transition:opacity .15s}`}</style>
       <button
         type="button"
         aria-haspopup="listbox"

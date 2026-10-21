@@ -563,7 +563,7 @@ export default function EcoEscucha() {
   return (
     <div className="eco-page">
       {/* ---------- Hero + herramienta ---------- */}
-      <section className="relative overflow-hidden pt-32 pb-16 md:pt-40 md:pb-24">
+      <section className="relative z-20 overflow-x-clip pt-32 pb-16 md:pt-40 md:pb-24">
         <div className="eco-wrap grid items-center gap-12 lg:grid-cols-[1.4fr_1fr]">
           <div>
             <p className="flex items-center gap-3">

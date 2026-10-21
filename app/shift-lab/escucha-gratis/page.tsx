@@ -70,7 +70,7 @@ export default function EscuchaGratisPage() {
       <AjustesMovil />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <div className="overflow-x-clip bg-[#0A0E27] text-white">
-        <section className="relative isolate overflow-hidden pt-36 pb-20 md:pt-44">
+        <section className="relative isolate z-20 overflow-x-clip pt-36 pb-20 md:pt-44">
           <LabDotGrid opacity={0.2} />
           <div id="globo-integral" className="absolute inset-0 z-0" />
           <div className="pointer-events-none relative z-10 mx-auto w-full max-w-[1180px] px-6 md:px-10">

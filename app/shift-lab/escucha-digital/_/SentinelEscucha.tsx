@@ -90,7 +90,7 @@ export default function SentinelEscucha() {
       <BarraMarca />
 
       {/* ---------- HERO + HERRAMIENTA ---------- */}
-      <section className="relative isolate pt-12 pb-20 md:pt-16 md:pb-28">
+      <section className="relative isolate z-20 pt-12 pb-20 md:pt-16 md:pb-28">
         <Peaje ocupado={ocupado} />
         <div className={`relative z-10 ${ancho} grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14`}>
           <div>
