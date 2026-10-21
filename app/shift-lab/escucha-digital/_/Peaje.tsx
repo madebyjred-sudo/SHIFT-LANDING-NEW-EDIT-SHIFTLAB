@@ -17,7 +17,9 @@ const N = 3200;
 export default function Peaje({ ocupado = false }: { ocupado?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const ocupadoRef = useRef(ocupado);
-  ocupadoRef.current = ocupado;
+  useEffect(() => {
+    ocupadoRef.current = ocupado;
+  }, [ocupado]);
 
   useEffect(() => {
     const canvas = ref.current;

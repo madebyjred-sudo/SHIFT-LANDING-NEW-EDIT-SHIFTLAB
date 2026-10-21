@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { esHumano, ipDe } from "@/lib/escucha/humano";
+import { leerPase, puerta } from "@/lib/escucha/acceso";
 import { iniciar, consultar, limpiarMarca } from "@/lib/escucha/digital";
 import { PAISES } from "@/lib/escucha/paises";
 import { rateLimit } from "@/lib/rate-limit";
@@ -12,9 +13,7 @@ function ip(req: Request) {
 
 /** POST {marca, cc} → {id}. Arranca (o reusa) la escucha digital de 30 días. */
 export async function POST(req: Request) {
-  const lim = rateLimit(`escucha-digital:${ip(req)}`);
-  if (!lim.ok) return NextResponse.json({ ok: false, error: "limite" }, { status: 429 });
-  let body: { marca?: string; cc?: string; token?: string };
+  let body: { marca?: string; cc?: string; token?: string; pase?: string };
   try {
     body = await req.json();
   } catch {
@@ -25,7 +24,11 @@ export async function POST(req: Request) {
   if (marca.length < 2 || !PAISES.some((p) => p.cc === cc)) {
     return NextResponse.json({ ok: false, error: "datos" }, { status: 400 });
   }
-  if (!(await esHumano(body.token, ipDe(req)))) return NextResponse.json({ ok: false, error: "verificacion" }, { status: 403 });
+  // Con pase verificado, la cuota es por correo; sin pase, por IP.
+  if (!leerPase(body.pase) && !rateLimit(`escucha-digital:${ip(req)}`).ok) return NextResponse.json({ ok: false, error: "limite" }, { status: 429 });
+  const acceso = puerta(body.pase, `${marca.toLowerCase()}|${cc}`);
+  if (!acceso.ok) return NextResponse.json({ ok: false, error: acceso.error }, { status: acceso.status });
+  if (!acceso.correo && !(await esHumano(body.token, ipDe(req)))) return NextResponse.json({ ok: false, error: "verificacion" }, { status: 403 });
   const r = iniciar(marca, cc);
   if (!r.ok) return NextResponse.json(r, { status: r.error === "apagado" ? 503 : 429 });
   return NextResponse.json(r);

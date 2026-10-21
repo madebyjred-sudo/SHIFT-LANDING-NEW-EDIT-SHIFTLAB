@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { terminosConversacion } from "./calientes";
 import { createHash, randomUUID } from "node:crypto";
 import { REDES } from "./redes";
 
@@ -38,6 +39,7 @@ export type Resumen = {
   porDia: { dia: string; n: number }[];
   alcance: number;
   interacciones: number;
+  calientes?: { t: string; n: number; cambio: number }[]; // términos que suben en la conversación (2ª mitad vs 1ª)
 };
 
 type Trabajo = {
@@ -231,5 +233,6 @@ function resumir(c: Crudo, marca: string, cc: string): Resumen {
     porDia: [...dias.entries()].sort().map(([dia, n]) => ({ dia, n })),
     alcance,
     interacciones,
+    calientes: terminosConversacion(c.articulos ?? [], marca),
   };
 }

@@ -1,12 +1,12 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { Confirmacion, useSolicitud } from "./PedirReporte";
 import { createPortal } from "react-dom";
 import FondoGlobo from "./FondoGlobo";
 import { CASAS } from "@/lib/escucha/casas";
-import { anotarUltima, enlaceDossier, escuchaInicial, registrarLead, useEscuchaDigital, useEscuchaIA, type EstadoDig, type EstadoIA } from "@/lib/escucha/cliente";
-import { avisarFase } from "./Esqueleto";
+import { enlaceDossier, escuchaInicial, registrarLead, type EstadoDig, type EstadoIA } from "@/lib/escucha/cliente";
 import { alternativasNombradas, cuadrante, loQueLaIANoSabe, picoDeConversacion } from "@/lib/escucha/lectura";
 import { MEDIOS } from "@/lib/escucha/medios";
 import { PAISES, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
@@ -24,10 +24,8 @@ const TOTAL_CASAS = CASAS.length;
 export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pagina" | "seccion" }) {
   const [marca, setMarca] = useState("");
   const [cc, setCc] = useState("cr");
-  const [enviada, setEnviada] = useState<{ marca: string; cc: string } | null>(null);
-  const ia = useEscuchaIA();
-  const dig = useEscuchaDigital();
-  const panelRef = useRef<HTMLDivElement>(null);
+  const [correo, setCorreo] = useState("");
+  const sol = useSolicitud("integral");
   // En la página integral el globo vive en el fondo del hero y comparte el país con el formulario.
   const [slotGlobo, setSlotGlobo] = useState<HTMLElement | null>(null);
   useEffect(() => {
@@ -38,43 +36,34 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
     const ini = escuchaInicial();
     const valido = ini ? PAISES.some((x) => x.cc === ini.cc) : false;
     setCc(valido && ini ? ini.cc : paisDelNavegador());
-    // En la página integral se restaura la última escucha (refrescar no la borra; viene de caché).
-    if (ini && valido && variante === "pagina") {
-      setMarca(ini.marca);
-      setEnviada({ marca: ini.marca, cc: ini.cc });
-      void ia.correr(ini.marca, ini.cc);
-      void dig.correr(ini.marca, ini.cc);
-    } else if (ini?.desde === "url") setMarca(ini.marca);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (ini?.desde === "url") setMarca(ini.marca);
+  }, []);
 
   const pais = paisPorCc(cc);
   const medios = MEDIOS[cc] ?? [];
-  const corriendo = ia.estado.fase === "corriendo" || dig.estado.fase === "en_cola" || dig.estado.fase === "corriendo";
-
-  // Avisa al resto de la página: nada antes de lanzar, todo cuando las dos escuchas terminaron.
-  const terminoIA = enviada && ia.estado.fase !== "corriendo" && ia.estado.fase !== "idle";
-  const terminoDig = enviada && !["idle", "en_cola", "corriendo"].includes(dig.estado.fase);
+  // El globo late en el país mientras se pide y unos segundos después: la escucha ya arrancó.
+  const [corriendo, setCorriendo] = useState(false);
   useEffect(() => {
-    if (variante !== "pagina") return;
-    avisarFase(!enviada ? "idle" : terminoIA && terminoDig ? "listo" : "corriendo");
-  }, [variante, enviada, terminoIA, terminoDig]);
+    if (sol.estado.fase === "enviando") setCorriendo(true);
+    if (sol.estado.fase === "enviado") {
+      const t = setTimeout(() => setCorriendo(false), 9000);
+      return () => clearTimeout(t);
+    }
+    if (sol.estado.fase === "error") setCorriendo(false);
+  }, [sol.estado.fase]);
 
   function escuchar(e: React.FormEvent) {
     e.preventDefault();
     const m = marca.trim();
-    if (m.length < 2 || corriendo) return;
-    setEnviada({ marca: m, cc });
-    anotarUltima(m, cc);
-    void ia.correr(m, cc);
-    void dig.correr(m, cc);
-    setTimeout(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
+    if (m.length < 2 || sol.estado.fase === "enviando") return;
+    void sol.pedir(m, cc, correo);
   }
 
   return (
     <div className={variante === "pagina" ? "" : "mx-auto w-full max-w-[1380px]"}>
       {slotGlobo && createPortal(<FondoGlobo cc={cc} onCc={setCc} corriendo={corriendo} />, slotGlobo)}
       <form onSubmit={escuchar} className="relative rounded-[22px] border border-white/10 bg-[#0B1030]/90 p-4 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)] md:p-5">
-        <div className="grid gap-3 md:grid-cols-[1fr_220px_auto]">
+        <div className="grid gap-3 md:grid-cols-[1fr_200px]">
           <label className="block">
             <span className="sr-only">Tu marca</span>
             <input
@@ -99,19 +88,33 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
               ))}
             </select>
           </label>
+          <label className="block">
+            <span className="sr-only">Correo de trabajo</span>
+            <input
+              type="email"
+              autoComplete="email"
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+              required
+              placeholder="Tu correo de trabajo"
+              aria-invalid={sol.estado.campo === "correo"}
+              className="h-14 w-full rounded-[14px] border border-white/15 bg-[#0A0E27] px-5 text-[16px] text-white placeholder:text-white/40 outline-none transition focus:border-[#5BE9FF]/70 [font-family:var(--font-figtree)]"
+            />
+          </label>
           <button
             type="submit"
-            disabled={corriendo || marca.trim().length < 2}
+            disabled={sol.estado.fase === "enviando" || marca.trim().length < 2}
             className="h-14 rounded-[14px] bg-[#1534DC] px-7 text-[16px] font-semibold text-white transition hover:bg-[#2a47f0] disabled:opacity-50 [font-family:var(--font-figtree)]"
           >
-            {corriendo ? "Escuchando…" : "Escuchar gratis"}
+            {sol.estado.fase === "enviando" ? "Pidiendo…" : "Recibir mi reporte"}
           </button>
         </div>
         <p className="mt-3 px-1 text-[13px] text-white/55">
-          Gratis y sin tarjeta. Consultamos {TOTAL_CASAS} IA y los últimos 30 días de redes y medios de {pais.nombre}. Tarda unos dos minutos.
+          Gratis y sin tarjeta, solo con correo de empresa. Consultamos {TOTAL_CASAS} IA y 30 días de redes y medios de {pais.nombre}, y te enviamos el reporte en unos minutos.
           {slotGlobo && <span className="hidden md:inline"> También puedes elegir tu país en el globo.</span>}
         </p>
       </form>
+      <Confirmacion estado={sol.estado} tono="integral" onOtro={sol.reiniciar} />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
         <Franja titulo={`${TOTAL_CASAS} inteligencias artificiales`}>
@@ -154,23 +157,6 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
         </Franja>
       </div>
 
-      <div ref={panelRef} className="scroll-mt-28">
-        <AnimatePresence>
-          {enviada && (
-            <motion.div
-              key={enviada.marca + enviada.cc}
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.6, ease }}
-              className="overflow-hidden"
-            >
-              <LecturaIntegral marca={enviada.marca} cc={enviada.cc} ia={ia.estado} dig={dig.estado} />
-              <DemoCompleta marca={enviada.marca} cc={enviada.cc} ia={ia.estado} dig={dig.estado} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
     </div>
   );
 }
@@ -209,7 +195,7 @@ function Pulso({ texto }: { texto: string }) {
 
 /* ---------------- La lectura integral ---------------- */
 
-function LecturaIntegral({ marca, cc, ia, dig }: { marca: string; cc: string; ia: EstadoIA; dig: EstadoDig }) {
+export function LecturaIntegral({ marca, cc, ia, dig }: { marca: string; cc: string; ia: EstadoIA; dig: EstadoDig }) {
   const pais = paisPorCc(cc);
   const r = ia.resultados ?? [];
   const validas = r.filter((x) => !x.error);
@@ -433,7 +419,7 @@ function Hallazgo({ titulo, children }: { titulo: string; children: React.ReactN
   );
 }
 
-function DemoCompleta({ marca, cc, ia, dig }: { marca: string; cc: string; ia: EstadoIA; dig: EstadoDig }) {
+export function DemoCompleta({ marca, cc, ia, dig }: { marca: string; cc: string; ia: EstadoIA; dig: EstadoDig }) {
   const [abierta, setAbierta] = useState(false);
   const [correo, setCorreo] = useState("");
   const [estado, setEstado] = useState<"idle" | "enviando" | "listo" | "fallo">("idle");

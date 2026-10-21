@@ -17,7 +17,7 @@ import { useCallback, useState } from "react";
 
 export type ResIA = { key: string; answer: string; error: boolean; conoce: boolean; nombra: boolean };
 export type EstadoIA = {
-  fase: "idle" | "corriendo" | "listo" | "usado" | "apagado" | "error";
+  fase: "idle" | "corriendo" | "listo" | "usado" | "apagado" | "error" | "acceso";
   resultados?: ResIA[];
   crudo?: { key: string; answer: string; error?: boolean }[];
 };
@@ -36,9 +36,10 @@ export type Resumen = {
   porDia: { dia: string; n: number }[];
   alcance: number;
   interacciones: number;
+  calientes?: { t: string; n: number; cambio: number }[];
 };
 export type EstadoDig = {
-  fase: "idle" | "en_cola" | "corriendo" | "listo" | "tope" | "apagado" | "error";
+  fase: "idle" | "en_cola" | "corriendo" | "listo" | "tope" | "apagado" | "error" | "acceso";
   enCola?: number;
   resumen?: Resumen;
 };
@@ -162,6 +163,32 @@ export async function tokenHumano(): Promise<string> {
   });
 }
 
+/* ---------------- Acceso con correo de trabajo ---------------- */
+
+const PASE = "escucha:v1:pase";
+export function paseGuardado(): { pase: string; correo: string } | null {
+  try {
+    const raw = localStorage.getItem(PASE);
+    return raw ? (JSON.parse(raw) as { pase: string; correo: string }) : null;
+  } catch {
+    return null;
+  }
+}
+export function guardarPase(pase: string, correo: string) {
+  try {
+    localStorage.setItem(PASE, JSON.stringify({ pase, correo }));
+  } catch {
+    /* nada */
+  }
+}
+export function olvidarPase() {
+  try {
+    localStorage.removeItem(PASE);
+  } catch {
+    /* nada */
+  }
+}
+
 /* ---------------- Hooks ---------------- */
 
 export function useEscuchaIA() {
@@ -172,12 +199,16 @@ export function useEscuchaIA() {
     if (guardado) return setEstado(guardado);
     setEstado({ fase: "corriendo" });
     try {
-      const token = await tokenHumano();
+      const token = paseGuardado() ? "" : await tokenHumano();
       const r = await fetch("/api/escucha/ia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ marca, cc, token }),
+        body: JSON.stringify({ marca, cc, token, pase: paseGuardado()?.pase }),
       });
+      if (r.status === 401) {
+        olvidarPase();
+        return setEstado({ fase: "acceso" });
+      }
       if (r.status === 429) return setEstado({ fase: "usado" });
       if (r.status === 503) return setEstado({ fase: "apagado" });
       const j = await r.json();
@@ -201,12 +232,16 @@ export function useEscuchaDigital() {
     if (guardado) return setEstado(guardado);
     setEstado({ fase: "en_cola" });
     try {
-      const token = await tokenHumano();
+      const token = paseGuardado() ? "" : await tokenHumano();
       const r = await fetch("/api/escucha/digital", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ marca, cc, token }),
+        body: JSON.stringify({ marca, cc, token, pase: paseGuardado()?.pase }),
       });
+      if (r.status === 401) {
+        olvidarPase();
+        return setEstado({ fase: "acceso" });
+      }
       if (r.status === 503) return setEstado({ fase: "apagado" });
       if (r.status === 429) return setEstado({ fase: "tope" });
       const j = await r.json();

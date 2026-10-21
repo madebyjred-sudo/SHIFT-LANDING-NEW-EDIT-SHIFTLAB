@@ -92,3 +92,13 @@
 .eco-route span { display: block; font-family: var(--font-figtree); font-weight: 700; font-size: 22px; color: var(--ink); }
 .eco-route:hover { border-color: var(--electric); }
 .eco-route:hover span { color: var(--electric); }
+
+/* formulario de reporte por correo: marca + país / correo + botón */
+.eco-form2 { display: grid; grid-template-columns: 1fr; border: 1px solid var(--ink); background: #fff; }
+.eco-form2 .eco-field { border-right: 0; border-bottom: 1px solid var(--rule); }
+.eco-form2 .eco-btn { border-radius: 0; }
+@media (min-width: 640px) {
+  .eco-form2 { grid-template-columns: 1.4fr 1fr; }
+  .eco-form2 .eco-field:nth-child(odd) { border-right: 1px solid var(--rule); }
+  .eco-form2 .eco-field--correo { border-bottom: 0; }
+}

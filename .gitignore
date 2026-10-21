@@ -42,3 +42,6 @@ yarn-error.log*
 next-env.d.ts
 dist/
 *.tar.gz
+
+# reportes de escucha por correo (datos de usuarios)
+.data/

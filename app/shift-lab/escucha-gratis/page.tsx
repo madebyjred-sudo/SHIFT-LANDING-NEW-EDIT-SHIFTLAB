@@ -4,7 +4,6 @@ import { FAQ_INTEGRAL } from "@/lib/escucha/faq";
 import { createPageMetadata } from "@/app/seo";
 import { schemaHerramienta } from "@/lib/escucha/seo";
 import { LabDotGrid } from "@/components/ui/lab-primitives";
-import { TrasEscucha } from "@/components/escucha/Esqueleto";
 import EscuchaGratis from "@/components/escucha/EscuchaGratis";
 import TarjetaSentinel from "@/components/escucha/TarjetaSentinel";
 import Copiloto from "@/components/escucha/Copiloto";
@@ -73,7 +72,7 @@ export default function EscuchaGratisPage() {
               Lo que dice la gente y lo que <span className="text-[#F540FF]">repite la IA</span>, en una sola escucha.
             </h1>
             <p className="mt-5 max-w-2xl text-[17px] leading-relaxed text-white/75">
-              Siete inteligencias artificiales y 30 días de redes y medios de tu país, cruzados en una lectura que ninguna de las dos te da sola. Sin cuenta, en unos dos minutos.
+              Siete inteligencias artificiales y 30 días de redes y medios de tu país, cruzados en una lectura que ninguna de las dos te da sola. Sin cuenta: con tu correo de trabajo, el reporte te llega en minutos.
             </p>
             <div className="pointer-events-auto mt-10">
               <EscuchaGratis variante="pagina" />
@@ -81,7 +80,6 @@ export default function EscuchaGratisPage() {
           </div>
         </section>
 
-        <TrasEscucha>
         <section className="relative border-t border-white/10 py-24">
           <div className="mx-auto w-full max-w-[1180px] px-6 md:px-10">
             <h2 className="max-w-3xl text-[32px] font-bold leading-tight md:text-[48px] [font-family:var(--font-zilla-slab)]">Por qué escuchar las dos a la vez</h2>
@@ -136,7 +134,6 @@ export default function EscuchaGratisPage() {
             </div>
           </div>
         </section>
-        </TrasEscucha>
       </div>
     </>
   );

@@ -5,12 +5,12 @@ import { FAQ_SENTINEL } from "@/lib/escucha/faq";
 import EscenaSentinel from "./EscenaSentinel";
 import Copiloto from "@/components/escucha/Copiloto";
 import Peaje from "./Peaje";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { Confirmacion, useSolicitud } from "@/components/escucha/PedirReporte";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { anotarUltima, escuchaInicial, useEscuchaDigital, registrarLead, type Resumen } from "@/lib/escucha/cliente";
-import { EsqueletoReporte, Plegado } from "@/components/escucha/Esqueleto";
+import { escuchaInicial, registrarLead, type Resumen } from "@/lib/escucha/cliente";
 import { picoDeConversacion, redDominante } from "@/lib/escucha/lectura";
 import { REDES } from "@/lib/escucha/redes";
 import { MEDIOS } from "@/lib/escucha/medios";
@@ -55,34 +55,32 @@ const btn = "inline-flex h-12 items-center justify-center rounded-[4px] bg-[#924
 export default function SentinelEscucha() {
   const [cc, setCc] = useState("cr");
   const [marca, setMarca] = useState("");
-  const { estado, correr } = useEscuchaDigital();
-  const [consultada, setConsultada] = useState("");
+  const [correo, setCorreo] = useState("");
+  const sol = useSolicitud("digital");
   const pais = paisPorCc(cc);
-  /* ?marca=X&pais=cc: prellena y corre sola (viene de la integral, en caché 24 h). */
   useEffect(() => {
     const ini = escuchaInicial();
     const valido = ini ? PAISES.some((x) => x.cc === ini.cc) : false;
     setCc(valido && ini ? ini.cc : paisDelNavegador());
-    if (ini && valido) {
-      setMarca(ini.marca);
-      setConsultada(ini.marca);
-      anotarUltima(ini.marca, ini.cc);
-      correr(ini.marca, ini.cc);
+    if (ini?.desde === "url") setMarca(ini.marca);
+  }, []);
+  // Los píxeles caen rápido y sin orden mientras se pide y unos segundos después: la escucha ya arrancó.
+  const [ocupado, setOcupado] = useState(false);
+  useEffect(() => {
+    if (sol.estado.fase === "enviando") setOcupado(true);
+    if (sol.estado.fase === "enviado") {
+      const t = setTimeout(() => setOcupado(false), 9000);
+      return () => clearTimeout(t);
     }
-  }, [correr]);
-  const ocupado = estado.fase === "en_cola" || estado.fase === "corriendo";
+    if (sol.estado.fase === "error") setOcupado(false);
+  }, [sol.estado.fase]);
 
   const enviar = (e: FormEvent) => {
     e.preventDefault();
-    if (!marca.trim() || ocupado) return;
-    setConsultada(marca.trim());
-    anotarUltima(marca.trim(), cc);
-    correr(marca.trim(), cc);
+    if (!marca.trim() || sol.estado.fase === "enviando") return;
+    void sol.pedir(marca.trim(), cc, correo);
   };
-
-  useEffect(() => {
-    if (estado.fase === "listo") document.getElementById("reporte")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [estado.fase]);
+  const campo = "mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3.5 text-[16px] outline-none transition-colors placeholder:text-[#8A8B92] focus:border-[#9244D8]";
 
   return (
     <div className="overflow-x-clip text-[#17171B] [font-family:var(--font-plex)]" style={{ background: C.papel }}>
@@ -93,83 +91,56 @@ export default function SentinelEscucha() {
         <Peaje ocupado={ocupado} />
         <div className={`relative z-10 ${ancho} grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14`}>
           <div>
-            <p className={etiqueta}>Escucha digital gratis · redes y medios de {pais.nombre}</p>
+            <p className={etiqueta}>Reporte gratis · redes y medios de {pais.nombre}</p>
             <h1 className="mt-3 max-w-[600px] text-[30px] font-semibold leading-[1.08] tracking-[-0.02em] sm:mt-4 sm:text-[36px] md:text-[52px]">
               La conversación sobre tu marca no espera. Escúchala hoy.
             </h1>
             <p className="mt-4 max-w-[540px] text-[15px] leading-relaxed text-[#5F6068] sm:mt-5 sm:text-[17px]">
-              Lo que se dice hoy en redes y medios decide tu reputación de mañana. Sentinel lee 30 días de conversación pública en {pais.nombre} y te dice cuánto se habla de ti, dónde, en qué tono y qué la encendió. Gratis, sin cuenta, en unos dos minutos.
+              Sentinel lee 30 días de conversación pública en {pais.nombre} y te envía un reporte: cuánto se habla de ti, dónde, en qué tono, qué la encendió y qué palabras están subiendo.
             </p>
 
             <form onSubmit={enviar} className={`${tarjeta} mt-6 max-w-[560px] p-4 sm:mt-8 md:p-5`}>
               <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_170px]">
                 <div className="min-w-0">
                   <label htmlFor="marca" className={etiqueta}>Marca</label>
-                  <input
-                    id="marca"
-                    value={marca}
-                    onChange={(e) => setMarca(e.target.value)}
-                    placeholder="Escribe el nombre de tu marca"
-                    disabled={ocupado}
-                    maxLength={60}
-                    className="mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3.5 text-[16px] outline-none transition-colors placeholder:text-[#8A8B92] focus:border-[#9244D8] disabled:bg-[#F4F4F2]"
-                  />
+                  <input id="marca" value={marca} onChange={(e) => setMarca(e.target.value)} placeholder="Escribe el nombre de tu marca" maxLength={60} required className={campo} />
                 </div>
                 <div>
                   <label htmlFor="pais" className={etiqueta}>País</label>
-                  <select
-                    id="pais"
-                    value={cc}
-                    onChange={(e) => setCc(e.target.value)}
-                    disabled={ocupado}
-                    className="mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3 text-[15px] outline-none focus:border-[#9244D8] disabled:bg-[#F4F4F2]"
-                  >
+                  <select id="pais" value={cc} onChange={(e) => setCc(e.target.value)} className="mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3 text-[15px] outline-none focus:border-[#9244D8]">
                     {PAISES.map((p) => (
                       <option key={p.cc} value={p.cc}>{p.nombre}</option>
                     ))}
                   </select>
                 </div>
               </div>
+              <div className="mt-3">
+                <label htmlFor="correo" className={etiqueta}>Correo de trabajo</label>
+                <input id="correo" type="email" autoComplete="email" value={correo} onChange={(e) => setCorreo(e.target.value)} placeholder="nombre@tuempresa.com" required className={campo} aria-invalid={sol.estado.campo === "correo"} />
+              </div>
               <div className="mt-4 flex flex-col gap-2.5">
-                <button type="submit" disabled={ocupado || !marca.trim()} className={`${btn} w-full whitespace-nowrap`}>
-                  {ocupado ? "Escuchando la conversación" : "Escuchar 30 días de mi marca"}
+                <button type="submit" disabled={sol.estado.fase === "enviando" || !marca.trim()} className={`${btn} w-full whitespace-nowrap`}>
+                  {sol.estado.fase === "enviando" ? "Pidiendo el reporte" : "Recibir mi reporte"}
                 </button>
-                <p className="text-[13px] text-[#8A8B92]">Una escucha por marca. Sin correo para ver el resultado.</p>
+                <p className="text-[13px] text-[#8A8B92]">Gratis y sin cuenta. Solo correos de empresa: te enviamos un enlace privado al reporte.</p>
               </div>
             </form>
-            <Estado fase={estado.fase} enCola={estado.enCola} />
+            <div className="max-w-[560px]"><Confirmacion estado={sol.estado} tono="sentinel" onOtro={sol.reiniciar} /></div>
           </div>
 
-          <Superficies ocupado={ocupado} resumen={estado.fase === "listo" ? estado.resumen : undefined} />
+          <Superficies ocupado={ocupado} />
         </div>
       </section>
 
       <FranjaMedios cc={cc} nombrePais={pais.nombre} />
 
-      {ocupado && <EsqueletoReporte tono="sentinel" etiqueta={`Armando el reporte de ${consultada || "tu marca"}`} />}
-
-      <AnimatePresence>
-        {estado.fase === "listo" && estado.resumen && (
-          <motion.div key="rep" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-            <Reporte r={estado.resumen} hub={pais.hub} nombrePais={pais.nombre} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Por dentro: siempre visible, no depende de lanzar la escucha. */}
+      {/* Por dentro y el resto: siempre visibles. El reporte llega por correo. */}
       <SentinelPorDentro />
-
-      <Plegado abierto={estado.fase !== "idle" && !ocupado}>
-          <EscenaSentinel
-            marca={estado.fase === "listo" ? consultada : undefined}
-            pais={pais.nombre}
-            resumen={estado.fase === "listo" ? estado.resumen : undefined}
-          />
-          <Copiloto tema="sentinel" />
-          <Completo />
-          <Preguntas />
-          <Cierre hub={pais.hub} nombrePais={pais.nombre} />
-      </Plegado>
+      <EscenaSentinel pais={pais.nombre} />
+      <Copiloto tema="sentinel" />
+      <Completo />
+      <Preguntas />
+      <Cierre hub={pais.hub} nombrePais={pais.nombre} />
     </div>
   );
 }
@@ -307,7 +278,7 @@ function FranjaMedios({ cc, nombrePais }: { cc: string; nombrePais: string }) {
 /* ------------------------------------------------------------------ */
 /* EL REPORTE                                                          */
 
-function Reporte({ r, hub, nombrePais }: { r: Resumen; hub: string; nombrePais: string }) {
+export function Reporte({ r, hub, nombrePais }: { r: Resumen; hub: string; nombrePais: string }) {
   const pico = picoDeConversacion(r);
   const dom = redDominante(r);
   const nomRed = (k: string) => REDES.find((x) => x.key === k)?.nombre ?? k;

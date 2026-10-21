@@ -6,10 +6,10 @@ import EscenaEco from "./EscenaEco";
 import Copiloto from "@/components/escucha/Copiloto";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Confirmacion, useSolicitud } from "@/components/escucha/PedirReporte";
 import { CASAS } from "@/lib/escucha/casas";
-import { anotarUltima, enlaceDossier, escuchaInicial, registrarLead, useEscuchaIA, type ResIA } from "@/lib/escucha/cliente";
-import { EsqueletoReporte, Plegado } from "@/components/escucha/Esqueleto";
+import { enlaceDossier, escuchaInicial, registrarLead, type ResIA } from "@/lib/escucha/cliente";
 import { alternativasNombradas, datosEnDisputa } from "@/lib/escucha/lectura";
 import { ECO_REAL, EJEMPLO_MEMORIA_VS_BUSQUEDA, FECHA_DATOS } from "@/lib/escucha/datos-reales";
 import { PAISES, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
@@ -115,7 +115,7 @@ function Corriendo({ marca }: { marca: string }) {
 }
 
 /* ---------- El reporte ---------- */
-function Reporte({ marca, cc, resultados, crudo }: { marca: string; cc: string; resultados: ResIA[]; crudo?: { key: string; answer: string; error?: boolean }[] }) {
+export function Reporte({ marca, cc, resultados, crudo }: { marca: string; cc: string; resultados: ResIA[]; crudo?: { key: string; answer: string; error?: boolean }[] }) {
   const pais = paisPorCc(cc);
   const validos = resultados.filter((r) => !r.error);
   const conocen = validos.filter((r) => r.conoce);
@@ -531,48 +531,33 @@ function PorQueImporta() {
 
 
 export default function EcoEscucha() {
-  const { estado, correr } = useEscuchaIA();
+  const sol = useSolicitud("ia");
   const [marca, setMarca] = useState("");
   const [cc, setCc] = useState("cr");
-  const [consultada, setConsultada] = useState<{ marca: string; cc: string } | null>(null);
-  const auto = useRef(false);
+  const [correo, setCorreo] = useState("");
   useEffect(() => {
-    if (auto.current) return;
-    auto.current = true;
     const ini = escuchaInicial();
     const valido = ini ? PAISES.some((x) => x.cc === ini.cc) : false;
     setCc(valido && ini ? ini.cc : paisDelNavegador());
-    if (ini && valido && ini.marca.length >= 2) {
-      setMarca(ini.marca);
-      setConsultada({ marca: ini.marca, cc: ini.cc });
-      anotarUltima(ini.marca, ini.cc);
-      correr(ini.marca, ini.cc);
-    }
-  }, [correr]);
+    if (ini?.desde === "url") setMarca(ini.marca);
+  }, []);
 
   function enviar(e: React.FormEvent) {
     e.preventDefault();
     const m = marca.trim();
-    if (m.length < 2 || estado.fase === "corriendo") return;
-    setConsultada({ marca: m, cc });
-    anotarUltima(m, cc);
-    correr(m, cc);
+    if (m.length < 2 || sol.estado.fase === "enviando") return;
+    void sol.pedir(m, cc, correo);
   }
-
+  // El radar gira mientras se pide y unos segundos después de confirmar: la escucha ya arrancó.
+  const [girando, setGirando] = useState(false);
   useEffect(() => {
-    if (estado.fase === "listo") document.getElementById("reporte")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [estado.fase]);
-
-  // Terminada (bien o con aviso): ahí aparece el resto de la página.
-  const lanzada = estado.fase !== "idle" && estado.fase !== "corriendo";
-  const aviso =
-    estado.fase === "usado"
-      ? "Ya hiciste tu escucha gratis de hoy. Pide la demo completa y la corremos con tu equipo."
-      : estado.fase === "apagado"
-        ? "La escucha está en mantenimiento por unos minutos. Vuelve a intentarlo pronto."
-        : estado.fase === "error"
-          ? "La escucha no terminó a tiempo. Vuelve a intentarlo en unos minutos."
-          : null;
+    if (sol.estado.fase === "enviando") setGirando(true);
+    if (sol.estado.fase === "enviado") {
+      const t = setTimeout(() => setGirando(false), 9000);
+      return () => clearTimeout(t);
+    }
+    if (sol.estado.fase === "error") setGirando(false);
+  }, [sol.estado.fase]);
 
   return (
     <div className="eco-page">
@@ -582,21 +567,21 @@ export default function EcoEscucha() {
           <div>
             <p className="flex items-center gap-3">
               <img src="/escucha/eco/eco-logo.svg" alt="Eco" className="h-7 w-auto" />
-              <span className="eco-kicker">Escucha gratis en IA</span>
+              <span className="eco-kicker">Reporte gratis de IA</span>
             </p>
             <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease }} className="eco-h1 mt-7">
               ¿Qué responde la IA cuando preguntan por <span className="text-[#1534dc]">tu marca</span>?
             </motion.h1>
             <p className="mt-6 max-w-xl text-[18px] leading-relaxed text-[#4a5488]">
-              Preguntamos a siete inteligencias artificiales por ti. Ves cuántas te conocen, qué dicen, a quién recomiendan en tu lugar y en qué datos se equivocan. Sin cuenta, en menos de un minuto.
+              Preguntamos a siete inteligencias artificiales por ti. Te enviamos un reporte con cuántas te conocen, qué dicen, a quién recomiendan en tu lugar, en qué datos se equivocan y tus palabras calientes.
             </p>
 
-            <form onSubmit={enviar} className="eco-form mt-9">
-              <label className="eco-field flex-[1.4]">
+            <form onSubmit={enviar} className="eco-form2 mt-9">
+              <label className="eco-field">
                 <span>Tu marca</span>
                 <input value={marca} onChange={(e) => setMarca(e.target.value)} placeholder="Ej.: Dos Pinos" maxLength={60} required className="eco-input" />
               </label>
-              <label className="eco-field flex-1">
+              <label className="eco-field">
                 <span>País</span>
                 <select value={cc} onChange={(e) => setCc(e.target.value)} className="eco-input">
                   {PAISES.map((p) => (
@@ -604,43 +589,24 @@ export default function EcoEscucha() {
                   ))}
                 </select>
               </label>
-              <button type="submit" disabled={estado.fase === "corriendo"} className="eco-btn">
-                {estado.fase === "corriendo" ? "Escuchando…" : "Escuchar a la IA"}
+              <label className="eco-field eco-field--correo">
+                <span>Correo de trabajo</span>
+                <input type="email" autoComplete="email" value={correo} onChange={(e) => setCorreo(e.target.value)} placeholder="nombre@tuempresa.com" required className="eco-input" aria-invalid={sol.estado.campo === "correo"} />
+              </label>
+              <button type="submit" disabled={sol.estado.fase === "enviando"} className="eco-btn">
+                {sol.estado.fase === "enviando" ? "Pidiendo…" : "Recibir mi reporte"}
               </button>
             </form>
-            <p className="mt-3 text-[13px] text-[#858eb4]">Una escucha gratis por marca al día. No guardamos nada si no pides la demo.</p>
-
-            <AnimatePresence>
-              {estado.fase === "corriendo" && consultada && (
-                <motion.div key="run" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.45, ease }} className="overflow-hidden">
-                  <Corriendo marca={consultada.marca} />
-                </motion.div>
-              )}
-              {aviso && (
-                <motion.p key="aviso" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-6 overflow-hidden border-l-2 border-[#f540ff] pl-4 text-[15px] text-[#4a5488]">
-                  {aviso}
-                </motion.p>
-              )}
-            </AnimatePresence>
+            <Confirmacion estado={sol.estado} tono="eco" onOtro={sol.reiniciar} />
+            <p className="mt-3 text-[13px] text-[#858eb4]">Gratis y sin cuenta. Solo correos de empresa: te enviamos un enlace privado al reporte.</p>
           </div>
-          <Radar fase={estado.fase} resultados={estado.resultados} />
+          <Radar fase={girando ? "corriendo" : "idle"} />
         </div>
       </section>
 
-      {/* El resto de la landing no existe hasta que se lanza la escucha: esqueleto mientras corre, todo al terminar. */}
-      {estado.fase === "corriendo" && <EsqueletoReporte tono="eco" etiqueta={`Armando el reporte de ${consultada?.marca ?? "tu marca"}`} />}
-
-      {estado.fase === "listo" && estado.resultados && consultada && (
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease }} className="eco-wrap pb-24">
-          <Reporte marca={consultada.marca} cc={consultada.cc} resultados={estado.resultados} crudo={estado.crudo} />
-        </motion.div>
-      )}
-
-      {/* Por dentro: siempre visible, no depende de lanzar la escucha. */}
       <EcoPorDentro />
 
-      <Plegado abierto={lanzada}>
-      <EscenaEco marca={estado.fase === "listo" ? consultada?.marca : undefined} pais={consultada ? paisPorCc(consultada.cc).nombre : undefined} resultados={estado.fase === "listo" ? estado.resultados : undefined} />
+      <EscenaEco />
       <PorQueImporta />
       <Copiloto tema="eco" />
 
@@ -673,7 +639,6 @@ export default function EcoEscucha() {
           </div>
         </div>
       </section>
-      </Plegado>
     </div>
   );
 }
