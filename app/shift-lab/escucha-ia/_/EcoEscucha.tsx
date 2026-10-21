@@ -1,5 +1,6 @@
 "use client";
 
+import EcoPorDentro from "./EcoPorDentro";
 import { FAQ_ECO } from "@/lib/escucha/faq";
 import EscenaEco from "./EscenaEco";
 import Copiloto from "@/components/escucha/Copiloto";
@@ -635,10 +636,12 @@ export default function EcoEscucha() {
         </motion.div>
       )}
 
+      {/* Por dentro: siempre visible, no depende de lanzar la escucha. */}
+      <EcoPorDentro />
+
       <Plegado abierto={lanzada}>
       <EscenaEco marca={estado.fase === "listo" ? consultada?.marca : undefined} pais={consultada ? paisPorCc(consultada.cc).nombre : undefined} resultados={estado.fase === "listo" ? estado.resultados : undefined} />
       <PorQueImporta />
-      <LoQueEcoVe />
       <Copiloto tema="eco" />
 
       {/* ---------- Preguntas y caminos ---------- */}

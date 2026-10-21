@@ -1,5 +1,6 @@
 "use client";
 
+import SentinelPorDentro from "./SentinelPorDentro";
 import { FAQ_SENTINEL } from "@/lib/escucha/faq";
 import EscenaSentinel from "./EscenaSentinel";
 import Copiloto from "@/components/escucha/Copiloto";
@@ -155,6 +156,9 @@ export default function SentinelEscucha() {
         )}
       </AnimatePresence>
 
+      {/* Por dentro: siempre visible, no depende de lanzar la escucha. */}
+      <SentinelPorDentro />
+
       <Plegado abierto={estado.fase !== "idle" && !ocupado}>
           <EscenaSentinel
             marca={estado.fase === "listo" ? consultada : undefined}
@@ -162,7 +166,6 @@ export default function SentinelEscucha() {
             resumen={estado.fase === "listo" ? estado.resumen : undefined}
           />
           <Copiloto tema="sentinel" />
-          <Producto />
           <Completo />
           <Preguntas />
           <Cierre hub={pais.hub} nombrePais={pais.nombre} />
@@ -642,34 +645,6 @@ function Narrativa() {
 
 /* ------------------------------------------------------------------ */
 
-function Producto() {
-  return (
-    <section className="py-16 md:py-24">
-      <div className={ancho}>
-        <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:items-end lg:gap-12">
-          <h2 className="text-[30px] font-semibold leading-[1.12] tracking-[-0.015em] md:text-[40px]">El pulso de tu marca, ahora mismo.</h2>
-          <p className="max-w-[560px] text-[16px] leading-relaxed text-[#5F6068]">
-            Así se ve Sentinel por dentro: el radar en vivo avisa cuando el tono gira, cuando aparece una fuente nueva o cuando un competidor acelera. El tablero junta tus canales propios con lo que se dice afuera.
-          </p>
-        </div>
-        <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {[
-            { src: "/escucha/sentinel/inicio.webp", alt: "Tablero de Sentinel con canales propios, volumen, sentimiento y share of voice", pie: "Tablero: canales propios, volumen, sentimiento y share of voice." },
-            { src: "/escucha/sentinel/vivo.webp", alt: "Radar en vivo de Sentinel con giro de sentimiento y señales tempranas", pie: "Radar en vivo: giros de tono y señales tempranas." },
-          ].map((f) => (
-            <figure key={f.src}>
-              <div className="overflow-hidden rounded-[6px] border border-[#DCDCD6] bg-white">
-                <Image src={f.src} alt={f.alt} width={1920} height={1200} className="h-auto w-full" sizes="(min-width: 768px) 50vw, 100vw" />
-              </div>
-              <figcaption className="mt-2.5 text-[13px] text-[#5F6068]">{f.pie}</figcaption>
-            </figure>
-          ))}
-        </div>
-        <p className="mt-4 text-[12px] text-[#8A8B92]">Capturas reales de Sentinel con datos anonimizados: «Su marca» y «Competidor A».</p>
-      </div>
-    </section>
-  );
-}
 
 const COMPLETO = [
   { i: "escucha", t: "Escucha continua", d: "Todos los días, no una foto de 30 días. Ves cómo cambia la conversación semana a semana." },
