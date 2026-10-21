@@ -57,7 +57,7 @@ export default function CierreVentas({ r, tono }: { r: Omit<ReporteData, "correo
             <span className="text-[13px]" style={{ color: t.suave }}>Este reporte vence el {vence}.</span>
           </div>
           <div className="mt-8 flex max-w-[520px] items-center gap-4 border-t pt-6" style={{ borderColor: t.linea }}>
-            <span className="block h-16 w-16 shrink-0 overflow-hidden rounded-full" style={{ boxShadow: `0 0 0 2px ${t.fondo}, 0 0 0 3.5px ${t.acento}` }}>
+            <span className="block h-16 w-16 shrink-0 overflow-hidden rounded-full">
               <img src="/assets/images/aboutus/persona-11.jpg" alt="Fabiana Martínez" width={64} height={64} className="h-full w-full scale-[1.7] object-cover [transform-origin:50%_34%]" />
             </span>
             <p className="text-[14px] leading-snug" style={{ color: t.suave }}>
