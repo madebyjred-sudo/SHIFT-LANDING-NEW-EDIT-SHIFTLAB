@@ -11,18 +11,18 @@ import { MEDIOS } from "@/lib/escucha/medios";
 import { PAISES, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
 import { SENTINEL_REAL, FECHA_DATOS } from "@/lib/escucha/datos-reales";
 
-/* Tokens Sentinel */
+
+/* Tokens del producto Sentinel (tablero real): papel claro, tarjetas blancas, un solo acento. */
 const C = {
-  fondo: "#0B0A10",
-  ink: "#17171B",
   papel: "#F4F4F2",
-  gris: "#7D7F87",
-  linea: "rgba(244,244,242,0.10)",
+  papel2: "#ECECE8",
+  ink: "#17171B",
+  gris: "#5F6068",
+  gris2: "#8A8B92",
+  linea: "#DCDCD6",
   morado: "#4A1D6E",
-  lila: "#C59AF0",
   rojo: "#D42A20",
   verde: "#1E874B",
-  naranja: "#E0670F",
 };
 
 const fmt = (n: number) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -37,8 +37,12 @@ const fechaCorta = (iso: string) => {
   return m && d ? `${d} ${MESES[m - 1].slice(0, 3)}` : iso;
 };
 
-const rotulo = "text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-plex-mono)]";
 const ease = [0.22, 1, 0.36, 1] as const;
+const ancho = "mx-auto w-full max-w-[1200px] px-5 md:px-10";
+const tarjeta = "rounded-[6px] border border-[#DCDCD6] bg-white";
+const etiqueta = "text-[13px] font-medium text-[#5F6068]";
+const num = "tabular-nums [font-family:var(--font-plex-mono)]";
+const btn = "inline-flex h-12 items-center justify-center rounded-[4px] bg-[#4A1D6E] px-5 text-[15px] font-medium text-white transition-colors hover:bg-[#3A1657] disabled:cursor-not-allowed disabled:opacity-50";
 
 /* ------------------------------------------------------------------ */
 
@@ -70,35 +74,25 @@ export default function SentinelEscucha() {
   }, [estado.fase]);
 
   return (
-    <div className="overflow-x-clip text-[#F4F4F2] [font-family:var(--font-plex)]" style={{ background: C.fondo }}>
-      {/* ---------- HERO + HERRAMIENTA ---------- */}
-      <section className="relative isolate pt-28 pb-14 md:pt-36 md:pb-20">
-        <Reticula />
-        <div className="relative z-10 mx-auto w-full max-w-[1240px] px-5 md:px-10">
-          <BarraMarca />
-          <div className="mt-10 grid gap-12 lg:mt-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-            <div>
-              <motion.h1
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease }}
-                className="text-[40px] font-semibold leading-[1.02] tracking-[-0.025em] md:text-[64px]"
-              >
-                La conversación sobre tu marca no espera.
-                <span className="block text-[#C59AF0]">Escúchala hoy.</span>
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.25, duration: 0.8 }}
-                className="mt-6 max-w-[520px] text-[17px] leading-relaxed text-[#F4F4F2]/70"
-              >
-                Lo que se dice hoy en redes y medios decide tu reputación de mañana. Sentinel lee 30 días de conversación pública en {pais.nombre} y te dice cuánto se habla de ti, dónde, en qué tono y qué la encendió. Gratis, sin cuenta, en unos dos minutos.
-              </motion.p>
+    <div className="overflow-x-clip text-[#17171B] [font-family:var(--font-plex)]" style={{ background: C.papel }}>
+      <BarraMarca />
 
-              <form onSubmit={enviar} className="mt-9 max-w-[560px]">
-                <label htmlFor="marca" className={`${rotulo} text-[#F4F4F2]/50`}>Tu marca</label>
-                <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+      {/* ---------- HERO + HERRAMIENTA ---------- */}
+      <section className="pt-12 pb-14 md:pt-16 md:pb-20">
+        <div className={`${ancho} grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14`}>
+          <div>
+            <p className={etiqueta}>Escucha digital gratis · redes y medios de {pais.nombre}</p>
+            <h1 className="mt-4 max-w-[600px] text-[36px] font-semibold leading-[1.08] tracking-[-0.02em] md:text-[52px]">
+              La conversación sobre tu marca no espera. Escúchala hoy.
+            </h1>
+            <p className="mt-5 max-w-[540px] text-[17px] leading-relaxed text-[#5F6068]">
+              Lo que se dice hoy en redes y medios decide tu reputación de mañana. Sentinel lee 30 días de conversación pública en {pais.nombre} y te dice cuánto se habla de ti, dónde, en qué tono y qué la encendió. Gratis, sin cuenta, en unos dos minutos.
+            </p>
+
+            <form onSubmit={enviar} className={`${tarjeta} mt-8 max-w-[560px] p-4 md:p-5`}>
+              <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_170px]">
+                <div className="min-w-0">
+                  <label htmlFor="marca" className={etiqueta}>Marca</label>
                   <input
                     id="marca"
                     value={marca}
@@ -106,38 +100,35 @@ export default function SentinelEscucha() {
                     placeholder="Escribe el nombre de tu marca"
                     disabled={ocupado}
                     maxLength={60}
-                    className="h-14 min-w-0 flex-1 rounded-[6px] border border-white/15 bg-white/[0.04] px-4 text-[17px] text-white outline-none transition placeholder:text-white/35 focus:border-[#C59AF0] disabled:opacity-60"
+                    className="mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3.5 text-[16px] outline-none transition-colors placeholder:text-[#8A8B92] focus:border-[#4A1D6E] disabled:bg-[#F4F4F2]"
                   />
+                </div>
+                <div>
+                  <label htmlFor="pais" className={etiqueta}>País</label>
                   <select
-                    aria-label="País"
+                    id="pais"
                     value={cc}
                     onChange={(e) => setCc(e.target.value)}
                     disabled={ocupado}
-                    className="h-14 rounded-[6px] border border-white/15 bg-[#17171B] px-3 text-[15px] text-white outline-none focus:border-[#C59AF0] sm:w-[170px]"
+                    className="mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3 text-[15px] outline-none focus:border-[#4A1D6E] disabled:bg-[#F4F4F2]"
                   >
                     {PAISES.map((p) => (
                       <option key={p.cc} value={p.cc}>{p.nombre}</option>
                     ))}
                   </select>
                 </div>
-                <button
-                  type="submit"
-                  disabled={ocupado || !marca.trim()}
-                  className="mt-3 flex h-14 w-full items-center justify-center gap-3 rounded-[6px] bg-[#4A1D6E] text-[16px] font-semibold text-white transition hover:bg-[#5d2689] disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#C59AF0] opacity-70" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[#C59AF0]" />
-                  </span>
+              </div>
+              <div className="mt-4 flex flex-col gap-2.5">
+                <button type="submit" disabled={ocupado || !marca.trim()} className={`${btn} w-full whitespace-nowrap`}>
                   {ocupado ? "Escuchando la conversación" : "Escuchar 30 días de mi marca"}
                 </button>
-                <p className="mt-3 text-[13px] text-white/45">Una escucha por marca. No pedimos correo para ver el resultado.</p>
-              </form>
-              <Estado fase={estado.fase} enCola={estado.enCola} />
-            </div>
-
-            <Radar ocupado={ocupado} resumen={estado.fase === "listo" ? estado.resumen : undefined} />
+                <p className="text-[13px] text-[#8A8B92]">Una escucha por marca. Sin correo para ver el resultado.</p>
+              </div>
+            </form>
+            <Estado fase={estado.fase} enCola={estado.enCola} />
           </div>
+
+          <Superficies ocupado={ocupado} resumen={estado.fase === "listo" ? estado.resumen : undefined} />
         </div>
       </section>
 
@@ -145,7 +136,7 @@ export default function SentinelEscucha() {
 
       <AnimatePresence>
         {estado.fase === "listo" && estado.resumen && (
-          <motion.div key="rep" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
+          <motion.div key="rep" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
             <Reporte r={estado.resumen} hub={pais.hub} nombrePais={pais.nombre} />
           </motion.div>
         )}
@@ -162,37 +153,26 @@ export default function SentinelEscucha() {
 
 /* ------------------------------------------------------------------ */
 
-function BarraMarca() {
+function Wordmark() {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
-      <div className="flex items-baseline gap-2">
-        <span className="text-[17px] font-semibold tracking-[0.32em] text-[#C59AF0]">SENTINEL</span>
-        <span className="text-[13px] text-white/50">by Shift</span>
-        <span className="ml-3 hidden items-center gap-2 text-[12px] text-white/50 sm:flex">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#D42A20]" /> escucha digital gratis
-        </span>
-      </div>
-      <nav className="flex gap-5 text-[13px] text-white/60">
-        <Link href="/shift-lab/escucha-gratis" className="transition hover:text-white">Escucha integral</Link>
-        <Link href="/shift-lab/escucha-ia" className="transition hover:text-white">Escucha de IA · Eco</Link>
-      </nav>
-    </div>
+    <span className="flex items-baseline gap-1.5">
+      <span className="text-[19px] font-bold tracking-[0.04em] text-[#4A1D6E]">Sentinel</span>
+      <span className="text-[13px] text-[#8A8B92]">by Shift</span>
+    </span>
   );
 }
 
-function Reticula() {
+function BarraMarca() {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 -z-0">
-      <div
-        className="absolute inset-0 opacity-[0.35]"
-        style={{
-          backgroundImage: "radial-gradient(rgba(197,154,240,0.18) 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-          maskImage: "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
-        }}
-      />
-      <div className="absolute -top-40 right-[-10%] h-[620px] w-[620px] rounded-full bg-[#4A1D6E] opacity-30 blur-[140px]" />
-    </div>
+    <header className="border-b border-[#DCDCD6] bg-[#F4F4F2]">
+      <div className={`${ancho} flex flex-wrap items-center justify-between gap-x-6 gap-y-2 pt-24 pb-4 md:pt-28`}>
+        <Wordmark />
+        <nav className="flex gap-5 text-[14px] text-[#5F6068]">
+          <Link href="/shift-lab/escucha-gratis" className="transition-colors hover:text-[#17171B]">Escucha integral</Link>
+          <Link href="/shift-lab/escucha-ia" className="transition-colors hover:text-[#17171B]">Escucha de IA · Eco</Link>
+        </nav>
+      </div>
+    </header>
   );
 }
 
@@ -204,6 +184,7 @@ function Estado({ fase, enCola }: { fase: string; enCola?: number }) {
     apagado: "La escucha gratis está en pausa en este momento. Pide la demo completa y te mostramos tu marca.",
     error: "No pudimos terminar la escucha. Intenta de nuevo en un momento.",
   };
+  const alerta = fase === "error" || fase === "tope";
   return (
     <AnimatePresence mode="wait">
       {t[fase] && (
@@ -212,7 +193,7 @@ function Estado({ fase, enCola }: { fase: string; enCola?: number }) {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          className={`mt-5 max-w-[560px] overflow-hidden border-l-2 pl-4 text-[14px] leading-relaxed ${fase === "error" || fase === "tope" ? "border-[#E0670F] text-[#F4F4F2]/80" : "border-[#C59AF0] text-[#F4F4F2]/75"}`}
+          className={`mt-4 max-w-[560px] overflow-hidden border-l-2 pl-3.5 text-[14px] leading-relaxed text-[#5F6068] ${alerta ? "border-[#D42A20]" : "border-[#4A1D6E]"}`}
         >
           {t[fase]}
         </motion.p>
@@ -221,67 +202,49 @@ function Estado({ fase, enCola }: { fase: string; enCola?: number }) {
   );
 }
 
-/* Panel de canales: todas las redes, con señal animada. En reposo late; al correr barre; con reporte muestra la muestra por red. */
-function Radar({ ocupado, resumen }: { ocupado: boolean; resumen?: Resumen }) {
-  const max = resumen ? Math.max(1, ...Object.values(resumen.porRed)) : 1;
+/* Tabla de superficies: las 11 siempre visibles. Con reporte muestra la muestra por superficie. */
+function Superficies({ ocupado, resumen }: { ocupado: boolean; resumen?: Resumen }) {
+  const total = resumen ? Math.max(1, Object.values(resumen.porRed).reduce((a, b) => a + b, 0)) : 1;
+  const estado = ocupado ? "Leyendo" : resumen ? "Listo" : "En espera";
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2, duration: 0.9, ease }}
-      className="relative rounded-[10px] border border-white/10 bg-[#17171B]/80"
-    >
-      <div className="flex items-center justify-between border-b border-white/10 px-5 py-3.5">
-        <span className={`${rotulo} text-white/55`}>Dónde escucha Sentinel</span>
-        <span className={`${rotulo} flex items-center gap-2 ${ocupado ? "text-[#C59AF0]" : "text-white/40"}`}>
-          <span className={`h-1.5 w-1.5 rounded-full ${ocupado ? "animate-pulse bg-[#C59AF0]" : resumen ? "bg-[#1E874B]" : "bg-white/30"}`} />
-          {ocupado ? "escuchando" : resumen ? "listo" : "en espera"}
-        </span>
+    <div className={`${tarjeta} self-start`}>
+      <div className="flex items-baseline justify-between border-b border-[#DCDCD6] px-5 py-3.5">
+        <h2 className="text-[15px] font-semibold">Dónde escucha Sentinel</h2>
+        <span className={`text-[13px] ${resumen ? "text-[#1E874B]" : "text-[#8A8B92]"}`}>{estado}</span>
+      </div>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] border-b border-[#ECECE8] px-5 py-2 text-[12px] text-[#8A8B92]">
+        <span>Superficie</span>
+        <span>{resumen ? "Menciones en la muestra" : "Cobertura"}</span>
       </div>
       <ul>
-        {REDES.map((r, i) => {
+        {REDES.map((r) => {
           const n = resumen?.porRed[r.key] ?? 0;
           return (
-            <li key={r.key} className="grid grid-cols-[22px_minmax(0,1fr)_minmax(0,1.3fr)] items-center gap-3 border-b border-white/[0.06] px-5 py-[11px] last:border-0">
+            <li key={r.key} className="grid grid-cols-[18px_minmax(0,1fr)_auto] items-center gap-3 border-b border-[#ECECE8] px-5 py-[9px] last:border-0">
               {r.icono ? (
-                <Image src={r.icono} alt="" width={16} height={16} className="h-4 w-4 opacity-80" />
+                <Image src={r.icono} alt="" width={16} height={16} className="h-4 w-4 opacity-70 [filter:brightness(0)]" />
               ) : (
-                <span className="h-2 w-2 justify-self-center rounded-[2px] bg-[#C59AF0]/70" />
+                <span className="h-1.5 w-1.5 justify-self-center rounded-full bg-[#8A8B92]" />
               )}
-              <span className="truncate text-[14px] text-white/85">{r.nombre}</span>
+              <span className={`truncate text-[14px] ${r.soloCompleto ? "text-[#8A8B92]" : ""}`}>{r.nombre}</span>
               {r.soloCompleto ? (
-                <span className="truncate text-right text-[12px] text-[#C59AF0]/80">Entra en el monitoreo completo</span>
-              ) : (
-                <span className="relative h-[18px] overflow-hidden">
-                  <span className="absolute inset-x-0 top-1/2 h-px bg-white/10" />
-                  {resumen ? (
-                    <motion.span
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(n / max) * 82}%` }}
-                      transition={{ delay: i * 0.05, duration: 0.9, ease }}
-                      className="absolute left-0 top-1/2 h-[6px] -translate-y-1/2 rounded-[2px] bg-[#C59AF0]"
-                    />
-                  ) : (
-                    <motion.span
-                      className="absolute top-1/2 h-[6px] w-10 -translate-y-1/2 rounded-[2px]"
-                      style={{ background: "linear-gradient(90deg, transparent, #C59AF0)" }}
-                      animate={{ left: ["-15%", "105%"] }}
-                      transition={{ duration: ocupado ? 1.1 : 3.6, repeat: Infinity, delay: (i * 0.37) % 2.4, ease: "linear" }}
-                    />
-                  )}
-                  {resumen && (
-                    <span className="absolute right-0 top-1/2 -translate-y-1/2 text-[12px] tabular-nums text-white/70">{fmt(n)}</span>
-                  )}
+                <span className="text-right text-[13px] text-[#4A1D6E]">Entra en el monitoreo completo</span>
+              ) : resumen ? (
+                <span className="flex items-baseline gap-3 text-right">
+                  <span className={`${num} text-[14px]`}>{fmt(n)}</span>
+                  <span className={`${num} w-10 text-[12px] text-[#8A8B92]`}>{n ? pct(n / total) : "0 %"}</span>
                 </span>
+              ) : (
+                <span className="text-right text-[13px] text-[#8A8B92]">{ocupado ? "leyendo" : "incluida"}</span>
               )}
             </li>
           );
         })}
       </ul>
-      <p className="border-t border-white/10 px-5 py-3 text-[12px] leading-relaxed text-white/45">
+      <p className="border-t border-[#DCDCD6] bg-[#FAFAF8] px-5 py-3 text-[12px] leading-relaxed text-[#8A8B92]">
         {resumen ? `Conteo sobre una muestra de ${fmt(resumen.muestra)} menciones.` : "Las 11 superficies, siempre. Radio y TV entran en el monitoreo completo."}
       </p>
-    </motion.div>
+    </div>
   );
 }
 
@@ -289,25 +252,25 @@ function FranjaMedios({ cc, nombrePais }: { cc: string; nombrePais: string }) {
   const lista = MEDIOS[cc] ?? [];
   if (!lista.length) return null;
   return (
-    <section className="border-y border-white/10 bg-[#0E0D14] py-7">
-      <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-5 px-5 md:flex-row md:items-center md:gap-10 md:px-10">
-        <p className={`${rotulo} shrink-0 text-white/45`}>Medios que escuchamos en {nombrePais}</p>
+    <section className="border-y border-[#DCDCD6] bg-white py-6">
+      <div className={`${ancho} flex flex-col gap-4 md:flex-row md:items-center md:gap-10`}>
+        <p className="shrink-0 text-[13px] text-[#5F6068]">Medios que escuchamos en {nombrePais}</p>
         <AnimatePresence mode="wait">
           <motion.ul
             key={cc}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
             className="flex flex-wrap items-center gap-x-8 gap-y-4"
           >
             {lista.slice(0, 9).map((m) => (
               <li key={m.dominio} className="flex h-7 items-center" title={m.nombre}>
                 {m.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={m.logo} alt={m.nombre} className="h-5 w-auto max-w-[120px] opacity-60 [filter:brightness(0)_invert(1)]" />
+                  <img src={m.logo} alt={m.nombre} className="h-5 w-auto max-w-[120px] opacity-55 [filter:grayscale(1)_brightness(0)]" />
                 ) : (
-                  <span className="text-[15px] font-semibold tracking-tight text-white/55">{m.nombre}</span>
+                  <span className="text-[15px] font-semibold tracking-tight text-[#5F6068]">{m.nombre}</span>
                 )}
               </li>
             ))}
@@ -328,7 +291,7 @@ function Reporte({ r, hub, nombrePais }: { r: Resumen; hub: string; nombrePais: 
   const tonoTot = r.tono.positivo + r.tono.neutral + r.tono.negativo || 1;
   const tonos = [
     { k: "Positivo", v: r.tono.positivo, c: C.verde },
-    { k: "Neutral", v: r.tono.neutral, c: "#55565C" },
+    { k: "Neutral", v: r.tono.neutral, c: "#B9B9B3" },
     { k: "Negativo", v: r.tono.negativo, c: C.rojo },
   ];
   const cercaPico = pico
@@ -336,134 +299,120 @@ function Reporte({ r, hub, nombrePais }: { r: Resumen; hub: string; nombrePais: 
     : [];
   const titulares = cercaPico.length ? cercaPico : r.titulares;
   const maxMedio = Math.max(1, ...r.medios.map((m) => m.n));
+  const datos = [
+    dom && { t: "Donde más se habla", v: nomRed(dom.key), n: `${pct(dom.parte)} de la muestra`, texto: true },
+    r.alcance > 0 && { t: "Alcance estimado", v: fmt(r.alcance), n: "personas que pudieron verlo" },
+    r.interacciones > 0 && { t: "Interacciones", v: fmt(r.interacciones), n: "reacciones, comentarios y compartidos" },
+    { t: "Muestra leída", v: fmt(r.muestra), n: "menciones clasificadas una por una" },
+  ].filter(Boolean) as { t: string; v: string; n: string; texto?: boolean }[];
 
   return (
-    <section id="reporte" className="relative scroll-mt-24 border-b border-white/10 py-16 md:py-24">
-      <div className="mx-auto w-full max-w-[1240px] px-5 md:px-10">
-        <div className="flex flex-wrap items-baseline justify-between gap-3">
-          <p className={`${rotulo} text-[#C59AF0]`}>Reporte Sentinel · {r.marca} · {nombrePais}</p>
-          <p className={`${rotulo} text-white/40`}>{fechaLarga(r.desde)} al {fechaLarga(r.hasta)}</p>
-        </div>
-
-        {/* Volumen */}
-        <div className="mt-8 grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-end">
-          <div>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, ease }}
-              className="text-[84px] font-semibold leading-[0.9] tracking-[-0.04em] tabular-nums md:text-[156px]"
-            >
-              {fmt(r.total)}
-            </motion.p>
-            <p className="mt-4 max-w-[520px] text-[19px] leading-snug text-white/80">
-              menciones públicas de <strong className="font-semibold text-white">{r.marca}</strong> en {nombrePais} en los últimos 30 días.
-            </p>
+    <section id="reporte" className="scroll-mt-20 py-14 md:py-20">
+      <div className={ancho}>
+        <div className={tarjeta}>
+          {/* Encabezado del informe */}
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-[#DCDCD6] px-5 py-4 md:px-8">
+            <h2 className="text-[18px] font-semibold md:text-[20px]">Reporte de escucha · {r.marca} · {nombrePais}</h2>
+            <p className="text-[13px] text-[#5F6068]">{fechaLarga(r.desde)} al {fechaLarga(r.hasta)}</p>
           </div>
-          <div className="grid grid-cols-2 gap-6 border-t border-white/10 pt-6 lg:border-t-0 lg:border-l lg:pl-10 lg:pt-0">
-            {dom && (
-              <Dato titulo="Donde más se habla" valor={nomRed(dom.key)} nota={`${pct(dom.parte)} de la muestra`} />
-            )}
-            {r.alcance > 0 && <Dato titulo="Alcance estimado" valor={fmt(r.alcance)} nota="personas que pudieron verlo" />}
-            {r.interacciones > 0 && <Dato titulo="Interacciones" valor={fmt(r.interacciones)} nota="reacciones, comentarios y compartidos" />}
-            <Dato titulo="Muestra leída" valor={fmt(r.muestra)} nota="menciones clasificadas una por una" />
-          </div>
-        </div>
 
-        {/* Serie diaria sobre el fondo */}
-        {r.porDia.length > 1 && <Serie dias={r.porDia} pico={pico?.dia} />}
-
-        {/* Pico */}
-        {pico && (
-          <div className="mt-14 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[0.8fr_1.2fr]">
+          {/* Total: el único número grande */}
+          <div className="grid gap-8 px-5 pt-8 pb-8 md:px-8 lg:grid-cols-[1fr_1.15fr] lg:items-end">
             <div>
-              <p className={`${rotulo} text-white/45`}>Día pico</p>
-              <p className="mt-3 text-[40px] font-semibold leading-none tracking-tight md:text-[52px]">{fechaLarga(pico.dia)}</p>
-              <p className="mt-4 max-w-[380px] text-[16px] leading-relaxed text-white/70">
-                Ese día se concentró el {pct(pico.parte)} de la muestra: {fmt(pico.n)} menciones en 24 horas. Un pico así es la primera señal de que algo se está moviendo.
+              <p className={etiqueta}>Menciones públicas, últimos 30 días</p>
+              <p className="mt-2 text-[76px] font-semibold leading-[0.95] tracking-[-0.035em] tabular-nums md:text-[128px]">{fmt(r.total)}</p>
+              <p className="mt-3 max-w-[460px] text-[16px] leading-snug text-[#5F6068]">
+                veces que se nombró a <strong className="font-semibold text-[#17171B]">{r.marca}</strong> en redes, medios y blogs de {nombrePais}.
               </p>
             </div>
-            {titulares.length > 0 && (
+            <dl className="grid grid-cols-2 border-t border-[#DCDCD6] lg:border-t-0">
+              {datos.map((d, i) => (
+                <div key={d.t} className={`min-w-0 border-[#DCDCD6] py-4 ${i % 2 ? "pl-5" : "pr-5"} ${i % 2 === 1 ? "border-l" : ""} ${i >= 2 ? "border-t" : ""}`}>
+                  <dt className="text-[13px] text-[#5F6068]">{d.t}</dt>
+                  <dd className={`mt-1 truncate text-[22px] font-semibold leading-tight md:text-[26px] ${d.texto ? "" : "tabular-nums"}`}>{d.v}</dd>
+                  <dd className="mt-0.5 text-[12px] leading-snug text-[#8A8B92]">{d.n}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          {r.porDia.length > 1 && <Serie dias={r.porDia} pico={pico?.dia} />}
+
+          {/* Pico y titulares */}
+          {pico && (
+            <div className="grid gap-8 border-t border-[#DCDCD6] px-5 py-8 md:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
               <div>
-                <p className={`${rotulo} text-white/45`}>{cercaPico.length ? "Lo que lo detonó" : "Lo que publicaron los medios"}</p>
+                <p className={etiqueta}>Día pico</p>
+                <p className="mt-2 text-[32px] font-semibold leading-none tracking-tight md:text-[40px]">{fechaLarga(pico.dia)}</p>
+                <p className="mt-4 max-w-[380px] text-[15px] leading-relaxed text-[#5F6068]">
+                  Ese día se concentró el {pct(pico.parte)} de la muestra: {fmt(pico.n)} menciones en 24 horas. Un pico así es la primera señal de que algo se está moviendo.
+                </p>
+              </div>
+              {titulares.length > 0 && (
+                <div>
+                  <p className={etiqueta}>{cercaPico.length ? "Lo que lo detonó" : "Lo que publicaron los medios"}</p>
+                  <ul className="mt-2 border-t border-[#DCDCD6]">
+                    {titulares.slice(0, 4).map((t) => (
+                      <li key={t.url} className="border-b border-[#ECECE8]">
+                        <a href={t.url} target="_blank" rel="noopener noreferrer" className="group grid gap-1 py-3.5 sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-4">
+                          <span className="text-[13px] text-[#8A8B92]">{t.medio} · {fechaCorta(t.fecha)}</span>
+                          <span className="text-[16px] leading-snug group-hover:text-[#4A1D6E] group-hover:underline">{t.titulo}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Tono + amplificadores */}
+          <div className="grid border-t border-[#DCDCD6] lg:grid-cols-2">
+            <div className="px-5 py-8 md:px-8">
+              <p className={etiqueta}>Tono de la conversación</p>
+              <div className="mt-4 flex h-2.5 overflow-hidden rounded-[2px] bg-[#ECECE8]">
+                {tonos.map((t) => (
+                  <span key={t.k} style={{ width: `${(t.v / tonoTot) * 100}%`, background: t.c }} />
+                ))}
+              </div>
+              <dl className="mt-4 grid grid-cols-3 gap-4">
+                {tonos.map((t) => (
+                  <div key={t.k}>
+                    <dt className="flex items-center gap-2 text-[13px] text-[#5F6068]">
+                      <span className="h-2 w-2 rounded-[1px]" style={{ background: t.c }} />
+                      {t.k}
+                    </dt>
+                    <dd className="mt-1 text-[24px] font-semibold tabular-nums">{pct(t.v / tonoTot)}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-4 text-[13px] leading-relaxed text-[#8A8B92]">
+                Clasificado sobre la muestra. Sentinel completo lee cada comentario con el contexto de tu marca y de tu categoría.
+              </p>
+            </div>
+            {r.medios.length > 0 && (
+              <div className="border-t border-[#DCDCD6] px-5 py-8 md:px-8 lg:border-t-0 lg:border-l">
+                <p className={etiqueta}>Quién te amplifica</p>
                 <ul className="mt-3">
-                  {titulares.slice(0, 4).map((t) => (
-                    <li key={t.url} className="border-b border-white/10 py-4 first:pt-2">
-                      <a href={t.url} target="_blank" rel="noopener noreferrer" className="group block">
-                        <span className="text-[12px] text-[#C59AF0]">{t.medio} · {fechaCorta(t.fecha)}</span>
-                        <span className="mt-1 block text-[17px] leading-snug text-white/90 transition group-hover:text-white">{t.titulo}</span>
-                      </a>
+                  {r.medios.slice(0, 6).map((m) => (
+                    <li key={m.nombre} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_40px] items-center gap-4 border-b border-[#ECECE8] py-2.5">
+                      <span className="truncate text-[14px]">{m.nombre}</span>
+                      <span className="h-1.5 bg-[#ECECE8]">
+                        <span className="block h-full bg-[#4A1D6E]" style={{ width: `${(m.n / maxMedio) * 100}%` }} />
+                      </span>
+                      <span className={`${num} text-right text-[13px] text-[#5F6068]`}>{m.n}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
           </div>
-        )}
 
-        {/* Tono + amplificadores */}
-        <div className="mt-14 grid gap-12 border-t border-white/10 pt-10 lg:grid-cols-2">
-          <div>
-            <p className={`${rotulo} text-white/45`}>Tono de la conversación</p>
-            <div className="mt-5 flex h-3 overflow-hidden rounded-[2px]">
-              {tonos.map((t, i) => (
-                <motion.span
-                  key={t.k}
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${(t.v / tonoTot) * 100}%` }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.12, duration: 0.9, ease }}
-                  style={{ background: t.c }}
-                />
-              ))}
-            </div>
-            <dl className="mt-5 grid grid-cols-3 gap-4">
-              {tonos.map((t) => (
-                <div key={t.k}>
-                  <dt className="flex items-center gap-2 text-[13px] text-white/55">
-                    <span className="h-2 w-2 rounded-[2px]" style={{ background: t.c }} />
-                    {t.k}
-                  </dt>
-                  <dd className="mt-1 text-[28px] font-semibold tabular-nums">{pct(t.v / tonoTot)}</dd>
-                </div>
-              ))}
-            </dl>
-            <p className="mt-5 text-[14px] leading-relaxed text-white/55">
-              Clasificado sobre la muestra. Sentinel completo lee cada comentario con el contexto de tu marca y de tu categoría.
-            </p>
-          </div>
-          {r.medios.length > 0 && (
+          {/* Lo que haría Sentinel completo */}
+          <div className="grid gap-6 border-t border-[#DCDCD6] bg-[#FAFAF8] px-5 py-8 md:px-8 lg:grid-cols-[1fr_1fr] lg:items-start lg:gap-12">
             <div>
-              <p className={`${rotulo} text-white/45`}>Quién te amplifica</p>
-              <ul className="mt-4">
-                {r.medios.slice(0, 6).map((m) => (
-                  <li key={m.nombre} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_40px] items-center gap-4 border-b border-white/[0.07] py-2.5">
-                    <span className="truncate text-[15px] text-white/85">{m.nombre}</span>
-                    <span className="h-[5px] rounded-[2px] bg-white/[0.06]">
-                      <motion.span
-                        className="block h-full rounded-[2px] bg-[#C59AF0]"
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${(m.n / maxMedio) * 100}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, ease }}
-                      />
-                    </span>
-                    <span className="text-right text-[13px] tabular-nums text-white/60">{m.n}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-
-        {/* Lo que haría Sentinel completo */}
-        <div className="mt-16 rounded-[10px] border border-[#C59AF0]/25 bg-[#4A1D6E]/20 p-6 md:p-10">
-          <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start">
-            <div>
-              <p className="text-[26px] font-semibold leading-tight tracking-tight md:text-[32px]">
-                Esto es una foto. Sentinel completo es la película.
-              </p>
-              <p className="mt-4 text-[16px] leading-relaxed text-white/70">
+              <p className="text-[20px] font-semibold leading-snug md:text-[22px]">Esto es una foto. Sentinel completo es la película.</p>
+              <p className="mt-2 max-w-[480px] text-[15px] leading-relaxed text-[#5F6068]">
                 Con la escucha continua, {r.marca} tendría esta lectura todos los días, al lado de sus competidores, y la alerta llegaría el mismo día del pico, no un mes después.
               </p>
             </div>
@@ -475,65 +424,54 @@ function Reporte({ r, hub, nombrePais }: { r: Resumen; hub: string; nombrePais: 
   );
 }
 
-function Dato({ titulo, valor, nota }: { titulo: string; valor: string; nota: string }) {
-  return (
-    <div className="min-w-0">
-      <p className="text-[12px] text-white/45">{titulo}</p>
-      <p className="mt-1 text-[21px] font-semibold leading-tight tracking-tight tabular-nums md:text-[26px]">{valor}</p>
-      <p className="mt-0.5 text-[12px] leading-snug text-white/45">{nota}</p>
-    </div>
-  );
-}
-
 function Serie({ dias, pico }: { dias: { dia: string; n: number }[]; pico?: string }) {
   const W = 1000;
-  const H = 220;
+  const H = 200;
   const max = Math.max(1, ...dias.map((d) => d.n));
-  const pts = dias.map((d, i) => [(i / (dias.length - 1)) * W, H - (d.n / max) * (H - 16)] as const);
+  const pts = dias.map((d, i) => [(i / (dias.length - 1)) * W, H - (d.n / max) * (H - 12)] as const);
   const linea = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
   const area = `${linea} L${W},${H} L0,${H} Z`;
   const ip = pico ? dias.findIndex((d) => d.dia === pico) : -1;
+  const xp = ip >= 0 ? (ip / (dias.length - 1)) * 100 : 0;
   return (
-    <div className="relative mt-14">
+    <div className="border-t border-[#DCDCD6] px-5 py-8 md:px-8">
       <div className="flex items-baseline justify-between">
-        <p className={`${rotulo} text-white/45`}>Menciones por día</p>
-        <p className="text-[12px] text-white/40">máximo {fmt(max)}</p>
+        <p className={etiqueta}>Menciones por día</p>
+        <p className={`${num} text-[12px] text-[#8A8B92]`}>máx. {fmt(max)}</p>
       </div>
-      <div className="relative mt-4 h-[180px] md:h-[240px]">
+      <div className="relative mt-5 h-[160px] md:h-[220px]">
         <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="absolute inset-0 h-full w-full overflow-visible">
-          <defs>
-            <linearGradient id="sv-area" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#C59AF0" stopOpacity="0.35" />
-              <stop offset="100%" stopColor="#C59AF0" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          {[0.25, 0.5, 0.75].map((f) => (
-            <line key={f} x1="0" x2={W} y1={H * f} y2={H * f} stroke="rgba(255,255,255,0.06)" vectorEffect="non-scaling-stroke" />
+          {[0, 0.5].map((f) => (
+            <line key={f} x1="0" x2={W} y1={H * f + 6} y2={H * f + 6} stroke="#ECECE8" vectorEffect="non-scaling-stroke" />
           ))}
-          <motion.path d={area} fill="url(#sv-area)" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1.2 }} />
+          <line x1="0" x2={W} y1={H} y2={H} stroke="#CFCFC9" vectorEffect="non-scaling-stroke" />
+          <path d={area} fill="#4A1D6E" fillOpacity={0.06} />
           <motion.path
             d={linea}
             fill="none"
-            stroke="#C59AF0"
-            strokeWidth={2}
+            stroke="#4A1D6E"
+            strokeWidth={1.75}
             vectorEffect="non-scaling-stroke"
             initial={{ pathLength: 0 }}
             whileInView={{ pathLength: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 1.6, ease }}
+            transition={{ duration: 1.2, ease }}
           />
         </svg>
         {ip >= 0 && (
-          <div className="absolute top-0 bottom-0" style={{ left: `${(ip / (dias.length - 1)) * 100}%` }}>
-            <span className="absolute bottom-0 top-0 w-px bg-[#D42A20]/70" />
+          <div className="absolute top-0 bottom-0" style={{ left: `${xp}%` }}>
+            <span className="absolute bottom-0 top-0 w-px bg-[#D42A20]" />
             <span
-              className="absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D42A20] ring-4 ring-[#D42A20]/25"
+              className="absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D42A20]"
               style={{ top: `${(pts[ip][1] / H) * 100}%` }}
             />
+            <span className={`absolute -top-1 whitespace-nowrap text-[12px] font-medium text-[#D42A20] ${xp > 70 ? "right-2" : "left-2"}`}>
+              Pico · {fechaCorta(dias[ip].dia)} · {fmt(dias[ip].n)}
+            </span>
           </div>
         )}
       </div>
-      <div className="mt-2 flex justify-between text-[12px] text-white/40">
+      <div className="mt-2 flex justify-between text-[12px] text-[#8A8B92]">
         <span>{fechaCorta(dias[0].dia)}</span>
         <span>{fechaCorta(dias[dias.length - 1].dia)}</span>
       </div>
@@ -542,10 +480,11 @@ function Serie({ dias, pico }: { dias: { dia: string; n: number }[]; pico?: stri
 }
 
 /* Panel inline (sin modal): botón que despliega el formulario de correo. */
-function PanelDemo({ hub, idea, claro }: { hub: string; idea: string; claro?: boolean }) {
+function PanelDemo({ hub, idea, oscuro }: { hub: string; idea: string; oscuro?: boolean }) {
   const [abierto, setAbierto] = useState(false);
   const [correo, setCorreo] = useState("");
   const [fase, setFase] = useState<"idle" | "enviando" | "ok" | "error">("idle");
+  const id = oscuro ? "correo-c" : "correo-r";
   const enviar = async (e: FormEvent) => {
     e.preventDefault();
     if (!/^\S+@\S+\.\S+$/.test(correo)) return;
@@ -556,11 +495,8 @@ function PanelDemo({ hub, idea, claro }: { hub: string; idea: string; claro?: bo
   return (
     <div>
       {!abierto && (
-        <button
-          onClick={() => setAbierto(true)}
-          className={`flex h-14 w-full items-center justify-between rounded-[6px] px-5 text-[16px] font-semibold transition ${claro ? "bg-[#17171B] text-white hover:bg-black" : "bg-[#C59AF0] text-[#17171B] hover:bg-[#d4b3f5]"}`}
-        >
-          Ver demo completa <span aria-hidden>→</span>
+        <button onClick={() => setAbierto(true)} className={`${btn} w-full sm:w-auto`}>
+          Ver demo completa
         </button>
       )}
       <AnimatePresence initial={false}>
@@ -570,41 +506,36 @@ function PanelDemo({ hub, idea, claro }: { hub: string; idea: string; claro?: bo
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.45, ease }}
+            transition={{ duration: 0.35, ease }}
             className="overflow-hidden"
           >
-            <div className={`rounded-[8px] border p-5 ${claro ? "border-black/10 bg-white" : "border-white/15 bg-[#0B0A10]/70"}`}>
+            <div className="rounded-[6px] border border-[#DCDCD6] bg-white p-4 md:p-5">
               {fase === "ok" ? (
                 <div>
-                  <p className="text-[18px] font-semibold">Listo, recibimos tu correo.</p>
-                  <p className={`mt-2 text-[15px] leading-relaxed ${claro ? "text-[#55565C]" : "text-white/70"}`}>
+                  <p className="text-[17px] font-semibold">Listo, recibimos tu correo.</p>
+                  <p className="mt-1.5 text-[14px] leading-relaxed text-[#5F6068]">
                     El equipo de Shift en tu país te escribe para mostrarte tu tablero de Sentinel con tu marca y tus competidores.
                   </p>
                 </div>
               ) : (
                 <form onSubmit={enviar}>
-                  <label htmlFor={claro ? "correo-c" : "correo-r"} className={`text-[14px] ${claro ? "text-[#55565C]" : "text-white/70"}`}>
-                    ¿A qué correo te escribimos?
-                  </label>
-                  <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+                  <label htmlFor={id} className={etiqueta}>¿A qué correo te escribimos?</label>
+                  <div className="mt-1.5 flex flex-col gap-2 sm:flex-row">
                     <input
-                      id={claro ? "correo-c" : "correo-r"}
+                      id={id}
                       type="email"
                       required
                       autoFocus
                       value={correo}
                       onChange={(e) => setCorreo(e.target.value)}
                       placeholder="tu@empresa.com"
-                      className={`h-12 min-w-0 flex-1 rounded-[6px] border px-4 text-[16px] outline-none focus:border-[#C59AF0] ${claro ? "border-black/15 bg-[#F6F6F4] text-[#17171B]" : "border-white/15 bg-white/[0.04] text-white placeholder:text-white/35"}`}
+                      className="h-12 min-w-0 flex-1 rounded-[4px] border border-[#CFCFC9] bg-white px-3.5 text-[16px] text-[#17171B] outline-none placeholder:text-[#8A8B92] focus:border-[#4A1D6E]"
                     />
-                    <button
-                      disabled={fase === "enviando"}
-                      className="h-12 rounded-[6px] bg-[#4A1D6E] px-5 text-[15px] font-semibold text-white transition hover:bg-[#5d2689] disabled:opacity-60"
-                    >
+                    <button disabled={fase === "enviando"} className={btn}>
                       {fase === "enviando" ? "Enviando" : "Pedir demo"}
                     </button>
                   </div>
-                  <p className={`mt-3 text-[12px] ${claro ? "text-[#7D7F87]" : "text-white/45"}`}>
+                  <p className={`mt-2.5 text-[12px] ${fase === "error" ? "text-[#D42A20]" : "text-[#8A8B92]"}`}>
                     {fase === "error" ? "No se pudo enviar. Intenta otra vez." : "Solo lo usa el equipo de Shift en tu país, una vez. Sin listas de correo."}
                   </p>
                 </form>
@@ -618,7 +549,7 @@ function PanelDemo({ hub, idea, claro }: { hub: string; idea: string; claro?: bo
 }
 
 /* ------------------------------------------------------------------ */
-/* NARRATIVA CON DATOS REALES                                          */
+/* NARRATIVA CON DATOS REALES (la única franja oscura)                 */
 
 const FUENTES: [string, string][] = [
   ["tiktok", "TikTok"],
@@ -632,75 +563,57 @@ const FUENTES: [string, string][] = [
   ["radio", "Radio"],
 ];
 
+
 function Narrativa() {
   const s = SENTINEL_REAL;
   const max = s.porFuente.tiktok;
   return (
-    <section className="relative border-b border-white/10 py-20 md:py-28">
-      <div className="mx-auto w-full max-w-[1240px] px-5 md:px-10">
-        <div className="grid gap-14 lg:grid-cols-[1fr_1fr] lg:gap-20">
-          <div>
-            <h2 className="text-[34px] font-semibold leading-[1.06] tracking-[-0.02em] md:text-[50px]">
-              Escuchar todo el ruido no sirve. Hay que separar lo que es de tu marca.
-            </h2>
-            <p className="mt-6 max-w-[500px] text-[17px] leading-relaxed text-white/70">
-              Cada mención que entra a Sentinel pasa por una compuerta de pertinencia: si no habla de tu marca, no cuenta. Lo que queda es conversación real, con su fuente y su fecha, lista para decidir.
+    <section className="bg-[#17171B] py-16 text-[#F4F4F2] md:py-24">
+      <div className={`${ancho} grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20`}>
+        <div>
+          <h2 className="max-w-[520px] text-[30px] font-semibold leading-[1.12] tracking-[-0.015em] md:text-[40px]">
+            Escuchar todo el ruido no sirve. Hay que separar lo que es de tu marca.
+          </h2>
+          <p className="mt-5 max-w-[500px] text-[16px] leading-relaxed text-white/65">
+            Cada mención que entra a Sentinel pasa por una compuerta de pertinencia: si no habla de tu marca, no cuenta. Lo que queda es conversación real, con su fuente y su fecha, lista para decidir.
+          </p>
+          <div className="mt-10 border-t border-white/15 pt-6">
+            <p className="text-[56px] font-semibold leading-none tracking-[-0.03em] tabular-nums md:text-[72px]">{fmt(s.menciones)}</p>
+            <p className="mt-2 max-w-[440px] text-[15px] leading-snug text-white/65">
+              menciones curadas desde {s.desde}, después de la compuerta, en 12 fuentes distintas.
             </p>
-            <div className="mt-12">
-              <motion.p
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease }}
-                className="text-[72px] font-semibold leading-none tracking-[-0.04em] text-[#C59AF0] tabular-nums md:text-[112px]"
-              >
-                {fmt(s.menciones)}
-              </motion.p>
-              <p className="mt-3 max-w-[440px] text-[16px] leading-snug text-white/75">
-                menciones curadas desde {s.desde}, después de la compuerta, en 12 fuentes distintas.
-              </p>
-            </div>
-            <dl className="mt-10 grid grid-cols-3 gap-6 border-t border-white/10 pt-6">
-              <div>
-                <dt className="text-[12px] leading-snug text-white/45">alertas enviadas</dt>
-                <dd className="mt-1 text-[26px] font-semibold tabular-nums md:text-[32px]">{fmt(s.alertasEnviadas)}</dd>
-              </div>
-              <div>
-                <dt className="text-[12px] leading-snug text-white/45">mensajes de canales propios</dt>
-                <dd className="mt-1 text-[26px] font-semibold tabular-nums md:text-[32px]">{fmt(s.mensajesDeCanal)}</dd>
-              </div>
-              <div>
-                <dt className="text-[12px] leading-snug text-white/45">comentarios leídos</dt>
-                <dd className="mt-1 text-[26px] font-semibold tabular-nums md:text-[32px]">{fmt(s.comentariosLeidos)}</dd>
-              </div>
-            </dl>
           </div>
+          <dl className="mt-8 grid grid-cols-3 border-t border-white/15">
+            {[
+              ["alertas enviadas", s.alertasEnviadas],
+              ["mensajes de canales propios", s.mensajesDeCanal],
+              ["comentarios leídos", s.comentariosLeidos],
+            ].map(([t, v], i) => (
+              <div key={t as string} className={`py-4 ${i ? "border-l border-white/15 pl-4" : "pr-4"}`}>
+                <dd className={`${num} text-[20px] md:text-[24px]`}>{fmt(v as number)}</dd>
+                <dt className="mt-1 text-[12px] leading-snug text-white/55">{t}</dt>
+              </div>
+            ))}
+          </dl>
+        </div>
 
-          <div className="lg:pt-3">
-            <p className={`${rotulo} text-white/45`}>Dónde ocurrió la conversación curada</p>
-            <ul className="mt-5">
-              {FUENTES.map(([k, nombre], i) => (
-                <li key={k} className="grid grid-cols-[92px_minmax(0,1fr)_56px] items-center gap-4 border-b border-white/[0.07] py-3">
-                  <span className="text-[15px] text-white/85">{nombre}</span>
-                  <span className="h-[8px] rounded-[2px] bg-white/[0.05]">
-                    <motion.span
-                      className="block h-full rounded-[2px]"
-                      style={{ background: i === 0 ? "#C59AF0" : "rgba(197,154,240,0.55)" }}
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${(s.porFuente[k] / max) * 100}%` }}
-                      viewport={{ once: true, margin: "-60px" }}
-                      transition={{ delay: i * 0.06, duration: 0.9, ease }}
-                    />
-                  </span>
-                  <span className="text-right text-[14px] tabular-nums text-white/70">{fmt(s.porFuente[k])}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 max-w-[460px] text-[15px] leading-relaxed text-white/60">
-              La fuente más grande es TikTok, justo la que una escucha rápida no alcanza. Por eso el monitoreo completo suma fuentes que la herramienta gratis no tiene, como TikTok, LinkedIn y radio.
-            </p>
-            <p className="mt-6 text-[12px] text-white/40">Medido por Sentinel, {FECHA_DATOS}. Datos agregados de las marcas que escuchamos, sin nombrar a ninguna.</p>
-          </div>
+        <div>
+          <p className="text-[13px] font-medium text-white/60">Dónde ocurrió la conversación curada</p>
+          <ul className="mt-3 border-t border-white/15">
+            {FUENTES.map(([k, nombre]) => (
+              <li key={k} className="grid grid-cols-[92px_minmax(0,1fr)_56px] items-center gap-4 border-b border-white/10 py-2.5">
+                <span className="text-[14px] text-white/85">{nombre}</span>
+                <span className="h-1.5 bg-white/[0.07]">
+                  <span className="block h-full bg-[#F4F4F2]/80" style={{ width: `${(s.porFuente[k] / max) * 100}%` }} />
+                </span>
+                <span className={`${num} text-right text-[13px] text-white/70`}>{fmt(s.porFuente[k])}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 max-w-[460px] text-[14px] leading-relaxed text-white/60">
+            La fuente más grande es TikTok, justo la que una escucha rápida no alcanza. Por eso el monitoreo completo suma fuentes que la herramienta gratis no tiene, como TikTok, LinkedIn y radio.
+          </p>
+          <p className="mt-5 text-[12px] text-white/40">Fuente: base de Sentinel, medido en {FECHA_DATOS}. Datos agregados de las marcas que escuchamos, sin nombrar a ninguna.</p>
         </div>
       </div>
     </section>
@@ -711,35 +624,28 @@ function Narrativa() {
 
 function Producto() {
   return (
-    <section className="relative overflow-hidden border-b border-white/10 py-20 md:py-28">
-      <div className="mx-auto w-full max-w-[1240px] px-5 md:px-10">
-        <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-          <h2 className="text-[34px] font-semibold leading-[1.06] tracking-[-0.02em] md:text-[50px]">El pulso de tu marca, ahora mismo.</h2>
-          <p className="max-w-[560px] text-[17px] leading-relaxed text-white/70 lg:justify-self-end">
+    <section className="py-16 md:py-24">
+      <div className={ancho}>
+        <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:items-end lg:gap-12">
+          <h2 className="text-[30px] font-semibold leading-[1.12] tracking-[-0.015em] md:text-[40px]">El pulso de tu marca, ahora mismo.</h2>
+          <p className="max-w-[560px] text-[16px] leading-relaxed text-[#5F6068]">
             Así se ve Sentinel por dentro: el radar en vivo avisa cuando el tono gira, cuando aparece una fuente nueva o cuando un competidor acelera. El tablero junta tus canales propios con lo que se dice afuera.
           </p>
         </div>
-        <div className="relative mt-12 md:mt-16">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 1, ease }}
-            className="relative w-full overflow-hidden rounded-[10px] border border-white/10 shadow-[0_40px_120px_-30px_rgba(74,29,110,0.7)] md:w-[78%]"
-          >
-            <Image src="/escucha/sentinel/vivo.webp" alt="Radar en vivo de Sentinel con giro de sentimiento y señales tempranas" width={1920} height={1200} className="h-auto w-full" sizes="(min-width: 768px) 78vw, 100vw" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ delay: 0.2, duration: 1.1, ease }}
-            className="relative -mt-10 ml-auto hidden w-[46%] overflow-hidden rounded-[10px] border border-white/15 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] md:-mt-[22%] md:block"
-          >
-            <Image src="/escucha/sentinel/inicio.webp" alt="Tablero de Sentinel con canales propios, volumen, sentimiento y share of voice" width={1920} height={1200} className="h-auto w-full" sizes="46vw" />
-          </motion.div>
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          {[
+            { src: "/escucha/sentinel/inicio.webp", alt: "Tablero de Sentinel con canales propios, volumen, sentimiento y share of voice", pie: "Tablero: canales propios, volumen, sentimiento y share of voice." },
+            { src: "/escucha/sentinel/vivo.webp", alt: "Radar en vivo de Sentinel con giro de sentimiento y señales tempranas", pie: "Radar en vivo: giros de tono y señales tempranas." },
+          ].map((f) => (
+            <figure key={f.src}>
+              <div className="overflow-hidden rounded-[6px] border border-[#DCDCD6] bg-white">
+                <Image src={f.src} alt={f.alt} width={1920} height={1200} className="h-auto w-full" sizes="(min-width: 768px) 50vw, 100vw" />
+              </div>
+              <figcaption className="mt-2.5 text-[13px] text-[#5F6068]">{f.pie}</figcaption>
+            </figure>
+          ))}
         </div>
-        <p className="mt-6 text-[12px] text-white/40">Capturas reales de Sentinel con datos anonimizados: «Su marca» y «Competidor A».</p>
+        <p className="mt-4 text-[12px] text-[#8A8B92]">Capturas reales de Sentinel con datos anonimizados: «Su marca» y «Competidor A».</p>
       </div>
     </section>
   );
@@ -754,30 +660,23 @@ const COMPLETO = [
   { t: "Compuerta de pertinencia", d: "Separa el ruido de tu marca: homónimos, spam y menciones sueltas quedan fuera del conteo." },
 ];
 
+
 function Completo() {
   return (
-    <section className="border-b border-white/10 bg-[#F4F4F2] py-20 text-[#17171B] md:py-28">
-      <div className="mx-auto grid w-full max-w-[1240px] gap-12 px-5 md:px-10 lg:grid-cols-[0.8fr_1.2fr]">
+    <section className="border-y border-[#DCDCD6] bg-white py-16 md:py-24">
+      <div className={`${ancho} grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14`}>
         <div>
-          <p className="text-[17px] font-semibold tracking-[0.32em] text-[#4A1D6E]">SENTINEL</p>
-          <h2 className="mt-5 text-[34px] font-semibold leading-[1.06] tracking-[-0.02em] md:text-[46px]">Lo que suma el monitoreo completo.</h2>
-          <p className="mt-5 max-w-[400px] text-[16px] leading-relaxed text-[#55565C]">
+          <h2 className="text-[30px] font-semibold leading-[1.12] tracking-[-0.015em] md:text-[40px]">Lo que suma el monitoreo completo.</h2>
+          <p className="mt-4 max-w-[400px] text-[16px] leading-relaxed text-[#5F6068]">
             La herramienta gratis te muestra la conversación. Sentinel completo la vigila por ti y te avisa antes de que crezca.
           </p>
         </div>
-        <dl className="grid gap-x-12 sm:grid-cols-2">
-          {COMPLETO.map((x, i) => (
-            <motion.div
-              key={x.t}
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: (i % 2) * 0.08, duration: 0.6, ease }}
-              className="border-t border-[#BDBDB7] py-6"
-            >
-              <dt className="text-[19px] font-semibold">{x.t}</dt>
-              <dd className="mt-2 text-[15px] leading-relaxed text-[#55565C]">{x.d}</dd>
-            </motion.div>
+        <dl className="border-t border-[#17171B]">
+          {COMPLETO.map((x) => (
+            <div key={x.t} className="grid gap-1 border-b border-[#DCDCD6] py-4 sm:grid-cols-[220px_minmax(0,1fr)] sm:gap-6">
+              <dt className="text-[16px] font-semibold">{x.t}</dt>
+              <dd className="text-[15px] leading-relaxed text-[#5F6068]">{x.d}</dd>
+            </div>
           ))}
         </dl>
       </div>
@@ -793,22 +692,23 @@ const PREGUNTAS = [
   { p: "¿Qué hacen con mi correo?", r: "Solo lo usamos si pides la demo completa: le llega al equipo de Shift en tu país, que te escribe una vez. No entra a ninguna lista de correo." },
 ];
 
+
 function Preguntas() {
   const [abierta, setAbierta] = useState<number | null>(0);
   return (
-    <section className="border-b border-white/10 py-20 md:py-28">
-      <div className="mx-auto grid w-full max-w-[1240px] gap-12 px-5 md:px-10 lg:grid-cols-[0.8fr_1.2fr]">
-        <h2 className="text-[34px] font-semibold leading-[1.06] tracking-[-0.02em] md:text-[46px]">Preguntas frecuentes</h2>
-        <ul>
+    <section className="py-16 md:py-24">
+      <div className={`${ancho} grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14`}>
+        <h2 className="text-[30px] font-semibold leading-[1.12] tracking-[-0.015em] md:text-[40px]">Preguntas frecuentes</h2>
+        <ul className="border-t border-[#17171B]">
           {PREGUNTAS.map((q, i) => (
-            <li key={q.p} className="border-b border-white/10">
+            <li key={q.p} className="border-b border-[#DCDCD6]">
               <button
                 onClick={() => setAbierta(abierta === i ? null : i)}
                 aria-expanded={abierta === i}
-                className="flex w-full items-center justify-between gap-6 py-5 text-left text-[18px] font-medium"
+                className="flex w-full items-center justify-between gap-6 py-4 text-left text-[17px] font-medium"
               >
                 {q.p}
-                <motion.span animate={{ rotate: abierta === i ? 45 : 0 }} className="text-[22px] font-light text-[#C59AF0]">+</motion.span>
+                <span aria-hidden className="text-[20px] font-light text-[#5F6068]">{abierta === i ? "−" : "+"}</span>
               </button>
               <AnimatePresence initial={false}>
                 {abierta === i && (
@@ -816,8 +716,8 @@ function Preguntas() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.35, ease }}
-                    className="overflow-hidden pr-10 text-[15px] leading-relaxed text-white/65"
+                    transition={{ duration: 0.3, ease }}
+                    className="overflow-hidden pr-10 text-[15px] leading-relaxed text-[#5F6068]"
                   >
                     <span className="block pb-5">{q.r}</span>
                   </motion.p>
@@ -834,22 +734,21 @@ function Preguntas() {
 function Cierre({ hub, nombrePais }: { hub: string; nombrePais: string }) {
   const idea = useMemo(() => `Demo completa de Sentinel desde la escucha digital gratis (${nombrePais}).`, [nombrePais]);
   return (
-    <section className="relative isolate overflow-hidden py-20 md:py-28">
-      <div aria-hidden className="absolute bottom-[-40%] left-1/2 -z-10 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-[#4A1D6E] opacity-40 blur-[150px]" />
-      <div className="mx-auto grid w-full max-w-[1240px] gap-10 px-5 md:px-10 lg:grid-cols-[1.2fr_1fr] lg:items-end">
-        <h2 className="text-[36px] font-semibold leading-[1.04] tracking-[-0.025em] md:text-[56px]">
+    <section className="border-t border-[#DCDCD6] bg-[#ECECE8] pt-14 pb-8 md:pt-20">
+      <div className={`${ancho} grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-end lg:gap-14`}>
+        <h2 className="max-w-[620px] text-[30px] font-semibold leading-[1.12] tracking-[-0.015em] md:text-[40px]">
           Mañana se va a hablar de tu marca. Decide si te enteras a tiempo.
         </h2>
         <div>
-          <p className="mb-5 text-[16px] leading-relaxed text-white/70">El equipo de Shift en {nombrePais} te muestra Sentinel con tu marca, tus competidores y tus canales.</p>
-          <PanelDemo hub={hub} idea={idea} />
+          <p className="mb-4 text-[16px] leading-relaxed text-[#5F6068]">El equipo de Shift en {nombrePais} te muestra Sentinel con tu marca, tus competidores y tus canales.</p>
+          <PanelDemo hub={hub} idea={idea} oscuro />
         </div>
       </div>
-      <div className="mx-auto mt-16 flex w-full max-w-[1240px] flex-wrap items-center justify-between gap-4 border-t border-white/10 px-5 pt-6 text-[13px] text-white/45 md:px-10">
-        <span><span className="font-semibold tracking-[0.32em] text-[#C59AF0]">SENTINEL</span> by Shift</span>
+      <div className={`${ancho} mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#CFCFC9] pt-5 text-[13px] text-[#5F6068]`}>
+        <Wordmark />
         <span className="flex gap-5">
-          <Link href="/shift-lab/escucha-gratis" className="hover:text-white">Escucha integral</Link>
-          <Link href="/shift-lab/escucha-ia" className="hover:text-white">Escucha de IA · Eco</Link>
+          <Link href="/shift-lab/escucha-gratis" className="hover:text-[#17171B]">Escucha integral</Link>
+          <Link href="/shift-lab/escucha-ia" className="hover:text-[#17171B]">Escucha de IA · Eco</Link>
         </span>
       </div>
     </section>

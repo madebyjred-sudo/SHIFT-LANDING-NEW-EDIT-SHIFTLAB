@@ -4,7 +4,7 @@ import { createPageMetadata, createWebPageSchema } from "@/app/seo";
 import SentinelEscucha from "./_/SentinelEscucha";
 
 /* Herramienta gratis de Sentinel: escucha digital de redes sociales y medios.
- * Diseño propio de Sentinel (oscuro, morado y lila), distinto de la integral y de Eco. */
+ * Diseño en el lenguaje del producto Sentinel (papel claro, morado único acento), distinto de la integral y de Eco. */
 
 const plex = IBM_Plex_Sans({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-plex", display: "swap" });
 const plexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono", display: "swap" });
