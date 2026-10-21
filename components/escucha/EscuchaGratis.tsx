@@ -2,6 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import FondoGlobo from "./FondoGlobo";
 import { CASAS } from "@/lib/escucha/casas";
 import { enlaceDossier, registrarLead, useEscuchaDigital, useEscuchaIA, type EstadoDig, type EstadoIA } from "@/lib/escucha/cliente";
 import { alternativasNombradas, cuadrante, loQueLaIANoSabe, picoDeConversacion } from "@/lib/escucha/lectura";
@@ -25,6 +27,11 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
   const ia = useEscuchaIA();
   const dig = useEscuchaDigital();
   const panelRef = useRef<HTMLDivElement>(null);
+  // En la página integral el globo vive en el fondo del hero y comparte el país con el formulario.
+  const [slotGlobo, setSlotGlobo] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    if (variante === "pagina") setSlotGlobo(document.getElementById("globo-integral"));
+  }, [variante]);
 
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
@@ -50,6 +57,7 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
 
   return (
     <div className={variante === "pagina" ? "" : "mx-auto w-full max-w-[1380px]"}>
+      {slotGlobo && createPortal(<FondoGlobo cc={cc} onCc={setCc} corriendo={corriendo} />, slotGlobo)}
       <form onSubmit={escuchar} className="relative rounded-[22px] border border-white/10 bg-[#0B1030]/90 p-4 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)] md:p-5">
         <div className="grid gap-3 md:grid-cols-[1fr_220px_auto]">
           <label className="block">
@@ -86,6 +94,7 @@ export default function EscuchaGratis({ variante = "pagina" }: { variante?: "pag
         </div>
         <p className="mt-3 px-1 text-[13px] text-white/55">
           Gratis y sin tarjeta. Consultamos {TOTAL_CASAS} IA y los últimos 30 días de redes y medios de {pais.nombre}. Tarda unos dos minutos.
+          {slotGlobo && <span className="hidden md:inline"> También puedes elegir tu país en el globo.</span>}
         </p>
       </form>
 
