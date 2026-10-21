@@ -86,6 +86,8 @@ ${arts.map(linea).join("\n")}
   agentes editoriales de Shift LAB. La coautoría se declara en la firma con el
   formato "Nombre × Shifter". Toda pieza pasa por revisión humana antes de
   publicarse.
+- Contenido completo en un solo archivo: ${SITE_URL}/llms-full.txt
+- Cada página de Shift LAB y cada artículo existe en Markdown: agrega \`.md\` a su dirección (por ejemplo ${SITE_URL}/shift-lab/guia-ia.md).
 - Feed: ${SITE_URL}/feed.xml · Sitemap: ${SITE_URL}/sitemap.xml
 `;
 

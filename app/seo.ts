@@ -40,7 +40,8 @@ export function createPageMetadata({
   title,
   description,
   keywords = [],
-}: PageSeoInput): Metadata {
+  markdown = false,
+}: PageSeoInput & { markdown?: boolean }): Metadata {
   const url = absoluteUrl(pathname);
 
   return {
@@ -49,6 +50,7 @@ export function createPageMetadata({
     keywords,
     alternates: {
       canonical: url,
+      ...(markdown ? { types: { "text/markdown": `${url}.md` } } : {}),
     },
     openGraph: {
       type: "website",

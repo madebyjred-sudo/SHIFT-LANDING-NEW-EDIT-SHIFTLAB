@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
   // suficiente memoria) y evita el `next start` que requiere el repo
   // completo.
   output: "standalone",
+  // /newsroom/<slug>.md: el artículo en Markdown para agentes de IA.
+  async rewrites() {
+    return [{ source: "/newsroom/:slug([a-z0-9-]+).md", destination: "/newsroom-md/:slug" }];
+  },
   async headers() {
     return [
       {

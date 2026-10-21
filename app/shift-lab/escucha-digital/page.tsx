@@ -17,7 +17,7 @@ const TITULO = "Escucha gratis lo que dicen de tu marca en redes y medios";
 const DESCRIPCION =
   "Herramienta gratis de Sentinel by Shift: 30 días de conversación pública sobre tu marca en redes sociales, medios y blogs de tu país. Volumen, tono, día pico y quién te amplifica. Sin cuenta, en dos minutos.";
 
-export const metadata: Metadata = createPageMetadata({
+export const metadata: Metadata = createPageMetadata({ markdown: true,
   pathname: RUTA,
   title: "Escucha digital gratis de redes y medios · Sentinel by Shift",
   description: DESCRIPCION,

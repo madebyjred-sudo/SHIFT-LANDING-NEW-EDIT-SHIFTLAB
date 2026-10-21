@@ -13,7 +13,7 @@ const RUTA = "/shift-lab/guia-ia";
 const TITULO = "Guía de visibilidad de marca en IA (AEO y GEO) · Shift LAB";
 const DESCRIPCION = "Cómo medir y mejorar lo que ChatGPT, Gemini, Claude, Perplexity y otras IA dicen de tu marca: preguntas, palabras calientes, auditoría, estrategia y programa. Con datos de Eco en América Latina.";
 
-export const metadata: Metadata = createPageMetadata({ pathname: RUTA, title: TITULO, description: DESCRIPCION, keywords: ["AEO", "GEO", "visibilidad en IA", "palabras calientes", "qué dice ChatGPT de mi marca", "guía AEO en español"] });
+export const metadata: Metadata = createPageMetadata({ markdown: true, pathname: RUTA, title: TITULO, description: DESCRIPCION, keywords: ["AEO", "GEO", "visibilidad en IA", "palabras calientes", "qué dice ChatGPT de mi marca", "guía AEO en español"] });
 
 export default async function GuiaPage() {
   const md = await readFile(path.join(process.cwd(), "content", "guia-ia.md"), "utf8");

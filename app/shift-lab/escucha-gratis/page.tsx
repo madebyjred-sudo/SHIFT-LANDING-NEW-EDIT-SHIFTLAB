@@ -27,7 +27,7 @@ const TITULO = "Escucha gratis lo que dicen de tu marca la IA, las redes y los m
 const DESCRIPCION =
   "Herramienta gratis de Shift LAB: pregunta a siete inteligencias artificiales por tu marca y escucha 30 días de redes sociales y medios de tu país, con una lectura que cruza las dos. Sin cuenta y en dos minutos.";
 
-export const metadata: Metadata = createPageMetadata({
+export const metadata: Metadata = createPageMetadata({ markdown: true,
   pathname: "/shift-lab/escucha-gratis",
   title: "Escucha gratis de IA, redes y medios · Shift LAB",
   description: DESCRIPCION,

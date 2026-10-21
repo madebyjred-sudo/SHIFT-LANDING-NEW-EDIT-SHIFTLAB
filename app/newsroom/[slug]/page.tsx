@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${article.title} | Shift Newsroom`,
     description: article.excerpt || undefined,
-    alternates: { canonical },
+    alternates: { canonical, types: { "text/markdown": `${canonical}.md` } },
     openGraph: {
       title: article.title,
       description: article.excerpt || undefined,

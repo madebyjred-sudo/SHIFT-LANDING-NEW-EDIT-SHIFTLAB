@@ -12,7 +12,7 @@ const TITULO = "Qué dice la IA de tu marca · escucha gratis de Eco";
 const DESCRIPCION =
   "Pregunta gratis a siete inteligencias artificiales por tu marca: cuántas te conocen, qué dicen, a quién recomiendan en tu lugar y en qué datos se equivocan. Sin cuenta, en menos de un minuto.";
 
-export const metadata: Metadata = createPageMetadata({
+export const metadata: Metadata = createPageMetadata({ markdown: true,
   pathname: "/shift-lab/escucha-ia",
   title: "Escucha gratis en IA · Eco by Shift LAB",
   description: DESCRIPCION,
