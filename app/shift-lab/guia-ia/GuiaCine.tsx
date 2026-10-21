@@ -84,7 +84,8 @@ function Portada({ titulo, bajada, capitulos }: { titulo: string; bajada: string
   const y = useTransform(scrollYProgress, [0, 1], [0, 220]);
   const op = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
   const esc = useTransform(scrollYProgress, [0, 1], [1, 1.25]);
-  const palabras = titulo.replace(/^Guía Shift LAB:\s*/, "").split(" ");
+  const limpio = titulo.replace(/^Guía Shift LAB:\s*/, "");
+  const palabras = (limpio.charAt(0).toUpperCase() + limpio.slice(1)).split(" ");
   return (
     <section ref={ref} className="relative flex min-h-[100svh] items-center overflow-hidden" style={{ background: C.noche }}>
       <motion.div aria-hidden style={{ scale: esc }} className="pointer-events-none absolute inset-0">
@@ -238,9 +239,9 @@ function EscenaCifras({ p, cifras }: { p: MotionValue<number>; cifras: { v: numb
   return (
     <div className="grid w-full max-w-[560px] gap-8">
       {cifras.map((c, i) => (
-        <Aparece key={c.pie} p={p} desde={0.15 + i * 0.15}>
+        <Aparece key={c.pie} p={p} desde={0.12 + i * 0.12}>
           <div className="border-t border-white/15 pt-4">
-            <Cuenta p={p} desde={0.15 + i * 0.15} v={c.v} d={c.d} />
+            <Cuenta p={p} desde={0.12 + i * 0.12} v={c.v} d={c.d} />
             <p className="mt-1 max-w-[420px] text-[15px] leading-snug text-white/60">{c.pie}</p>
           </div>
         </Aparece>
@@ -249,7 +250,7 @@ function EscenaCifras({ p, cifras }: { p: MotionValue<number>; cifras: { v: numb
   );
 }
 function Cuenta({ p, desde, v, d }: { p: MotionValue<number>; desde: number; v: number; d: number }) {
-  const n = useTransform(p, [desde, desde + 0.3], [0, v]);
+  const n = useTransform(p, [desde, desde + 0.2], [0, v]);
   const [x, setX] = useState("0");
   useEffect(() => n.on("change", (k) => setX(k.toFixed(d).replace(".", ","))), [n, d]);
   return <p className="text-[64px] font-extrabold leading-none tracking-[-0.04em] text-white md:text-[88px] [font-family:var(--font-figtree)]">{x}<span className="text-[#5BE9FF]">%</span></p>;
@@ -328,10 +329,10 @@ function Apertura({ i, titulo, escena }: { i: number; titulo: string; escena: (p
           {NUM[i]}
         </motion.span>
         <motion.img aria-hidden src={`/escucha/eco/iconos/${ICONO[i]}.webp`} alt="" style={{ y: iconoY }} className="pointer-events-none absolute right-[4vw] top-[12vh] w-[22vw] max-w-[260px] opacity-[0.16] md:opacity-25" />
-        <div className="relative z-10 mx-auto grid w-full max-w-[1180px] items-center gap-12 px-6 md:px-10 lg:grid-cols-[1fr_1fr]">
+        <div className="relative z-10 mx-auto grid w-full max-w-[1180px] items-center gap-8 px-6 pt-20 md:gap-12 md:px-10 lg:grid-cols-[1fr_1fr] lg:pt-0">
           <motion.div style={{ y: tituloY, opacity: tituloOp }}>
             <p className="text-[13px] font-semibold uppercase tracking-[0.22em] text-[#F540FF] [font-family:var(--font-figtree)]">Capítulo {NUM[i]}</p>
-            <h2 className="mt-5 text-[38px] font-extrabold leading-[1.02] tracking-[-0.03em] text-white md:text-[64px] [font-family:var(--font-figtree)]">{sinNumero(titulo)}</h2>
+            <h2 className="mt-4 text-[30px] font-extrabold leading-[1.04] tracking-[-0.03em] text-white sm:text-[38px] md:mt-5 md:text-[64px] [font-family:var(--font-figtree)]">{sinNumero(titulo)}</h2>
           </motion.div>
           <div className="flex lg:justify-end">{escena(p)}</div>
         </div>
