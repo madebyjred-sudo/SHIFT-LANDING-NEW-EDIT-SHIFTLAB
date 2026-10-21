@@ -11,8 +11,8 @@ const TESTS = [
 
 export default function AccesoEscuchas() {
   return (
-    <section aria-labelledby="pruebalo" className="relative border-b border-white/10 bg-[#0A0E27] py-14 md:py-16">
-      <div className="mx-auto w-full max-w-[1180px] px-6 md:px-10">
+    <section aria-labelledby="pruebalo" className="relative mx-auto mt-20 w-full max-w-[1380px] md:mt-28">
+      <div>
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#F540FF] [font-family:var(--font-figtree)]">Pruébalo gratis</p>

@@ -347,7 +347,7 @@ const CARD_HTML = `<style>
           mide en los seis modelos: <b>dónde aparecés, cómo te nombran y qué tan cierto es</b>.
         </p>
         <a class="eco-cta__btn" href="https://eco.shiftlabdev.space/dossier" target="_blank" rel="noopener">
-          Conocé más
+          Conoce más
           <span class="eco-cta__btn-arrow" aria-hidden="true">→</span>
         </a>
         <div class="eco-cta__family">
@@ -492,8 +492,8 @@ export default function ShiftLabEcoCard({ href, cta }: { href?: string; cta?: st
   const html =
     href || cta
       ? CARD_HTML.replace(
-          /href="https:\/\/eco\.shiftlabdev\.space\/dossier" target="_blank" rel="noopener">\s*Conocé más/,
-          `href="${href ?? "https://eco.shiftlabdev.space/dossier"}"${href?.startsWith("/") ? "" : ' target="_blank" rel="noopener"'}>\n          ${cta ?? "Conocé más"}`,
+          /href="https:\/\/eco\.shiftlabdev\.space\/dossier" target="_blank" rel="noopener">\s*Conoce más/,
+          `href="${href ?? "https://eco.shiftlabdev.space/dossier"}"${href?.startsWith("/") ? "" : ' target="_blank" rel="noopener"'}>\n          ${cta ?? "Conoce más"}`,
         )
       : CARD_HTML;
   return <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />;

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import ShiftLabHeroSection from "@/app/shift-lab/_/ShiftLabHeroSection";
 import AjustesMovil from "@/components/escucha/AjustesMovil";
-import AccesoEscuchas from "./_/AccesoEscuchas";
 import ShiftLabInfoSection from "./_/ShiftLabInfoSection";
 import ShiftLabBannerSection from "./_/ShiftLabBannerSection";
 import ShiftLabAIPhilosophySection from "./_/ShiftLabAIPhilosophySection";
@@ -38,7 +37,6 @@ export default function ShiftLabPage() {
           consistent navy background and the navbar reads it as "dark". */}
       <div className="overflow-x-clip bg-[#0A0E27]">
         <ShiftLabHeroSection />
-        <AccesoEscuchas />
         <ShiftLabInfoSection />
         <ShiftLabBannerSection />
         <ShiftLabAIPhilosophySection />

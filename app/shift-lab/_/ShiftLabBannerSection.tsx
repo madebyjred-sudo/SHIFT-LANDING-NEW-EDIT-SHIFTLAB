@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { LabDotGrid } from "@/components/ui/lab-primitives";
+import AccesoEscuchas from "./AccesoEscuchas";
 import ShiftLabEcoCard from "./ShiftLabEcoCard";
 import ShiftLabBrandhubCard from "./ShiftLabBrandhubCard";
 import EscuchaGratis from "@/components/escucha/EscuchaGratis";
@@ -44,11 +45,14 @@ export default function ShiftLabBannerSection() {
           </motion.div>
         </div>
 
+        {/* Debajo de las apps: las tres escuchas gratis y, enseguida, la integral aquí mismo. */}
+        <AccesoEscuchas />
+
         {/* Escucha gratis: la parte interactiva del dossier, aquí mismo.
             La misma herramienta vive sola en /shift-lab/escucha-gratis (pauta). */}
         <motion.div
           id="escucha-gratis"
-          className="mx-auto mt-20 w-full max-w-[1380px] scroll-mt-28 md:mt-28"
+          className="mx-auto mt-16 w-full max-w-[1380px] scroll-mt-28 md:mt-20"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}

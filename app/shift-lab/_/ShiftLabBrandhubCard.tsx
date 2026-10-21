@@ -205,7 +205,7 @@ const CARD_HTML = `<style>
         <span class="bh-cta__word"><b>Brand</b><span>hub</span></span>
       </div>
 
-      <h2 class="bh-cta__hook">Creá el brandhub de <b>tu marca</b>.</h2>
+      <h2 class="bh-cta__hook">Crea el brandhub de <b>tu marca</b>.</h2>
       <p class="bh-cta__desc">
         Cuando la marca vive suelta en drives, mails y chats, cada quien agarra una versión
         distinta y la marca se desarma. Brandhub la ordena en <b>una sola fuente viva</b>: la
@@ -229,7 +229,7 @@ const CARD_HTML = `<style>
 
       <div class="bh-cta__cta-row">
         <a class="bh-cta__btn" href="https://brandhub.shiftlatam.agency/dossier" target="_blank" rel="noopener">
-          Creá tu brandhub
+          Crea tu brandhub
           <span class="bh-cta__btn-arrow" aria-hidden="true">→</span>
         </a>
       </div>
