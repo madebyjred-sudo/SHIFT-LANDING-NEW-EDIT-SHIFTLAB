@@ -144,7 +144,7 @@ export function Reporte({ marca, cc, resultados, crudo }: { marca: string; cc: s
       {/* Encabezado del reporte */}
       <div className="grid gap-10 border-b border-[#e3e5f1] pb-12 lg:grid-cols-[1.1fr_1fr] lg:items-end">
         <div>
-          <p className="eco-kicker">Reporte de Eco · {marca} · {pais.nombre}</p>
+          <p className="eco-kicker flex items-center gap-2"><img src="/escucha/eco/eco-logo.svg" alt="Shift Eco" className="h-[15px] w-auto" /> · {marca} · {pais.nombre}</p>
           <p className="mt-6 flex items-baseline gap-3 [font-family:var(--font-figtree)]">
             <span className="eco-giant">{conocen.length}</span>
             <span className="text-[44px] font-semibold text-[#858eb4] md:text-[64px]">/ {validos.length}</span>

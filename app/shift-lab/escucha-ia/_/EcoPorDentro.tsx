@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { CASAS } from "@/lib/escucha/casas";
-import { EJEMPLO_ECO as EJEMPLO } from "@/components/escucha/MarcaEjemplo";
+import { EJEMPLO_ECO as EJEMPLO, LOGO_NIKE, foto } from "@/components/escucha/MarcaEjemplo";
+import { CreditosFotos } from "@/components/escucha/CreditosFotos";
 import { ECO_REAL, FECHA_DATOS } from "@/lib/escucha/datos-reales";
 
 /* Eco por dentro: lo que ninguna otra herramienta de «visibilidad» hace,
@@ -28,8 +29,10 @@ function Ventana({ titulo, ruta, children }: { titulo: string; ruta: string; chi
     <div className="overflow-hidden rounded-[14px] border bg-white shadow-[0_30px_70px_-40px_rgba(14,23,69,0.45)]" style={{ borderColor: T.linea }}>
       <div className="flex items-center justify-between border-b px-4 py-2.5" style={{ borderColor: T.linea }}>
         <span className="flex items-center gap-2">
-          <img src="/escucha/eco/eco-logo.svg" alt="" aria-hidden className="h-3.5 w-auto" />
-          <span className={`text-[10px] uppercase tracking-[0.12em] ${mono}`} style={{ color: T.tenue }}>{EJEMPLO.marca} · {ruta}</span>
+          <img src="/escucha/eco/eco-logo.svg" alt="Shift Eco" className="h-3.5 w-auto" />
+          <span className="h-3.5 w-px" style={{ background: T.linea }} />
+          <img src={LOGO_NIKE} alt={EJEMPLO.marca} className="h-3 w-auto" />
+          <span className={`text-[10px] uppercase tracking-[0.12em] ${mono}`} style={{ color: T.tenue }}>{ruta}</span>
         </span>
         <span className="hidden text-[13px] font-semibold sm:block" style={{ color: T.tinta }}>{titulo}</span>
       </div>
@@ -58,7 +61,8 @@ function PantallaExactitud() {
         </span>
         <span className={`text-[10px] uppercase tracking-[0.1em] ${mono}`} style={{ color: T.tenue }}>¿Qué me puedes decir de Nike?</span>
       </div>
-      <p className="mt-3 text-[14.5px] leading-[1.75]" style={{ color: T.tinta }}>
+      <div className="mt-3 grid gap-4 sm:grid-cols-[minmax(0,1fr)_128px]">
+      <p className="text-[14.5px] leading-[1.75]" style={{ color: T.tinta }}>
         {partes.map((p, i) =>
           p.ok === undefined ? (
             <span key={i}>{p.t}</span>
@@ -77,6 +81,11 @@ function PantallaExactitud() {
           ),
         )}
       </p>
+      <figure className="hidden sm:block">
+        <img src={foto("pegasus")} alt="Nike Zoom Pegasus 38" className="aspect-square w-full rounded-[10px] object-cover" />
+        <figcaption className={`mt-1 text-[9.5px] uppercase tracking-[0.08em] ${mono}`} style={{ color: T.tenue }}>Pegasus 38 · ✓ dato correcto</figcaption>
+      </figure>
+      </div>
       <ul className="mt-4 space-y-2 border-t pt-3" style={{ borderColor: T.linea }}>
         {partes.filter((p) => p.ok !== undefined).map((p, i) => (
           <motion.li key={i} initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.8 + i * 0.12, ease }} className="grid grid-cols-[18px_minmax(0,1fr)] items-start gap-2 text-[13px]">
@@ -92,10 +101,10 @@ function PantallaExactitud() {
 }
 
 /* 2 · Pregunta por pregunta: dónde la IA te nombra, en cuál y quién ocupa tu lugar. */
-const PREGUNTAS: { q: string; ias: Record<string, boolean>; lugar: string }[] = [
-  { q: "¿Cuáles son las mejores zapatillas para correr?", ias: { gpt: true, gemini: true, claude: true, perplexity: true, meta: true }, lugar: "" },
-  { q: "Zapatillas para maratón con buena amortiguación", ias: { gpt: false, gemini: true, claude: false, perplexity: false, meta: true }, lugar: "Asics" },
-  { q: "Tenis cómodos para trabajar de pie todo el día", ias: { gpt: false, gemini: false, claude: true, perplexity: false, meta: false }, lugar: "Skechers" },
+const PREGUNTAS: { q: string; ias: Record<string, boolean>; lugar: string; res?: { f: string; t: string } }[] = [
+  { q: "¿Cuáles son las mejores zapatillas para correr?", ias: { gpt: true, gemini: true, claude: true, perplexity: true, meta: true }, lugar: "", res: { f: "pegasus", t: "Las 5 IA recomiendan la Pegasus como la opción para todos los días." } },
+  { q: "Zapatillas para maratón con buena amortiguación", ias: { gpt: false, gemini: true, claude: false, perplexity: false, meta: true }, lugar: "Asics", res: { f: "vaporfly", t: "Gemini y Meta AI nombran la Vaporfly. ChatGPT, Claude y Perplexity responden con Asics." } },
+  { q: "Tenis cómodos para trabajar de pie todo el día", ias: { gpt: false, gemini: false, claude: true, perplexity: false, meta: false }, lugar: "Skechers", res: { f: "airmax90", t: "Solo Claude nombra la Air Max 90. Las demás recomiendan Skechers." } },
   { q: "¿Qué marca deportiva es más sostenible?", ias: { gpt: false, gemini: false, claude: false, perplexity: false, meta: false }, lugar: "Adidas" },
 ];
 function PantallaPreguntas() {
@@ -124,6 +133,12 @@ function PantallaPreguntas() {
               <span className="font-normal sm:hidden" style={{ color: T.tenue }}>En tu lugar: </span>
               {p.lugar || "Nadie"}
             </span>
+            {p.res && (
+              <span className="flex items-center gap-3 sm:col-span-3">
+                <img src={foto(p.res.f)} alt="" className="h-11 w-14 shrink-0 rounded-[6px] object-cover" />
+                <span className="text-[12px] leading-snug" style={{ color: T.suave }}>{p.res.t}</span>
+              </span>
+            )}
           </motion.div>
         );
       })}
@@ -235,6 +250,7 @@ export default function EcoPorDentro() {
       <Bloque kicker="Eco por dentro" titulo={<>No solo cuántas veces <span style={{ color: T.azul }}>te nombran</span></>} sub="La mayoría de las herramientas cuenta menciones. Eco revisa qué dice la IA de ti, pregunta por pregunta, y de dónde lo sacó.">
         {FILAS.map((f) => <Fila key={f.t} {...f} />)}
         <p className={`py-4 text-[12px] ${mono}`} style={{ color: T.tenue }}>{EJEMPLO.rotulo} Cifras de la región: medido por Eco, {FECHA_DATOS}.</p>
+        <CreditosFotos />
       </Bloque>
       <Bloque kicker="Del dato a la acción" titulo={<>Saber dónde fallas <span style={{ color: T.mag }}>no basta</span></>} sub="Eco convierte cada brecha en una tarea concreta. El agente propone; tu equipo ejecuta con un clic.">
         <Fila t="Qué hacer primero" d="Cada semana, Eco ordena las acciones por impacto: qué publicar, qué corregir y dónde estar para que la IA te nombre. Con la razón y la fuente de cada una." P={PantallaAcciones} />

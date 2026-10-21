@@ -2,11 +2,12 @@
 
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
-import { EJEMPLO_SENTINEL as EJ } from "@/components/escucha/MarcaEjemplo";
+import { EJEMPLO_SENTINEL as EJ, LOGO_NIKE, foto } from "@/components/escucha/MarcaEjemplo";
+import { CreditosFotos } from "@/components/escucha/CreditosFotos";
 import { FECHA_DATOS, SENTINEL_REAL } from "@/lib/escucha/datos-reales";
 
-/* Sentinel por dentro, con una marca que todos reconocen y que además es el
- * caso perfecto para la compuerta: «Amazon» también es un río y una selva.
+/* Sentinel por dentro, con una marca que todos reconocen y que además es un
+ * buen caso para la compuerta: «Nike» también es la diosa griega de la victoria.
  * Interfaz dibujada con los tokens del tablero y ampliada (no son capturas). */
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -21,7 +22,10 @@ function Ventana({ titulo, estado, children }: { titulo: string; estado?: ReactN
         <div className="flex items-center justify-between border-b px-4 py-2.5" style={{ borderColor: S.linea }}>
           <span className="flex items-center gap-2 text-[12px] font-semibold" style={{ color: S.tinta }}>
             <span className="h-2 w-2 rounded-[2px]" style={{ background: S.morado }} />
-            Sentinel <span className="font-normal" style={{ color: S.tenue }}>· {EJ.marca} · {titulo}</span>
+            Sentinel
+            <span className="h-3.5 w-px" style={{ background: S.linea }} />
+            <img src={LOGO_NIKE} alt={EJ.marca} className="h-3 w-auto" />
+            <span className="font-normal" style={{ color: S.tenue }}>· {titulo}</span>
           </span>
           {estado}
         </div>
@@ -40,11 +44,11 @@ const Vivo = () => (
 
 /* 1 · La compuerta: cada mención se lee y se decide. */
 const MENCIONES = [
-  { t: "Amazon abre nuevas plazas en su centro de servicio en Heredia", f: "Prensa digital", entra: true, por: "Habla de la empresa" },
-  { t: "Incendios en la Amazonía alcanzan su peor septiembre en una década", f: "Prensa digital", entra: false, por: "Homónimo: la selva" },
-  { t: "Mi pedido de Amazon llegó en 3 días a Cartago, sin pagar aduana extra", f: "X", entra: true, por: "Experiencia de cliente" },
-  { t: "Tour por el río Amazonas desde Iquitos, 40% de descuento", f: "Facebook", entra: false, por: "Homónimo y publicidad" },
-  { t: "¿Alguien sabe si Amazon Prime Video sube de precio en diciembre?", f: "Reddit", entra: true, por: "Producto de la marca" },
+  { t: "Nike amplía su sede de Beaverton y suma 2.000 puestos de trabajo", f: "Prensa digital", entra: true, por: "Habla de la empresa", img: "sede" },
+  { t: "La Victoria de Samotracia, la Nike del Louvre, vuelve a exhibirse tras su restauración", f: "Prensa digital", entra: false, por: "Homónimo: la diosa griega", img: "samotracia" },
+  { t: "Corrí mi primera media maratón con las Pegasus y cero ampollas 🙌", f: "Instagram", entra: true, por: "Experiencia de cliente", img: "corredores" },
+  { t: "Vendo botines Nike originales, talla 42, poco uso", f: "Facebook", entra: false, por: "Reventa particular", img: "botines" },
+  { t: "¿Alguien sabe si la chaqueta de la Selección sale en diciembre?", f: "Reddit", entra: true, por: "Producto de la marca", img: "chaqueta" },
 ];
 function PantallaCompuerta() {
   return (
@@ -56,12 +60,13 @@ function PantallaCompuerta() {
         </div>
         <div className="px-4 py-3">
           <p className="text-[11px]" style={{ color: S.tenue }}>Son de la marca</p>
-          <p className={`text-[22px] font-semibold ${mono}`} style={{ color: S.morado }}>4.912 <span className="text-[12px] font-normal" style={{ color: S.tenue }}>27 %</span></p>
+          <p className={`text-[22px] font-semibold ${mono}`} style={{ color: S.morado }}>5.034 <span className="text-[12px] font-normal" style={{ color: S.tenue }}>27 %</span></p>
         </div>
       </div>
       <ul>
         {MENCIONES.map((m, i) => (
-          <motion.li key={m.t} initial={{ opacity: 0, y: -8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.15 + i * 0.12, ease }} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b px-4 py-2.5 last:border-0" style={{ borderColor: S.fina }}>
+          <motion.li key={m.t} initial={{ opacity: 0, y: -8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.15 + i * 0.12, ease }} className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 border-b px-4 py-2.5 last:border-0" style={{ borderColor: S.fina }}>
+            <img src={foto(m.img)} alt="" className="h-10 w-10 rounded-[4px] object-cover" style={{ filter: m.entra ? "none" : "grayscale(1)", opacity: m.entra ? 1 : 0.55 }} />
             <span className="min-w-0">
               <span className="block text-[13px] leading-snug" style={{ color: m.entra ? S.tinta : S.tenue, textDecoration: m.entra ? "none" : "line-through", textDecorationColor: "#C9C9C3" }}>{m.t}</span>
               <span className="mt-0.5 block text-[11px]" style={{ color: S.tenue }}>{m.f} · {m.por}</span>
@@ -81,29 +86,32 @@ function PantallaAlerta() {
   const serie = [6, 7, 5, 8, 6, 7, 9, 8, 7, 10, 12, 24, 41, 38];
   const max = Math.max(...serie);
   return (
-    <Ventana titulo="Alertas" estado={<span className="text-[11px]" style={{ color: S.rojo }}>Hace 4 min</span>}>
-      <div className="border-l-[3px] px-4 py-4" style={{ borderColor: S.rojo }}>
-        <p className="text-[11px] font-medium uppercase tracking-[0.08em]" style={{ color: S.rojo }}>Sube la conversación negativa</p>
-        <p className="mt-1.5 text-[17px] font-semibold leading-snug" style={{ color: S.tinta }}>Quejas por pedidos retrasados en la semana del Black Friday</p>
+    <Ventana titulo="Alertas" estado={<span className="text-[11px]" style={{ color: S.morado }}>Hace 4 min</span>}>
+      <div className="border-l-[3px] px-4 py-4" style={{ borderColor: S.morado }}>
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em]" style={{ color: S.morado }}>Pico de conversación</p>
+        <div className="mt-1.5 grid grid-cols-[minmax(0,1fr)_92px] items-start gap-4">
+          <p className="text-[17px] font-semibold leading-snug" style={{ color: S.tinta }}>La camiseta nueva de la Selección se vuelve tema: 71 % positivo, dudas por el precio</p>
+          <img src={foto("chaqueta")} alt="" className="h-[92px] w-[92px] rounded-[4px] object-cover" />
+        </div>
         <div className="mt-3 grid grid-cols-3 gap-3">
-          {[["Variación", "+340 %", "en 3 horas"], ["Alcance", "1,2 M", "personas"], ["Fuente", "X", "62 % del total"]].map(([k, v, p]) => (
+          {[["Variación", "+340 %", "en 3 horas"], ["Alcance", "1,2 M", "personas"], ["Fuente", "Instagram", "58 % del total"]].map(([k, v, p]) => (
             <div key={k}>
               <p className="text-[11px]" style={{ color: S.tenue }}>{k}</p>
-              <p className={`text-[18px] font-semibold ${mono}`} style={{ color: k === "Variación" ? S.rojo : S.tinta }}>{v}</p>
+              <p className={`text-[18px] font-semibold ${mono}`} style={{ color: k === "Variación" ? S.morado : S.tinta }}>{v}</p>
               <p className="text-[11px]" style={{ color: S.tenue }}>{p}</p>
             </div>
           ))}
         </div>
         <div className="mt-4 flex h-[64px] items-end gap-[3px]">
           {serie.map((n, i) => (
-            <motion.span key={i} initial={{ height: 0 }} whileInView={{ height: `${(n / max) * 100}%` }} viewport={{ once: true }} transition={{ delay: 0.2 + i * 0.04, duration: 0.5, ease }} className="flex-1 rounded-t-[2px]" style={{ background: i >= 11 ? S.rojo : "#D9D9D3" }} />
+            <motion.span key={i} initial={{ height: 0 }} whileInView={{ height: `${Math.round((n / max) * 100)}%` }} viewport={{ once: true }} transition={{ delay: 0.2 + i * 0.04, duration: 0.5, ease }} className="flex-1 rounded-t-[2px]" style={{ backgroundColor: i >= 11 ? S.morado : "#D9D9D3" }} />
           ))}
         </div>
         <p className={`mt-1 flex justify-between text-[10px] ${mono}`} style={{ color: S.tenue }}><span>06:00</span><span>ahora</span></p>
       </div>
       <div className="border-t px-4 py-3" style={{ borderColor: S.linea }}>
         <p className="text-[11px]" style={{ color: S.tenue }}>Lo que más se comparte</p>
-        <p className="mt-1 text-[13px] leading-snug" style={{ color: S.tinta }}>«Compré el 24 y todavía dice “en preparación”. Nadie responde en el chat.» <span style={{ color: S.tenue }}>· X · 3.100 interacciones</span></p>
+        <p className="mt-1 text-[13px] leading-snug" style={{ color: S.tinta }}>«Está preciosa, pero ¿en serio cuesta eso? La compro igual.» <span style={{ color: S.tenue }}>· Instagram · 3.100 interacciones</span></p>
       </div>
     </Ventana>
   );
@@ -111,9 +119,9 @@ function PantallaAlerta() {
 
 /* 3 · Radio, TV y prensa junto a las redes, transcritos y clasificados. */
 const MEDIOS = [
-  { tipo: "Radio", donde: "Noticiero de la mañana · 07:42", cita: "…y la empresa confirmó que ampliará su operación en el país, con énfasis en servicio al cliente bilingüe…", tono: "Positivo" },
-  { tipo: "TV", donde: "Estelar de las 19:00 · min 12", cita: "…consumidores reportan atrasos en las entregas de la última semana; la compañía dice que se normalizará el lunes…", tono: "Negativo" },
-  { tipo: "Prensa", donde: "Economía · edición digital", cita: "Las compras transfronterizas crecen en la región y la plataforma concentra la mitad de los envíos…", tono: "Neutral" },
+  { tipo: "Radio", donde: "Noticiero de la mañana · 07:42", cita: "…la marca confirmó que patrocinará la maratón de la ciudad en marzo, con inscripciones abiertas desde hoy…", tono: "Positivo" },
+  { tipo: "TV", donde: "Estelar de las 19:00 · min 12", cita: "…aficionados hicieron fila desde la madrugada para el lanzamiento de la camiseta; algunos se quejaron del precio…", tono: "Neutral" },
+  { tipo: "Prensa", donde: "Economía · edición digital", cita: "El calzado para correr crece en la región y las marcas deportivas abren tiendas propias en los centros comerciales…", tono: "Neutral" },
 ];
 function PantallaMedios() {
   const color = (t: string) => (t === "Positivo" ? S.verde : t === "Negativo" ? S.rojo : S.tenue);
@@ -145,8 +153,8 @@ function PantallaMedios() {
 }
 
 const FILAS = [
-  { t: "Una compuerta que separa el ruido", d: "Contar todo lo que dice «Amazon» es contar la selva, el río y la publicidad. Sentinel lee cada mención y decide si habla de tu marca antes de sumarla. Por eso sus números se pueden presentar en una junta.", P: PantallaCompuerta },
-  { t: "Alertas en el momento, con la razón", d: "No un correo diario con un gráfico. Cuando sube lo negativo o aparece un tema sensible, la alerta llega con qué pasó, cuánta gente lo ve, de dónde viene y lo que más se está compartiendo.", P: PantallaAlerta },
+  { t: "Una compuerta que separa el ruido", d: "Contar todo lo que dice «Nike» es contar también la diosa griega, el museo y la reventa. Sentinel lee cada mención y decide si habla de tu marca antes de sumarla. Por eso sus números se pueden presentar en una junta.", P: PantallaCompuerta },
+  { t: "Alertas en el momento, con la razón", d: "No un correo diario con un gráfico. Cuando la conversación cambia de golpe, para bien o para mal, la alerta llega con qué pasó, cuánta gente lo ve, de dónde viene y lo que más se está compartiendo.", P: PantallaAlerta },
   { t: "Radio y televisión, no solo redes", d: "Lo que se dice al aire se transcribe y se clasifica junto con redes y prensa. Ves en una sola línea cómo una nota de TV de la noche se convierte en conversación al día siguiente.", P: PantallaMedios },
 ];
 
@@ -176,6 +184,7 @@ export default function SentinelPorDentro() {
         <p className="mt-4 text-[12px]" style={{ color: S.tenue }}>
           {EJ.rotulo} Sentinel ha curado {SENTINEL_REAL.menciones.toLocaleString("es-CR")} menciones reales desde {SENTINEL_REAL.desde} ({FECHA_DATOS}).
         </p>
+        <CreditosFotos color={S.tenue} />
       </div>
     </section>
   );

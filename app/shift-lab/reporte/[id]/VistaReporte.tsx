@@ -54,11 +54,14 @@ function EnProceso({ r }: { r: Publico }) {
 
 function Encabezado({ r, tono }: { r: Publico; tono: "eco" | "sentinel" | "integral" }) {
   const claro = tono !== "integral";
-  const kicker = { eco: "Reporte de IA · Eco", sentinel: "Reporte de redes y medios · Sentinel", integral: "Reporte integral · Eco + Sentinel" }[tono];
+  const kicker = { eco: "Reporte de IA", sentinel: "Reporte de redes y medios · Sentinel", integral: "Reporte integral · Eco + Sentinel" }[tono];
   const color = { eco: "#1534dc", sentinel: "#9244D8", integral: "#5BE9FF" }[tono];
   return (
     <header className="pt-32 pb-6 md:pt-40">
-      <p className="text-[12px] font-semibold uppercase tracking-[0.14em]" style={{ color }}>{kicker}</p>
+      <p className="flex items-center gap-2.5 text-[12px] font-semibold uppercase tracking-[0.14em]" style={{ color }}>
+        {kicker}
+        {tono === "eco" && <img src="/escucha/eco/eco-logo.svg" alt="Shift Eco" className="h-4 w-auto" />}
+      </p>
       <h1 className={`mt-4 text-[40px] font-bold leading-[1.02] tracking-[-0.02em] md:text-[64px] [font-family:var(--font-figtree)] ${claro ? "" : "text-white"}`}>{r.marca}</h1>
       <div className={`mt-5 flex flex-wrap items-center gap-4 text-[14px] ${claro ? "text-current/70" : "text-white/60"}`}>
         <span>{r.pais} · {fecha(r.terminado ?? r.creado)}</span>
