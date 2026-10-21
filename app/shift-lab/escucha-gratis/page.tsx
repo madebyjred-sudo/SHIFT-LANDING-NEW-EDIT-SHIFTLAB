@@ -4,6 +4,7 @@ import { LabDotGrid } from "@/components/ui/lab-primitives";
 import EscuchaGratis from "@/components/escucha/EscuchaGratis";
 import TarjetaSentinel from "@/components/escucha/TarjetaSentinel";
 import FondoGlobo from "@/components/escucha/FondoGlobo";
+import Copiloto from "@/components/escucha/Copiloto";
 import ShiftLabEcoCard from "@/app/shift-lab/_/ShiftLabEcoCard";
 import { ECO_REAL, FECHA_DATOS, SENTINEL_REAL } from "@/lib/escucha/datos-reales";
 
@@ -102,6 +103,10 @@ export default function EscuchaGratisPage() {
             </div>
           </div>
         </section>
+
+        <div className="border-t border-white/10">
+          <Copiloto tema="integral" />
+        </div>
 
         <section className="relative border-t border-white/10 py-24">
           <div className="mx-auto w-full max-w-[1380px] px-4 md:px-6 lg:px-8">

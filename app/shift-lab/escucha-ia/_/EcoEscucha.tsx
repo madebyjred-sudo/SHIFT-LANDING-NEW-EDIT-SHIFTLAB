@@ -1,5 +1,6 @@
 "use client";
 
+import Copiloto from "@/components/escucha/Copiloto";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -547,6 +548,7 @@ export default function EcoEscucha() {
       )}
 
       <PorQueImporta />
+      <Copiloto tema="eco" />
 
       {/* ---------- Preguntas y caminos ---------- */}
       <section className="eco-section border-t border-[#e3e5f1]" aria-labelledby="faq">

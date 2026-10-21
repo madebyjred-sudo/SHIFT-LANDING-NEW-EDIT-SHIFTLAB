@@ -1,5 +1,7 @@
 "use client";
 
+import Copiloto from "@/components/escucha/Copiloto";
+import Peaje from "./Peaje";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,7 +22,7 @@ const C = {
   gris: "#5F6068",
   gris2: "#8A8B92",
   linea: "#DCDCD6",
-  morado: "#4A1D6E",
+  morado: "#9244D8",
   rojo: "#D42A20",
   verde: "#1E874B",
 };
@@ -42,7 +44,7 @@ const ancho = "mx-auto w-full max-w-[1200px] px-5 md:px-10";
 const tarjeta = "rounded-[6px] border border-[#DCDCD6] bg-white";
 const etiqueta = "text-[13px] font-medium text-[#5F6068]";
 const num = "tabular-nums [font-family:var(--font-plex-mono)]";
-const btn = "inline-flex h-12 items-center justify-center rounded-[4px] bg-[#4A1D6E] px-5 text-[15px] font-medium text-white transition-colors hover:bg-[#3A1657] disabled:cursor-not-allowed disabled:opacity-50";
+const btn = "inline-flex h-12 items-center justify-center rounded-[4px] bg-[#9244D8] px-5 text-[15px] font-medium text-white transition-colors hover:bg-[#3A1657] disabled:cursor-not-allowed disabled:opacity-50";
 
 /* ------------------------------------------------------------------ */
 
@@ -78,8 +80,9 @@ export default function SentinelEscucha() {
       <BarraMarca />
 
       {/* ---------- HERO + HERRAMIENTA ---------- */}
-      <section className="pt-12 pb-14 md:pt-16 md:pb-20">
-        <div className={`${ancho} grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14`}>
+      <section className="relative isolate pt-12 pb-20 md:pt-16 md:pb-28">
+        <Peaje />
+        <div className={`relative z-10 ${ancho} grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14`}>
           <div>
             <p className={etiqueta}>Escucha digital gratis · redes y medios de {pais.nombre}</p>
             <h1 className="mt-4 max-w-[600px] text-[36px] font-semibold leading-[1.08] tracking-[-0.02em] md:text-[52px]">
@@ -100,7 +103,7 @@ export default function SentinelEscucha() {
                     placeholder="Escribe el nombre de tu marca"
                     disabled={ocupado}
                     maxLength={60}
-                    className="mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3.5 text-[16px] outline-none transition-colors placeholder:text-[#8A8B92] focus:border-[#4A1D6E] disabled:bg-[#F4F4F2]"
+                    className="mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3.5 text-[16px] outline-none transition-colors placeholder:text-[#8A8B92] focus:border-[#9244D8] disabled:bg-[#F4F4F2]"
                   />
                 </div>
                 <div>
@@ -110,7 +113,7 @@ export default function SentinelEscucha() {
                     value={cc}
                     onChange={(e) => setCc(e.target.value)}
                     disabled={ocupado}
-                    className="mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3 text-[15px] outline-none focus:border-[#4A1D6E] disabled:bg-[#F4F4F2]"
+                    className="mt-1.5 h-12 w-full rounded-[4px] border border-[#CFCFC9] bg-white px-3 text-[15px] outline-none focus:border-[#9244D8] disabled:bg-[#F4F4F2]"
                   >
                     {PAISES.map((p) => (
                       <option key={p.cc} value={p.cc}>{p.nombre}</option>
@@ -143,6 +146,7 @@ export default function SentinelEscucha() {
       </AnimatePresence>
 
       <Narrativa />
+      <Copiloto tema="sentinel" />
       <Producto />
       <Completo />
       <Preguntas />
@@ -156,7 +160,7 @@ export default function SentinelEscucha() {
 function Wordmark() {
   return (
     <span className="flex items-baseline gap-1.5">
-      <span className="text-[19px] font-bold tracking-[0.04em] text-[#4A1D6E]">Sentinel</span>
+      <span className="text-[19px] font-bold tracking-[0.04em] text-[#9244D8]">Sentinel</span>
       <span className="text-[13px] text-[#8A8B92]">by Shift</span>
     </span>
   );
@@ -193,7 +197,7 @@ function Estado({ fase, enCola }: { fase: string; enCola?: number }) {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          className={`mt-4 max-w-[560px] overflow-hidden border-l-2 pl-3.5 text-[14px] leading-relaxed text-[#5F6068] ${alerta ? "border-[#D42A20]" : "border-[#4A1D6E]"}`}
+          className={`mt-4 max-w-[560px] overflow-hidden border-l-2 pl-3.5 text-[14px] leading-relaxed text-[#5F6068] ${alerta ? "border-[#D42A20]" : "border-[#9244D8]"}`}
         >
           {t[fase]}
         </motion.p>
@@ -228,7 +232,7 @@ function Superficies({ ocupado, resumen }: { ocupado: boolean; resumen?: Resumen
               )}
               <span className={`truncate text-[14px] ${r.soloCompleto ? "text-[#8A8B92]" : ""}`}>{r.nombre}</span>
               {r.soloCompleto ? (
-                <span className="text-right text-[13px] text-[#4A1D6E]">Entra en el monitoreo completo</span>
+                <span className="text-right text-[13px] text-[#9244D8]">Entra en el monitoreo completo</span>
               ) : resumen ? (
                 <span className="flex items-baseline gap-3 text-right">
                   <span className={`${num} text-[14px]`}>{fmt(n)}</span>
@@ -252,7 +256,7 @@ function FranjaMedios({ cc, nombrePais }: { cc: string; nombrePais: string }) {
   const lista = MEDIOS[cc] ?? [];
   if (!lista.length) return null;
   return (
-    <section className="border-y border-[#DCDCD6] bg-white py-6">
+    <section className="border-b border-[#DCDCD6] bg-white py-6">
       <div className={`${ancho} flex flex-col gap-4 md:flex-row md:items-center md:gap-10`}>
         <p className="shrink-0 text-[13px] text-[#5F6068]">Medios que escuchamos en {nombrePais}</p>
         <AnimatePresence mode="wait">
@@ -356,7 +360,7 @@ function Reporte({ r, hub, nombrePais }: { r: Resumen; hub: string; nombrePais: 
                       <li key={t.url} className="border-b border-[#ECECE8]">
                         <a href={t.url} target="_blank" rel="noopener noreferrer" className="group grid gap-1 py-3.5 sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-4">
                           <span className="text-[13px] text-[#8A8B92]">{t.medio} · {fechaCorta(t.fecha)}</span>
-                          <span className="text-[16px] leading-snug group-hover:text-[#4A1D6E] group-hover:underline">{t.titulo}</span>
+                          <span className="text-[16px] leading-snug group-hover:text-[#9244D8] group-hover:underline">{t.titulo}</span>
                         </a>
                       </li>
                     ))}
@@ -398,7 +402,7 @@ function Reporte({ r, hub, nombrePais }: { r: Resumen; hub: string; nombrePais: 
                     <li key={m.nombre} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_40px] items-center gap-4 border-b border-[#ECECE8] py-2.5">
                       <span className="truncate text-[14px]">{m.nombre}</span>
                       <span className="h-1.5 bg-[#ECECE8]">
-                        <span className="block h-full bg-[#4A1D6E]" style={{ width: `${(m.n / maxMedio) * 100}%` }} />
+                        <span className="block h-full bg-[#9244D8]" style={{ width: `${(m.n / maxMedio) * 100}%` }} />
                       </span>
                       <span className={`${num} text-right text-[13px] text-[#5F6068]`}>{m.n}</span>
                     </li>
@@ -445,11 +449,11 @@ function Serie({ dias, pico }: { dias: { dia: string; n: number }[]; pico?: stri
             <line key={f} x1="0" x2={W} y1={H * f + 6} y2={H * f + 6} stroke="#ECECE8" vectorEffect="non-scaling-stroke" />
           ))}
           <line x1="0" x2={W} y1={H} y2={H} stroke="#CFCFC9" vectorEffect="non-scaling-stroke" />
-          <path d={area} fill="#4A1D6E" fillOpacity={0.06} />
+          <path d={area} fill="#9244D8" fillOpacity={0.06} />
           <motion.path
             d={linea}
             fill="none"
-            stroke="#4A1D6E"
+            stroke="#9244D8"
             strokeWidth={1.75}
             vectorEffect="non-scaling-stroke"
             initial={{ pathLength: 0 }}
@@ -529,7 +533,7 @@ function PanelDemo({ hub, idea, oscuro }: { hub: string; idea: string; oscuro?: 
                       value={correo}
                       onChange={(e) => setCorreo(e.target.value)}
                       placeholder="tu@empresa.com"
-                      className="h-12 min-w-0 flex-1 rounded-[4px] border border-[#CFCFC9] bg-white px-3.5 text-[16px] text-[#17171B] outline-none placeholder:text-[#8A8B92] focus:border-[#4A1D6E]"
+                      className="h-12 min-w-0 flex-1 rounded-[4px] border border-[#CFCFC9] bg-white px-3.5 text-[16px] text-[#17171B] outline-none placeholder:text-[#8A8B92] focus:border-[#9244D8]"
                     />
                     <button disabled={fase === "enviando"} className={btn}>
                       {fase === "enviando" ? "Enviando" : "Pedir demo"}
