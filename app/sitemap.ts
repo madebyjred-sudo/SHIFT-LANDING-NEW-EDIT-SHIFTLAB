@@ -42,10 +42,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Build sin token Directus: el sitemap se rellena al revalidar en runtime.
   }
 
-  const ultimoArticulo = articles.map((a) => a.lastModified).filter(Boolean).sort().at(-1);
+  const ultimoArticulo = articles
+    .map((a) => (a.lastModified ? new Date(a.lastModified).getTime() : 0))
+    .reduce((m, t) => Math.max(m, t), 0);
   const base: MetadataRoute.Sitemap = ROUTES.map(([route, fecha]) => ({
     url: `${SITE_URL}${route}`,
-    lastModified: route === "/newsroom" ? ultimoArticulo : new Date(`${fecha}T12:00:00Z`),
+    lastModified: route === "/newsroom" ? (ultimoArticulo ? new Date(ultimoArticulo) : undefined) : new Date(`${fecha}T12:00:00Z`),
     changeFrequency: route === "" || route === "/newsroom" ? "weekly" : "monthly",
     priority: route === "" ? 1 : 0.8,
   }));
