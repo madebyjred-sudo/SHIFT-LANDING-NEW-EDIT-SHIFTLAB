@@ -39,7 +39,7 @@ function parecidaAlDominio(partes: string[], dominio: string): string | undefine
 }
 
 // Títulos de muros anti-bots o errores: no son la marca.
-const BASURA = /(error|request could not|access denied|forbidden|attention required|just a moment|radware|captcha|cloudflare|not found|404|403|página no encontrada|bienvenido|welcome|home|inicio)$/i;
+const BASURA = /(error|request could not|access denied|restrict access|forbidden|attention required|just a moment|radware|captcha|cloudflare|not found|404|403|página no encontrada|bienvenido|welcome|home|inicio)$/i;
 const esBasura = (t: string) => BASURA.test(t.trim()) || /error|request could not|access denied|radware|just a moment|captcha/i.test(t);
 
 /* «dospinos» → «Dos Pinos»: el autocompletado de Google sabe cómo se escribe la marca con espacios. */
@@ -64,8 +64,14 @@ async function espaciar(etiqueta: string, cc = "cr"): Promise<string | null> {
   return null;
 }
 
+/* Segundo nivel de país (.fi.cr de los bancos de Costa Rica, .com.co, .gob.mx): no es la marca. Solo se salta
+ * cuando va justo antes del dominio de país, para no comerse una marca que se llame igual. */
+const SEGUNDO_NIVEL = new Set(["com", "co", "net", "org", "gob", "gov", "edu", "fi", "ac", "ed", "go", "or", "sa", "nom", "web", "info", "mil", "int"]);
 function desdeDominio(dominio: string): string {
-  const base = dominio.split(".").slice(0, -1).filter((p) => !["www", "com", "co", "net", "org", "gob"].includes(p)).pop() ?? dominio;
+  const partes = dominio.split(".").filter((p) => p !== "www");
+  partes.pop();
+  if (partes.length > 1 && SEGUNDO_NIVEL.has(partes[partes.length - 1])) partes.pop();
+  const base = partes.pop() ?? dominio;
   return base.replace(/[-_]+/g, " ").replace(/\b\p{L}/gu, (c) => c.toUpperCase());
 }
 
