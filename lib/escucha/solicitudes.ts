@@ -85,7 +85,8 @@ export async function crearSolicitud(o: { tipo: Tipo; marca: string; sitio?: str
 async function digitalCompleto(marca: string, cc: string): Promise<{ resumen: Resumen } | { error: string }> {
   const ini = iniciar(marca, cc);
   if (!ini.ok) return { error: ini.error };
-  for (let i = 0; i < 120; i++) {
+  // Hasta ~33 min: dos turnos de la sesión de Talkwalker de 16 min cada uno (ver RELOJ_MS en digital.ts).
+  for (let i = 0; i < 500; i++) {
     const s = consultar(ini.id);
     if (!s) return { error: "perdido" };
     if (s.estado === "listo" && s.resumen) return { resumen: s.resumen };

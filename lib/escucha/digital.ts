@@ -24,6 +24,10 @@ const TOPE_DIA = Number(process.env.ESCUCHA_DIGITAL_TOPE_DIA ?? 40);
 const CACHE_MS = 24 * 3600e3;
 const DIAS = 30;
 const TECHO_LLAMADAS = 8; // ~2 min por consulta, medido el 20-oct con Dos Pinos (109 s)
+/* La sesión de Talkwalker la comparten Pulse (cada hora a las :50, de 8 a 29 min; mediana 15, medido el 11-nov) y los
+ * widgets de Sentinel (:35, ~10 min). tw-qs-mcp.js espera su turno hasta 12 min: este reloj tiene que pasar ese turno
+ * más la consulta, y si igual sale «otro proceso tiene el perfil» se pide un turno más. */
+const RELOJ_MS = 16 * 60e3;
 
 export type Resumen = {
   marca: string;
@@ -118,7 +122,14 @@ async function bombear() {
       const t = trabajos.get(id) as Trabajo & { marca: string; cc: string };
       t.estado = "corriendo";
       try {
-        const crudo = await correrQuickSearch(t.marca, t.cc);
+        let crudo: Crudo;
+        try {
+          crudo = await correrQuickSearch(t.marca, t.cc);
+        } catch (e) {
+          if (!/perfil/i.test((e as Error).message)) throw e;
+          console.error("[escucha-digital] sesión ocupada, otro turno:", t.marca);
+          crudo = await correrQuickSearch(t.marca, t.cc);
+        }
         const resumen = resumir(crudo, t.marca, t.cc);
         t.resumen = resumen;
         t.estado = "listo";
@@ -164,14 +175,14 @@ function correrQuickSearch(marca: string, cc: string): Promise<Crudo> {
     const p = spawn(cmd as string, args as string[], { cwd: MODO === "ssh" ? undefined : SCRIPT_DIR });
     let out = "";
     let err = "";
-    const reloj = setTimeout(() => p.kill("SIGTERM"), 7 * 60e3);
+    const reloj = setTimeout(() => p.kill("SIGTERM"), RELOJ_MS);
     p.stdout.on("data", (d) => (out += d));
     p.stderr.on("data", (d) => (err += d));
     p.on("close", (code) => {
       clearTimeout(reloj);
       try {
-        const j = JSON.parse(out) as Crudo;
-        if (!j.ok) return reject(new Error("quicksearch_no_ok"));
+        const j = JSON.parse(out) as Crudo & { error?: string };
+        if (!j.ok) return reject(new Error(`quicksearch_no_ok ${String(j.error ?? "").slice(0, 140)}`));
         resolve(j);
       } catch {
         reject(new Error(`quicksearch_salida_invalida code=${code} ${err.slice(-160)}`));
