@@ -30,8 +30,10 @@ const entidades = (s: string) =>
     })
     .trim();
 
-/* De «Marca – Bajada» o «Inicio | Marca», la parte que se parece al dominio. */
-const plano = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+/* De «Marca – Bajada» o «Inicio | Marca», la parte que se parece al dominio. Sin tildes ni conectores, para que
+ * «Banco de Chile» se parezca a bancochile.cl y «Telefonía» no pierda la «i». */
+const plano = (s: string) =>
+  s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\b(de|del|la|las|el|los|y)\b/g, "").replace(/[^a-z0-9]/g, "");
 const partesDe = (texto: string) => entidades(texto).split(/\s[|·•\-–—:]\s|:\s/).map((p) => p.trim()).filter(Boolean);
 function parecidaAlDominio(partes: string[], dominio: string): string | undefined {
   const dom = plano(desdeDominio(dominio));
@@ -40,7 +42,9 @@ function parecidaAlDominio(partes: string[], dominio: string): string | undefine
 
 // Títulos de muros anti-bots o errores: no son la marca.
 const BASURA = /(error|request could not|access denied|restrict access|forbidden|attention required|just a moment|radware|captcha|cloudflare|not found|404|403|página no encontrada|bienvenido|welcome|home|inicio)$/i;
-const esBasura = (t: string) => BASURA.test(t.trim()) || /error|request could not|access denied|radware|just a moment|captcha/i.test(t);
+const esBasura = (t: string) => BASURA.test(t.trim()) || /error|request could not|access denied|radware|just a moment|captcha|ingreso concedido|acceso denegado/i.test(t);
+// og:site_name que es una sección del sitio y no la marca (entel.cl y bancochile.cl dicen «Personas»).
+const SECCION = /^(personas|empresas|particulares|negocios|pymes|hogar|home|inicio|portada)$/i;
 
 /* «dospinos» → «Dos Pinos»: el autocompletado de Google sabe cómo se escribe la marca con espacios. */
 async function espaciar(etiqueta: string, cc = "cr"): Promise<string | null> {
@@ -91,8 +95,15 @@ export async function marcaDesdeSitio(bruto: string): Promise<{ marca: string; d
     /* sitio caído o lento: queda el dominio */
   }
   const candidato = meta(html, "og:site_name") ?? meta(html, "application-name");
-  if (candidato && !esBasura(candidato)) return { marca: (parecidaAlDominio(partesDe(candidato), n.dominio) ?? entidades(candidato)).slice(0, 60), dominio: n.dominio };
   const titulo = html.match(/<title[^>]*>([^<]{2,160})<\/title>/i)?.[1];
+  if (candidato && !esBasura(candidato) && !SECCION.test(candidato.trim())) {
+    const parecida = parecidaAlDominio(partesDe(candidato), n.dominio);
+    /* og:site_name a veces es una sección y no la marca (entel.cl dice «Personas»): vale si se parece al dominio,
+     * si el título lo repite o si el título no nombra el dominio. Si no, manda el título. */
+    const enTitulo = titulo ? plano(entidades(titulo)).includes(plano(entidades(candidato))) : false;
+    if (parecida || enTitulo || !titulo || !parecidaAlDominio(partesDe(titulo), n.dominio))
+      return { marca: (parecida ?? entidades(candidato)).slice(0, 60), dominio: n.dominio };
+  }
   if (titulo) {
     const partes = partesDe(titulo);
     // La parte que más se parece al dominio; si ninguna, la más corta.
