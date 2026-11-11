@@ -45,6 +45,11 @@ const BASURA = /(error|request could not|access denied|restrict access|forbidden
 const esBasura = (t: string) => BASURA.test(t.trim()) || /error|request could not|access denied|radware|just a moment|captcha|ingreso concedido|acceso denegado/i.test(t);
 // og:site_name que es una sección del sitio y no la marca (entel.cl y bancochile.cl dicen «Personas»).
 const SECCION = /^(personas|empresas|particulares|negocios|pymes|hogar|home|inicio|portada)$/i;
+// «falabella.com», «Unimarc.cl», «Nike.com»: el nombre del sitio con su dominio de primer nivel; la marca va sin él.
+const sinTld = (s: string) => {
+  const t = s.trim();
+  return /^[\p{L}\d][\p{L}\d-]*(\.[a-z]{2,})+$/iu.test(t) ? t.replace(/(\.[a-z]{2,})+$/i, "") : t;
+};
 
 /* «dospinos» → «Dos Pinos»: el autocompletado de Google sabe cómo se escribe la marca con espacios. */
 async function espaciar(etiqueta: string, cc = "cr"): Promise<string | null> {
@@ -101,18 +106,28 @@ export async function marcaDesdeSitio(bruto: string): Promise<{ marca: string; d
     /* og:site_name a veces es una sección y no la marca (entel.cl dice «Personas»): vale si se parece al dominio,
      * si el título lo repite o si el título no nombra el dominio. Si no, manda el título. */
     const enTitulo = titulo ? plano(entidades(titulo)).includes(plano(entidades(candidato))) : false;
-    if (parecida || enTitulo || !titulo || !parecidaAlDominio(partesDe(titulo), n.dominio))
-      return { marca: (parecida ?? entidades(candidato)).slice(0, 60), dominio: n.dominio };
+    if (parecida || enTitulo || !titulo || !parecidaAlDominio(partesDe(titulo), n.dominio)) {
+      const m0 = (parecida ?? entidades(candidato)).trim();
+      const m = sinTld(m0);
+      // «falabella.com» → «falabella»: igual al dominio pelado, la marca se escribe desde el dominio.
+      if (m !== m0 && m.toLowerCase() === desdeDominio(n.dominio).toLowerCase()) return { marca: await desdeElDominio(n.dominio), dominio: n.dominio };
+      return { marca: m.slice(0, 60), dominio: n.dominio };
+    }
   }
   if (titulo) {
     const partes = partesDe(titulo);
     // La parte que más se parece al dominio; si ninguna, la más corta.
-    const elegida = parecidaAlDominio(partes, n.dominio) ?? partes.sort((a, b) => a.length - b.length)[0];
+    const elegida = sinTld(parecidaAlDominio(partes, n.dominio) ?? partes.sort((a, b) => a.length - b.length)[0] ?? "");
     // Igual al dominio («Dospinos») no aporta y se prueba con espacios; con mayúsculas propias («EquySer») sí.
     const mixta = /\p{Ll}/u.test(elegida ?? "") && /\p{Lu}/u.test((elegida ?? "").slice(1));
     if (elegida && elegida.length <= 60 && !esBasura(elegida) && (mixta || elegida.toLowerCase() !== desdeDominio(n.dominio).toLowerCase())) return { marca: elegida, dominio: n.dominio };
   }
-  const base = desdeDominio(n.dominio);
+  return { marca: await desdeElDominio(n.dominio), dominio: n.dominio };
+}
+
+/* La marca escrita desde el dominio: «dospinos» → «Dos Pinos» si el autocompletado de Google la separa. */
+async function desdeElDominio(dominio: string): Promise<string> {
+  const base = desdeDominio(dominio);
   const conEspacios = base.includes(" ") ? null : await espaciar(base.toLowerCase());
-  return { marca: conEspacios ?? base, dominio: n.dominio };
+  return conEspacios ?? base;
 }
