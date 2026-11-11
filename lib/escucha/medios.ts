@@ -421,7 +421,7 @@ export const MEDIOS: Record<string, Medio[]> = {
   {
    "nombre": "Cooperativa",
    "dominio": "cooperativa.cl",
-   "logo": null
+   "logo": "/escucha/medios/cooperativa-cl.svg"
   },
   {
    "nombre": "El Mostrador",
