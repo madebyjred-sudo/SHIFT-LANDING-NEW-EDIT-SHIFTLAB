@@ -109,8 +109,9 @@ async function correr(r: Reporte, ip: string) {
       ia: ia?.ok ? terminosIA(ia.crudo, r.marca) : [],
       conversacion: digital && "resumen" in digital ? (digital.resumen.calientes ?? []) : [],
     };
-    const iaOk = !ia || ia.ok;
-    const digOk = !digital || "resumen" in digital;
+    // Listo si respondió alguna de las partes PEDIDAS: un reporte de IA con la IA caída no es un reporte.
+    const iaOk = Boolean(ia?.ok);
+    const digOk = Boolean(digital && "resumen" in digital);
     r.estado = iaOk || digOk ? "listo" : "error";
   } catch (e) {
     console.error("[escucha-reporte]", (e as Error).message);

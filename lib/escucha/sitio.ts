@@ -19,7 +19,24 @@ const meta = (html: string, prop: string) =>
   html.match(new RegExp(`<meta[^>]+(?:property|name)=["']${prop}["'][^>]*content=["']([^"']{2,80})["']`, "i"))?.[1] ??
   html.match(new RegExp(`<meta[^>]+content=["']([^"']{2,80})["'][^>]*(?:property|name)=["']${prop}["']`, "i"))?.[1];
 
-const entidades = (s: string) => s.replace(/&amp;/g, "&").replace(/&#39;|&apos;/g, "'").replace(/&quot;/g, '"').replace(/&nbsp;/g, " ").trim();
+const NOMBRADAS: Record<string, string> = { amp: "&", quot: '"', apos: "'", nbsp: " ", ndash: "–", mdash: "—", lt: "<", gt: ">", laquo: "«", raquo: "»", middot: "·", bull: "•", hellip: "…" };
+// WordPress escribe «EquySer &#8211; Equipos y Servicios»: numéricas y nombradas.
+const entidades = (s: string) =>
+  s
+    .replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e: string) => {
+      if (e[0] !== "#") return NOMBRADAS[e.toLowerCase()] ?? m;
+      const n = /^#x/i.test(e) ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+      return n > 0 && n < 0x110000 ? String.fromCodePoint(n) : m;
+    })
+    .trim();
+
+/* De «Marca – Bajada» o «Inicio | Marca», la parte que se parece al dominio. */
+const plano = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+const partesDe = (texto: string) => entidades(texto).split(/\s[|·•\-–—:]\s|:\s/).map((p) => p.trim()).filter(Boolean);
+function parecidaAlDominio(partes: string[], dominio: string): string | undefined {
+  const dom = plano(desdeDominio(dominio));
+  return partes.find((p) => plano(p).length >= 2 && (plano(p).includes(dom) || dom.includes(plano(p))));
+}
 
 // Títulos de muros anti-bots o errores: no son la marca.
 const BASURA = /(error|request could not|access denied|forbidden|attention required|just a moment|radware|captcha|cloudflare|not found|404|403|página no encontrada|bienvenido|welcome|home|inicio)$/i;
@@ -68,15 +85,15 @@ export async function marcaDesdeSitio(bruto: string): Promise<{ marca: string; d
     /* sitio caído o lento: queda el dominio */
   }
   const candidato = meta(html, "og:site_name") ?? meta(html, "application-name");
-  if (candidato && !esBasura(candidato)) return { marca: entidades(candidato).slice(0, 60), dominio: n.dominio };
+  if (candidato && !esBasura(candidato)) return { marca: (parecidaAlDominio(partesDe(candidato), n.dominio) ?? entidades(candidato)).slice(0, 60), dominio: n.dominio };
   const titulo = html.match(/<title[^>]*>([^<]{2,160})<\/title>/i)?.[1];
   if (titulo) {
-    const partes = entidades(titulo).split(/\s[|·•\-–—:]\s/).map((p) => p.trim()).filter(Boolean);
-    const dom = desdeDominio(n.dominio).toLowerCase().replace(/\s/g, "");
+    const partes = partesDe(titulo);
     // La parte que más se parece al dominio; si ninguna, la más corta.
-    const parecida = partes.find((p) => p.toLowerCase().replace(/[^a-z0-9]/g, "").includes(dom) || dom.includes(p.toLowerCase().replace(/[^a-z0-9]/g, "")));
-    const elegida = parecida ?? partes.sort((a, b) => a.length - b.length)[0];
-    if (elegida && elegida.length <= 60 && !esBasura(elegida) && elegida.toLowerCase() !== desdeDominio(n.dominio).toLowerCase()) return { marca: elegida, dominio: n.dominio };
+    const elegida = parecidaAlDominio(partes, n.dominio) ?? partes.sort((a, b) => a.length - b.length)[0];
+    // Igual al dominio («Dospinos») no aporta y se prueba con espacios; con mayúsculas propias («EquySer») sí.
+    const mixta = /\p{Ll}/u.test(elegida ?? "") && /\p{Lu}/u.test((elegida ?? "").slice(1));
+    if (elegida && elegida.length <= 60 && !esBasura(elegida) && (mixta || elegida.toLowerCase() !== desdeDominio(n.dominio).toLowerCase())) return { marca: elegida, dominio: n.dominio };
   }
   const base = desdeDominio(n.dominio);
   const conEspacios = base.includes(" ") ? null : await espaciar(base.toLowerCase());

@@ -1,3 +1,4 @@
+import { avisarEquipo } from "@/lib/escucha/alerta";
 import { PAISES } from "@/lib/escucha/paises";
 
 /* Escucha en IA gratis = el "dossier shot" de Eco (POST /api/dossier/shot):
@@ -63,6 +64,9 @@ async function completarLocal(crudo: Crudo, marca: string, pais: string): Promis
 
 const sinAcentos = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 
+/* Una respuesta vacía o «Sin respuesta.» es una IA que falló, no una que no te conoce. */
+const fallo = (r: Crudo[number]) => Boolean(r.error) || !(r.answer ?? "").trim() || r.answer.trim() === "Sin respuesta.";
+
 
 export type ResIAServidor = { key: string; answer: string; error: boolean; conoce: boolean; nombra: boolean };
 
@@ -97,20 +101,31 @@ async function escucharIAUna(marca: string, cc: string, ip = ""): Promise<{ ok: 
         body: JSON.stringify({ company: marca, country: pais.nombre }),
         signal: AbortSignal.timeout(85_000),
       });
-    } catch {
+    } catch (e) {
+      void avisarEquipo("Eco no responde", `${marca} · ${pais.nombre}. ${(e as Error).message}`);
       return { ok: false, error: "eco" };
     }
     if (res.status === 503) return { ok: false, error: "apagado" };
     if (res.status === 429) return { ok: false, error: "usado" };
     const data = (await res.json().catch(() => null)) as { ok?: boolean; results?: Crudo } | null;
-    if (!data?.ok || !Array.isArray(data.results)) return { ok: false, error: "eco" };
+    if (!data?.ok || !Array.isArray(data.results)) {
+      void avisarEquipo("Eco no responde", `${marca} · ${pais.nombre}. HTTP ${res.status}.`);
+      return { ok: false, error: "eco" };
+    }
     crudo = await completarLocal(data.results, marca, pais.nombre);
     cacheIA.set(clave, { t: Date.now(), crudo });
   }
+  // Con menos de la mitad de las IA respondiendo no hay conclusión que sacar: falla, sin caché, y aviso al equipo.
+  const responden = crudo.filter((r) => !fallo(r)).length;
+  if (responden * 2 < crudo.length) {
+    cacheIA.delete(clave);
+    void avisarEquipo(`${responden} de ${crudo.length} IA respondieron`, `${marca} · ${pais.nombre}. El reporte sale sin la parte de IA. Fallaron: ${crudo.filter(fallo).map((r) => r.key).join(", ")}. Revisar Eco y el saldo de OpenRouter.`);
+    return { ok: false, error: "eco" };
+  }
   const m = sinAcentos(marca);
   const resultados = crudo.map((r) => {
-    const conoce = !r.error && !noLaConoce(r.answer);
-    return { key: r.key, answer: r.answer, error: Boolean(r.error), conoce, nombra: conoce && sinAcentos(r.answer).includes(m) };
+    const conoce = !fallo(r) && !noLaConoce(r.answer);
+    return { key: r.key, answer: r.answer, error: fallo(r), conoce, nombra: conoce && sinAcentos(r.answer).includes(m) };
   });
   return { ok: true, crudo, resultados, pais: pais.nombre };
 }
