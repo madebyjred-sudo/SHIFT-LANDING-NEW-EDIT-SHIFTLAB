@@ -10,6 +10,9 @@ export type Pais = {
   nombre: string;
   hub: HubOption;
   tz: string[];
+  /** false = Shift no tiene equipo en el país: el lead lo atiende el hub regional y el
+   * copy no promete «el equipo de Shift en <país>». */
+  equipoLocal?: false;
 };
 
 export const PAISES: Pais[] = [
@@ -31,6 +34,7 @@ export const PAISES: Pais[] = [
   },
   { cc: "co", nombre: "Colombia", hub: "Colombia", tz: ["America/Bogota"] },
   { cc: "ec", nombre: "Ecuador", hub: "Ecuador", tz: ["America/Guayaquil", "Pacific/Galapagos"] },
+  { cc: "cl", nombre: "Chile", hub: "Costa Rica (Hub)", tz: ["America/Santiago", "America/Punta_Arenas", "Pacific/Easter"], equipoLocal: false },
   { cc: "ve", nombre: "Venezuela", hub: "Venezuela", tz: ["America/Caracas"] },
   { cc: "do", nombre: "República Dominicana", hub: "República Dominicana", tz: ["America/Santo_Domingo"] },
 ];
@@ -51,4 +55,15 @@ export function paisDelNavegador(): string {
 
 export function paisPorCc(cc: string | null | undefined): Pais {
   return PAISES.find((p) => p.cc === cc) ?? PAISES[0];
+}
+
+/** ¿Shift tiene equipo en el país? Acepta el país, su código o su nombre. */
+export function hayEquipoEn(p: Pais | string | null | undefined): boolean {
+  const pais = typeof p === "string" ? PAISES.find((x) => x.cc === p || x.nombre === p) : p;
+  return pais?.equipoLocal !== false;
+}
+
+/** « en Colombia» donde hay equipo de Shift; vacío donde el lead lo atiende el hub regional. */
+export function equipoEn(p: Pais): string {
+  return hayEquipoEn(p) ? ` en ${p.nombre}` : "";
 }

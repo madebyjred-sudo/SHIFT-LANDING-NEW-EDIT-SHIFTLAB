@@ -15,7 +15,7 @@ import { CASAS } from "@/lib/escucha/casas";
 import { enlaceDossier, escuchaInicial, registrarLead, type ResIA } from "@/lib/escucha/cliente";
 import { alternativasNombradas, datosEnDisputa } from "@/lib/escucha/lectura";
 import { ECO_REAL, EJEMPLO_MEMORIA_VS_BUSQUEDA, FECHA_DATOS } from "@/lib/escucha/datos-reales";
-import { PAISES, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
+import { PAISES, equipoEn, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
 import "./eco.css";
 
 const pct = (a: number, b: number) => (b ? ((a / b) * 100).toLocaleString("es-CR", { maximumFractionDigits: 1, minimumFractionDigits: 1 }) : "0");
@@ -320,7 +320,7 @@ function ConEcoCompleto(p: { marca: string; pais: ReturnType<typeof paisPorCc>; 
               >
                 <form onSubmit={pedir} className="mt-6 max-w-md border-t border-white/15 pt-6">
                   <label htmlFor="eco-correo" className="text-[15px] text-white/80">
-                    Tu correo de trabajo. Abrimos el dossier de {p.marca} con estas respuestas y el equipo de Shift en {p.pais.nombre} te escribe una vez.
+                    Tu correo de trabajo. Abrimos el dossier de {p.marca} con estas respuestas y el equipo de Shift{equipoEn(p.pais)} te escribe una vez.
                   </label>
                   <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                     <input

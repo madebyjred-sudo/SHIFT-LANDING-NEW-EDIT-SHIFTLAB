@@ -11,7 +11,7 @@ import { CASAS } from "@/lib/escucha/casas";
 import { enlaceDossier, escuchaInicial, registrarLead, type EstadoDig, type EstadoIA } from "@/lib/escucha/cliente";
 import { alternativasNombradas, cuadrante, loQueLaIANoSabe, picoDeConversacion } from "@/lib/escucha/lectura";
 import { MEDIOS } from "@/lib/escucha/medios";
-import { PAISES, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
+import { PAISES, equipoEn, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
 import { REDES } from "@/lib/escucha/redes";
 
 /* Escucha integral: Eco (IA) + Sentinel (redes y medios) en una sola corrida,
@@ -460,7 +460,7 @@ export function DemoCompleta({ marca, cc, ia, dig }: { marca: string; cc: string
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.45, ease }} className="overflow-hidden">
             {estado === "listo" || estado === "fallo" ? (
               <p className="mt-6 text-[15px] leading-relaxed text-white/85">
-                {estado === "listo" ? `Listo. Abrimos tu dossier en otra pestaña y el equipo de Shift en ${pais.nombre} te escribe a ${correo}. ` : "Abrimos tu dossier en otra pestaña. "}
+                {estado === "listo" ? `Listo. Abrimos tu dossier en otra pestaña y el equipo de Shift${equipoEn(pais)} te escribe a ${correo}. ` : "Abrimos tu dossier en otra pestaña. "}
                 <a href={enlace} target="_blank" rel="noopener" className="font-semibold text-[#5BE9FF] underline-offset-4 hover:underline">
                   Abrir el dossier de nuevo
                 </a>
@@ -478,7 +478,7 @@ export function DemoCompleta({ marca, cc, ia, dig }: { marca: string; cc: string
                 <button type="submit" disabled={estado === "enviando"} className="h-14 rounded-[14px] bg-[#1534DC] px-7 text-[16px] font-semibold text-white hover:bg-[#2a47f0] disabled:opacity-60 [font-family:var(--font-figtree)]">
                   {estado === "enviando" ? "Abriendo…" : "Abrir mi dossier"}
                 </button>
-                <p className="text-[12px] text-white/50 md:col-span-2">Te escribe una persona del equipo de Shift en {pais.nombre}. Nada de listas de correo.</p>
+                <p className="text-[12px] text-white/50 md:col-span-2">Te escribe una persona del equipo de Shift{equipoEn(pais)}. Nada de listas de correo.</p>
               </form>
             )}
           </motion.div>

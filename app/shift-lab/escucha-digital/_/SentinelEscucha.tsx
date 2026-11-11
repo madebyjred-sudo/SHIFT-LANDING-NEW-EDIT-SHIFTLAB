@@ -19,7 +19,7 @@ import { escuchaInicial, registrarLead, type Resumen } from "@/lib/escucha/clien
 import { picoDeConversacion, redDominante } from "@/lib/escucha/lectura";
 import { REDES } from "@/lib/escucha/redes";
 import { MEDIOS } from "@/lib/escucha/medios";
-import { PAISES, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
+import { PAISES, hayEquipoEn, paisDelNavegador, paisPorCc } from "@/lib/escucha/paises";
 import { SENTINEL_REAL, FECHA_DATOS } from "@/lib/escucha/datos-reales";
 
 
@@ -370,7 +370,7 @@ export function Reporte({ r, hub, nombrePais, enReporte }: { r: Resumen; hub: st
                 Con la escucha continua, {r.marca} tendría esta lectura todos los días, al lado de sus competidores, y la alerta llegaría el mismo día del pico, no un mes después.
               </p>
             </div>
-            <PanelDemo hub={hub} idea={`Escucha digital gratis (Sentinel): ${r.marca}, ${nombrePais}. ${r.total} menciones en 30 días${pico ? `, pico el ${pico.dia}` : ""}. Pide la demo completa.`} />
+            <PanelDemo hub={hub} local={hayEquipoEn(nombrePais)} idea={`Escucha digital gratis (Sentinel): ${r.marca}, ${nombrePais}. ${r.total} menciones en 30 días${pico ? `, pico el ${pico.dia}` : ""}. Pide la demo completa.`} />
           </div>
           )}
         </div>
@@ -435,7 +435,7 @@ function Serie({ dias, pico }: { dias: { dia: string; n: number }[]; pico?: stri
 }
 
 /* Panel inline (sin modal): botón que despliega el formulario de correo. */
-function PanelDemo({ hub, idea, oscuro }: { hub: string; idea: string; oscuro?: boolean }) {
+function PanelDemo({ hub, idea, oscuro, local = true }: { hub: string; idea: string; oscuro?: boolean; local?: boolean }) {
   const [abierto, setAbierto] = useState(false);
   const [correo, setCorreo] = useState("");
   const [fase, setFase] = useState<"idle" | "enviando" | "ok" | "error">("idle");
@@ -469,7 +469,7 @@ function PanelDemo({ hub, idea, oscuro }: { hub: string; idea: string; oscuro?: 
                 <div>
                   <p className="text-[17px] font-semibold">Listo, recibimos tu correo.</p>
                   <p className="mt-1.5 text-[14px] leading-relaxed text-[#5F6068]">
-                    El equipo de Shift en tu país te escribe para mostrarte tu tablero de Sentinel con tu marca y tus competidores.
+                    El equipo de Shift{local ? " en tu país" : ""} te escribe para mostrarte tu tablero de Sentinel con tu marca y tus competidores.
                   </p>
                 </div>
               ) : (
@@ -491,7 +491,7 @@ function PanelDemo({ hub, idea, oscuro }: { hub: string; idea: string; oscuro?: 
                     </button>
                   </div>
                   <p className={`mt-2.5 text-[12px] ${fase === "error" ? "text-[#D42A20]" : "text-[#8A8B92]"}`}>
-                    {fase === "error" ? "No se pudo enviar. Intenta otra vez." : "Solo lo usa el equipo de Shift en tu país, una vez. Sin listas de correo."}
+                    {fase === "error" ? "No se pudo enviar. Intenta otra vez." : `Solo lo usa el equipo de Shift${local ? " en tu país" : ""}, una vez. Sin listas de correo.`}
                   </p>
                 </form>
               )}

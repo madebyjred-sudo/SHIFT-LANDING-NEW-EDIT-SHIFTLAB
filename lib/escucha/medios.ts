@@ -1,4 +1,7 @@
-/* Generado por scratch/medios-logos/normalizar.py. Logos tomados de la cabecera de cada medio;
+/* Generado por scratch/medios-logos/normalizar.py. Chile se agregó a mano el 11-nov-2026: solo medios que
+ * la consulta de Talkwalker devolvió para Chile en los 30 días previos; logos de la cabecera de cada medio
+ * (El Mercurio, de Wikimedia Commons), limpiados y recortados con scratch/medios-chile/normalizar-svg.cjs.
+ * Logos tomados de la cabecera de cada medio;
  * los que no se pudieron limpiar van como texto (logo: null). */
 export type Medio = { nombre: string; dominio: string; logo: string | null };
 export const MEDIOS: Record<string, Medio[]> = {
@@ -387,6 +390,48 @@ export const MEDIOS: Record<string, Medio[]> = {
    "nombre": "Globovisión",
    "dominio": "globovision.com",
    "logo": "/escucha/medios/globovision-com.png"
+  }
+ ],
+ "cl": [
+  {
+   "nombre": "BioBioChile",
+   "dominio": "biobiochile.cl",
+   "logo": "/escucha/medios/biobiochile-cl.png"
+  },
+  {
+   "nombre": "El Mercurio",
+   "dominio": "elmercurio.com",
+   "logo": "/escucha/medios/elmercurio-com.svg"
+  },
+  {
+   "nombre": "T13",
+   "dominio": "t13.cl",
+   "logo": "/escucha/medios/t13-cl.svg"
+  },
+  {
+   "nombre": "24 Horas",
+   "dominio": "24horas.cl",
+   "logo": "/escucha/medios/24horas-cl.svg"
+  },
+  {
+   "nombre": "CNN Chile",
+   "dominio": "cnnchile.com",
+   "logo": null
+  },
+  {
+   "nombre": "Cooperativa",
+   "dominio": "cooperativa.cl",
+   "logo": null
+  },
+  {
+   "nombre": "El Mostrador",
+   "dominio": "elmostrador.cl",
+   "logo": "/escucha/medios/elmostrador-cl.svg"
+  },
+  {
+   "nombre": "La Cuarta",
+   "dominio": "lacuarta.com",
+   "logo": "/escucha/medios/lacuarta-com.svg"
   }
  ],
  "us": [

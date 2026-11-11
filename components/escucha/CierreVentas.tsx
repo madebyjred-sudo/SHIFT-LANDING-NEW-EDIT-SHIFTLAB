@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { gancho } from "@/lib/escucha/gancho";
+import { hayEquipoEn } from "@/lib/escucha/paises";
 import { TarjetaFabiana } from "./CierreSinReporte";
 import type { Reporte as ReporteData } from "@/lib/escucha/solicitudes";
 
@@ -49,7 +50,7 @@ export default function CierreVentas({ r, tono }: { r: Omit<ReporteData, "correo
             {g.titulo}
           </motion.h2>
           <p className="mt-6 max-w-[520px] text-[17px] leading-relaxed" style={{ color: t.suave }}>
-            Un especialista de Shift en {r.pais} te va a escribir en las próximas 24 horas hábiles para leer este reporte contigo.
+            Un especialista de Shift{hayEquipoEn(r.cc) ? ` en ${r.pais}` : ""} te va a escribir en las próximas 24 horas hábiles para leer este reporte contigo.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <button type="button" onClick={hoy} disabled={estado === "enviando" || estado === "ok"} className="px-7 py-4 text-[16px] font-semibold transition-opacity disabled:opacity-70" style={{ background: t.btn, color: t.btnTxt, borderRadius: t.radio, fontFamily: t.titular }}>
