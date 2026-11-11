@@ -220,7 +220,7 @@ function FranjaMedios({ cc, nombrePais }: { cc: string; nombrePais: string }) {
                 <li key={m.dominio + i} className="flex h-7 shrink-0 items-center whitespace-nowrap" title={m.nombre} aria-hidden={i >= lista.length}>
                   {m.logo ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={m.logo} alt={m.nombre} className="h-5 w-auto max-w-[120px] opacity-55 [filter:grayscale(1)_brightness(0)]" />
+                    <img src={m.logo} alt={m.nombre} className="h-5 w-auto max-w-[120px] object-contain opacity-55 [filter:grayscale(1)_brightness(0)]" />
                   ) : (
                     <span className="text-[15px] font-semibold tracking-tight text-[#5F6068]">{m.nombre}</span>
                   )}
