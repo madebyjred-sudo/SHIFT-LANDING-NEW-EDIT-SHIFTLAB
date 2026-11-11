@@ -43,8 +43,13 @@ export function SelectorPais({ cc, onCc, tono, className = "", etiqueta = "País
     return () => document.documentElement.removeAttribute("data-lista-abierta");
   }, [abierto]);
 
+  // El país en foco (flechas, letras) se mantiene a la vista DENTRO de la lista, sin mover la página.
   useEffect(() => {
-    if (abierto) lista.current?.querySelector<HTMLElement>(`[data-i="${foco}"]`)?.scrollIntoView({ block: "nearest" });
+    const ul = lista.current;
+    const li = ul?.querySelector<HTMLElement>(`[data-i="${foco}"]`);
+    if (!abierto || !ul || !li) return;
+    if (li.offsetTop < ul.scrollTop) ul.scrollTop = li.offsetTop - 6;
+    else if (li.offsetTop + li.offsetHeight > ul.scrollTop + ul.clientHeight) ul.scrollTop = li.offsetTop + li.offsetHeight - ul.clientHeight + 6;
   }, [foco, abierto]);
 
   const elegir = (i: number) => {
@@ -110,7 +115,11 @@ export function SelectorPais({ cc, onCc, tono, className = "", etiqueta = "País
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute right-0 top-[calc(100%+6px)] z-50 max-h-[min(520px,62vh)] w-max min-w-full origin-top overflow-y-auto border p-1.5 [scrollbar-width:thin]"
+            // Al abrir, la lista entera a la vista: en el teléfono caía bajo el borde y Ecuador, Chile, Venezuela y RD no se veían.
+            onAnimationComplete={(d) => {
+              if ((d as { opacity?: number }).opacity === 1) lista.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+            }}
+            className="absolute right-0 top-[calc(100%+6px)] z-50 max-h-[min(520px,62vh)] w-max min-w-full origin-top scroll-mb-4 overflow-y-auto border p-1.5 [scrollbar-width:thin]"
             style={{ background: t.panel, borderColor: t.borde, borderRadius: t.radio, boxShadow: t.sombra, color: t.texto, fontFamily: t.fuente }}
           >
             {PAISES.map((p, i) => {
