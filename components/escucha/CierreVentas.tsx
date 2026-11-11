@@ -58,7 +58,7 @@ export default function CierreVentas({ r, tono }: { r: Omit<ReporteData, "correo
             <span className="text-[13px]" style={{ color: t.suave }}>Este reporte vence el {vence}.</span>
           </div>
           <div className="mt-8">
-            <TarjetaFabiana tono={tono} texto="Directora de Desarrollo de Negocio, Shift Latam. Ella o alguien de su equipo te escribe con este reporte en la mano, no con una presentación genérica." />
+            <TarjetaFabiana tono={tono} texto="Directora de Desarrollo de Negocio, Shift Latam. Ella o alguien de su equipo te escribe con este reporte en la mano." />
           </div>
           <AnimatePresence>
             {estado === "ok" && (
