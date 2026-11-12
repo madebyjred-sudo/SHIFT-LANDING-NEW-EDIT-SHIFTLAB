@@ -141,6 +141,11 @@ const ABOUTUS = [
     title: "Karla Cobreiro",
     description: "Office Director Miami",
   },
+  {
+    imageSrc: "/assets/images/aboutus/persona-31-juan.jpg",
+    title: "Juan Rojas",
+    description: "Creative technologist Shift Latam",
+  },
 ] as const;
 
 function subscribePrefersReducedMotion(onChange: () => void) {
