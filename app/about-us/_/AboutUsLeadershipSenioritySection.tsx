@@ -7,7 +7,7 @@ import SphereImageGrid, { type SphereImageItem } from "@/components/ui/img-spher
 
 const ABOUTUS = [
   {
-    imageSrc: "/assets/images/aboutus/persona-1.jpg",
+    imageSrc: "/assets/images/aboutus/persona-1-rodrigo.jpg",
     title: "Rodrigo Castro",
     description: "CEO Shift Latam",
   },

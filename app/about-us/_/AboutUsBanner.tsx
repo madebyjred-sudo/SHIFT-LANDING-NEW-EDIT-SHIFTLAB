@@ -6,7 +6,7 @@ import { useInView } from "framer-motion";
 
 // Reuse the enhanced 2K leadership portraits (single source of truth).
 const people: { src: string }[] = [
-  { src: "/assets/images/aboutus/persona-1.jpg" },  // Rodrigo Castro
+  { src: "/assets/images/aboutus/persona-1-rodrigo.jpg" },  // Rodrigo Castro
   { src: "/assets/images/aboutus/persona-2.jpg" },  // Gabriela Piedra
   { src: "/assets/images/aboutus/persona-3.jpg" },  // Oscar Solano
   { src: "/assets/images/aboutus/persona-15.jpg" }, // Ana Solera
